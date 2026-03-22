@@ -25,6 +25,7 @@
             --sh: #ff9e64;
             --img: #7ec8e3;
             --wd: #c3a6ff;
+            --au: #ffd166;
         }
 
         body.light {
@@ -43,62 +44,7 @@
             --sh: #b84d00;
             --img: #1356a8;
             --wd: #5c1a8a;
-        }
-
-        #theme-toggle {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--f);
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: .08em;
-            color: var(--dim);
-            background: none;
-            border: 1px solid var(--b2);
-            cursor: pointer;
-            padding: 5px 12px;
-            transition: border-color .15s, color .15s;
-            text-transform: uppercase;
-            flex-shrink: 0;
-        }
-
-        #theme-toggle:hover {
-            border-color: var(--acc);
-            color: var(--acc)
-        }
-
-        .tog-track {
-            width: 28px;
-            height: 15px;
-            border: 1px solid var(--b2);
-            border-radius: 8px;
-            background: var(--faint);
-            position: relative;
-            transition: background .2s, border-color .2s;
-            flex-shrink: 0
-        }
-
-        .tog-thumb {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: var(--dim);
-            transition: transform .2s, background .2s
-        }
-
-        body.light .tog-track {
-            background: var(--acc);
-            border-color: var(--acc)
-        }
-
-        body.light .tog-thumb {
-            transform: translateX(13px);
-            background: #fff
+            --au: #7a5800;
         }
 
         * {
@@ -127,20 +73,21 @@
             display: block
         }
 
-        /* ── LAYOUT ── */
         .sw {
             max-width: 940px;
             margin: 0 auto;
             padding: 36px 24px 100px
         }
 
+        /* ── HEADER ── */
         .pg-hdr {
             border-bottom: 1px solid var(--b1);
             padding-bottom: 18px;
-            margin-bottom: 28px;
+            margin-bottom: 14px;
             display: flex;
-            align-items: baseline;
-            gap: 16px
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap
         }
 
         .pg-hdr h1 {
@@ -154,9 +101,47 @@
         .pg-hdr p {
             color: var(--dim);
             font-size: 10px;
-            letter-spacing: .06em
+            letter-spacing: .06em;
+            flex: 1
         }
 
+        /* Global expand/collapse bar */
+        .global-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0 18px;
+            border-bottom: 1px solid var(--b1);
+            margin-bottom: 18px
+        }
+
+        .global-bar-lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--dim)
+        }
+
+        .gbtn {
+            font-family: var(--f);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 4px 12px;
+            border: 1px solid var(--b2);
+            background: none;
+            color: var(--dim);
+            transition: color .12s, border-color .12s
+        }
+
+        .gbtn:hover {
+            color: var(--acc);
+            border-color: var(--acc)
+        }
+
+        /* ── SECTIONS ── */
         .section {
             border: 1px solid var(--b1);
             background: var(--s1);
@@ -169,7 +154,14 @@
             padding: 10px 16px;
             display: flex;
             align-items: center;
-            gap: 10px
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+            transition: background .12s
+        }
+
+        .sec-hdr:hover {
+            background: var(--b1)
         }
 
         .sec-n {
@@ -187,10 +179,34 @@
             flex: 1
         }
 
+        .sec-body {
+            display: none
+        }
+
         .sec-b {
             padding: 16px
         }
 
+        .sec-toggle-btn {
+            margin-left: auto;
+            font-family: var(--f);
+            font-size: 10px;
+            color: var(--dim);
+            background: none;
+            border: 1px solid var(--b2);
+            cursor: pointer;
+            padding: 3px 10px;
+            letter-spacing: .06em;
+            transition: color .12s, border-color .12s;
+            flex-shrink: 0
+        }
+
+        .sec-toggle-btn:hover {
+            color: var(--acc);
+            border-color: var(--acc)
+        }
+
+        /* ── LAYOUT HELPERS ── */
         .dl {
             font-size: 9px;
             text-transform: uppercase;
@@ -252,7 +268,17 @@
             line-height: 1.6
         }
 
-        /* ── SUBJECT FORM ── */
+        .info-box {
+            font-size: 10px;
+            color: var(--dim);
+            padding: 8px 10px;
+            border-left: 2px solid rgba(255, 209, 102, .35);
+            background: rgba(255, 209, 102, .03);
+            margin-bottom: 12px;
+            line-height: 1.7
+        }
+
+        /* ── SUBJECT ── */
         .subj-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -330,9 +356,16 @@
         .stim-card-hdr {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             padding: 8px 12px;
-            border-bottom: 1px solid var(--b1)
+            border-bottom: 1px solid var(--b1);
+            cursor: pointer;
+            background: var(--s2);
+            user-select: none
+        }
+
+        .stim-card-hdr:hover {
+            background: var(--b1)
         }
 
         .stim-tag {
@@ -341,7 +374,8 @@
             letter-spacing: .12em;
             text-transform: uppercase;
             padding: 2px 7px;
-            border: 1px solid
+            border: 1px solid;
+            flex-shrink: 0
         }
 
         .stim-tag.sh {
@@ -362,10 +396,54 @@
             background: rgba(195, 166, 255, .06)
         }
 
+        .stim-tag.au {
+            color: var(--au);
+            border-color: rgba(255, 209, 102, .3);
+            background: rgba(255, 209, 102, .06)
+        }
+
         .stim-card-title {
             flex: 1;
             font-size: 11px;
-            color: var(--dim)
+            color: var(--dim);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .move-btn {
+            font-family: var(--f);
+            font-size: 11px;
+            color: var(--dim);
+            background: none;
+            border: 1px solid var(--b2);
+            cursor: pointer;
+            padding: 1px 6px;
+            flex-shrink: 0;
+            transition: color .1s, border-color .1s
+        }
+
+        .move-btn:hover {
+            color: var(--acc);
+            border-color: var(--acc)
+        }
+
+        .card-toggle-btn {
+            font-family: var(--f);
+            font-size: 9px;
+            color: var(--dim);
+            background: none;
+            border: 1px solid var(--b2);
+            cursor: pointer;
+            padding: 2px 8px;
+            letter-spacing: .06em;
+            flex-shrink: 0;
+            transition: color .1s, border-color .1s
+        }
+
+        .card-toggle-btn:hover {
+            color: var(--acc);
+            border-color: var(--acc)
         }
 
         .stim-del {
@@ -376,7 +454,8 @@
             border: 1px solid rgba(255, 82, 82, .25);
             cursor: pointer;
             padding: 2px 7px;
-            letter-spacing: .06em
+            letter-spacing: .06em;
+            flex-shrink: 0
         }
 
         .stim-del:hover {
@@ -389,7 +468,7 @@
             gap: 14px
         }
 
-        /* position row inside card */
+        /* ── POSITION ROW ── */
         .pos-row {
             display: flex;
             align-items: center;
@@ -407,11 +486,12 @@
             flex-shrink: 0
         }
 
-        /* add buttons row */
+        /* ── ADD BUTTONS ── */
         .add-row {
             display: flex;
             gap: 8px;
-            flex-wrap: wrap
+            flex-wrap: wrap;
+            margin-top: 4px
         }
 
         .add-btn {
@@ -426,13 +506,13 @@
             padding: 6px 14px;
             border: 1px solid;
             transition: background .12s;
-            text-transform: uppercase
+            text-transform: uppercase;
+            background: none
         }
 
         .add-btn.sh {
             color: var(--sh);
-            border-color: rgba(255, 158, 100, .35);
-            background: rgba(255, 158, 100, .04)
+            border-color: rgba(255, 158, 100, .35)
         }
 
         .add-btn.sh:hover {
@@ -441,8 +521,7 @@
 
         .add-btn.img {
             color: var(--img);
-            border-color: rgba(126, 200, 227, .35);
-            background: rgba(126, 200, 227, .04)
+            border-color: rgba(126, 200, 227, .35)
         }
 
         .add-btn.img:hover {
@@ -451,12 +530,20 @@
 
         .add-btn.wd {
             color: var(--wd);
-            border-color: rgba(195, 166, 255, .35);
-            background: rgba(195, 166, 255, .04)
+            border-color: rgba(195, 166, 255, .35)
         }
 
         .add-btn.wd:hover {
             background: rgba(195, 166, 255, .1)
+        }
+
+        .add-btn.au {
+            color: var(--au);
+            border-color: rgba(255, 209, 102, .35)
+        }
+
+        .add-btn.au:hover {
+            background: rgba(255, 209, 102, .1)
         }
 
         .add-btn-subj {
@@ -478,7 +565,144 @@
             background: rgba(100, 255, 218, .05)
         }
 
-        /* sz checkboxes */
+        /* ── STIMULUS LISTS (list groups) ── */
+        .stim-lists-area {
+            margin-top: 18px;
+            border-top: 1px solid var(--b1);
+            padding-top: 14px
+        }
+
+        .slg-section-title {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--acc);
+            opacity: .7;
+            margin-bottom: 12px
+        }
+
+        .stim-list-group {
+            border: 1px solid var(--b2);
+            background: var(--bg);
+            margin-bottom: 12px
+        }
+
+        .slg-hdr {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 12px;
+            background: var(--s2);
+            border-bottom: 1px solid var(--b1);
+            cursor: pointer;
+            user-select: none
+        }
+
+        .slg-hdr:hover {
+            background: var(--b1)
+        }
+
+        .slg-name-lbl {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--txt);
+            flex: 1
+        }
+
+        .slg-body {
+            padding: 12px
+        }
+
+        .slg-params {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--s1);
+            border: 1px solid var(--b1);
+            margin-bottom: 12px
+        }
+
+        .slg-stims {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+            min-height: 20px
+        }
+
+        .slg-stims:empty::after {
+            content: 'No stimuli in this list yet.';
+            font-size: 10px;
+            color: var(--faint);
+            padding: 4px 0;
+            display: block
+        }
+
+        /* ── FORM INPUTS ── */
+        input[type=text],
+        input[type=number],
+        textarea,
+        select {
+            font-family: var(--f);
+            font-size: 12px;
+            color: var(--txt);
+            background: var(--s2);
+            border: 1px solid var(--b2);
+            padding: 5px 8px;
+            transition: border-color .12s;
+            outline: none
+        }
+
+        .border-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .border-row input[type=number] {
+            transition: opacity .15s;
+        }
+
+        input[type=range] {
+            width: 100%;
+            accent-color: var(--acc);
+            cursor: pointer
+        }
+
+        select {
+            cursor: pointer
+        }
+
+        .w40 {
+            width: 40px
+        }
+
+        .w56 {
+            width: 56px
+        }
+
+        .w72 {
+            width: 72px
+        }
+
+        .w90 {
+            width: 90px
+        }
+
+        .w110 {
+            width: 110px
+        }
+
+        .w140 {
+            width: 140px
+        }
+
+        .wfull {
+            width: 100%
+        }
+
         .sz-opt {
             display: flex;
             align-items: center;
@@ -506,7 +730,6 @@
             padding: 2px 0
         }
 
-        /* color pick */
         .color-pick-row {
             display: flex;
             align-items: center;
@@ -523,69 +746,6 @@
         .chex {
             font-size: 9px;
             color: var(--faint)
-        }
-
-        /* inputs */
-        input[type=number],
-        input[type=text],
-        textarea,
-        select {
-            background: var(--bg);
-            border: 1px solid var(--b2);
-            color: var(--txt);
-            font-family: var(--f);
-            font-size: 12px;
-            padding: 3px 7px;
-            outline: none;
-            transition: border-color .15s
-        }
-
-        input[type=number]::-webkit-outer-spin-button,
-        input[type=number]::-webkit-inner-spin-button {
-            -webkit-appearance: none
-        }
-
-        textarea {
-            resize: vertical;
-            line-height: 1.5
-        }
-
-        select {
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            padding-right: 18px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a6080'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 6px center
-        }
-
-        .w44 {
-            width: 44px
-        }
-
-        .w56 {
-            width: 56px
-        }
-
-        .w72 {
-            width: 72px
-        }
-
-        .w90 {
-            width: 90px
-        }
-
-        .w110 {
-            width: 110px
-        }
-
-        .w140 {
-            width: 140px
-        }
-
-        .wfull {
-            width: 100%
         }
 
         input:focus,
@@ -684,7 +844,7 @@
             border: none
         }
 
-        /* experiment type */
+        /* ── EXPERIMENT TYPE ── */
         .r-opts {
             display: flex;
             flex-direction: column;
@@ -734,7 +894,7 @@
             font-family: var(--f)
         }
 
-        /* stop rows */
+        /* ── STOP CONDITIONS ── */
         .stop-row {
             display: flex;
             gap: 10px;
@@ -802,25 +962,7 @@
             border-color: var(--b1)
         }
 
-        .cfg-toggle-btn {
-            margin-left: auto;
-            font-family: var(--f);
-            font-size: 10px;
-            color: var(--dim);
-            background: none;
-            border: 1px solid var(--b2);
-            cursor: pointer;
-            padding: 3px 10px;
-            letter-spacing: .06em;
-            transition: color .12s, border-color .12s
-        }
-
-        .cfg-toggle-btn:hover {
-            color: var(--acc);
-            border-color: var(--acc)
-        }
-
-        /* sub-panel & lock */
+        /* ── SUBPANEL ── */
         .sp {
             display: none;
             margin-top: 10px;
@@ -855,7 +997,7 @@
             display: flex
         }
 
-        /* text tabs */
+        /* ── TEXT TABS ── */
         .tabs {
             display: flex;
             margin-bottom: 12px
@@ -885,12 +1027,7 @@
             border-color: var(--acc)
         }
 
-        /* sz-opt */
-        .sz-opt input[type=checkbox] {
-            vertical-align: middle
-        }
-
-        /* validation & actions */
+        /* ── VALIDATION/ACTIONS ── */
         #val-msg {
             font-size: 10px;
             color: var(--err);
@@ -941,6 +1078,62 @@
         .btn-s:hover:not(:disabled) {
             border-color: var(--dim);
             color: var(--txt)
+        }
+
+        /* ── THEME TOGGLE ── */
+        #theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--f);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            color: var(--dim);
+            background: none;
+            border: 1px solid var(--b2);
+            cursor: pointer;
+            padding: 5px 12px;
+            transition: border-color .15s, color .15s;
+            text-transform: uppercase;
+            flex-shrink: 0
+        }
+
+        #theme-toggle:hover {
+            border-color: var(--acc);
+            color: var(--acc)
+        }
+
+        .tog-track {
+            width: 28px;
+            height: 15px;
+            border: 1px solid var(--b2);
+            border-radius: 8px;
+            background: var(--faint);
+            position: relative;
+            transition: background .2s, border-color .2s;
+            flex-shrink: 0
+        }
+
+        .tog-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--dim);
+            transition: transform .2s, background .2s
+        }
+
+        body.light .tog-track {
+            background: var(--acc);
+            border-color: var(--acc)
+        }
+
+        body.light .tog-thumb {
+            transform: translateX(13px);
+            background: #fff
         }
 
         /* ── EXPERIMENT ── */
@@ -1231,18 +1424,81 @@
         ::-webkit-scrollbar-thumb {
             background: var(--b2)
         }
+
+        /* ── AUDIO ANCHOR UI ── */
+        .anchor-box {
+            padding: 10px;
+            border: 1px solid rgba(255, 209, 102, .25);
+            background: rgba(255, 209, 102, .03);
+            margin-top: 10px
+        }
+
+        .anchor-box-title {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--au);
+            margin-bottom: 8px
+        }
+
+        /* ── SUBSECTION DIVIDER ── */
+        .sub-divider {
+            border-top: 1px solid var(--b1);
+            padding-top: 14px;
+            margin-top: 14px
+        }
+
+        .sub-section-hdr {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .sub-section-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--acc);
+            opacity: .8
+        }
+
+        .sub-section-line {
+            flex: 1;
+            height: 1px;
+            background: var(--b1)
+        }
+
+        /* cfg toggle */
+        .cfg-toggle-btn {
+            margin-left: auto;
+            font-family: var(--f);
+            font-size: 10px;
+            color: var(--dim);
+            background: none;
+            border: 1px solid var(--b2);
+            cursor: pointer;
+            padding: 3px 10px;
+            letter-spacing: .06em;
+            transition: color .12s, border-color .12s
+        }
+
+        .cfg-toggle-btn:hover {
+            color: var(--acc);
+            border-color: var(--acc)
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- ════════════════════ SETTINGS ════════════════════ -->
+    <!-- ═════════════════════ SETTINGS ═════════════════════ -->
     <div id="pg-settings" class="page active">
         <div class="sw">
             <div class="pg-hdr">
                 <h1>ReactionLab</h1>
                 <p>Cognitive Response Time Study — Configuration</p>
-                <button id="theme-toggle" onclick="toggleTheme()" title="Switch light / dark mode">
+                <button id="theme-toggle" onclick="toggleTheme()" title="Light / dark">
                     <span id="tog-icon">☀</span>
                     <div class="tog-track">
                         <div class="tog-thumb"></div>
@@ -1250,96 +1506,146 @@
                     <span id="tog-lbl">Light</span>
                 </button>
             </div>
+            <!-- Global expand/collapse -->
+            <div class="global-bar">
+                <span class="global-bar-lbl">Sections:</span>
+                <button class="gbtn" onclick="expandAll()">▾ Expand All</button>
+                <button class="gbtn" onclick="collapseAll()">▸ Collapse All</button>
+            </div>
 
             <!-- 00 SUBJECT DATA -->
-            <div class="section">
-                <div class="sec-hdr"><span class="sec-n">00</span><span class="sec-t">Subject Data</span></div>
-                <div class="sec-b">
-                    <div class="subj-grid">
-                        <div class="subj-field">
-                            <div class="subj-lbl">Subject ID</div><input type="text" id="subj-id"
-                                placeholder="e.g. S001" class="wfull">
-                        </div>
-                        <div class="subj-field">
-                            <div class="subj-lbl">Gender</div>
-                            <div class="subj-radio-row">
-                                <label class="subj-radio"><input type="radio" name="subj-gender" value="Male" checked>
-                                    Male</label>
-                                <label class="subj-radio"><input type="radio" name="subj-gender" value="Female">
-                                    Female</label>
+            <div class="section" id="sec-00">
+                <div class="sec-hdr" onclick="toggleSection('sec-00')">
+                    <span class="sec-n">00</span><span class="sec-t">Subject Data</span>
+                    <button class="sec-toggle-btn" id="sec-00-btn"
+                        onclick="event.stopPropagation();toggleSection('sec-00')">▸ Show</button>
+                </div>
+                <div class="sec-body" id="sec-00-body">
+                    <div class="sec-b">
+                        <div class="subj-grid">
+                            <div class="subj-field">
+                                <div class="subj-lbl">Subject ID</div>
+                                <input type="text" id="subj-id" placeholder="e.g. S001" class="wfull">
+                            </div>
+                            <div class="subj-field">
+                                <div class="subj-lbl">Gender</div>
+                                <div class="subj-radio-row">
+                                    <label class="subj-radio"><input type="radio" name="subj-gender" value="Male"
+                                            checked> Male</label>
+                                    <label class="subj-radio"><input type="radio" name="subj-gender" value="Female">
+                                        Female</label>
+                                </div>
+                            </div>
+                            <div class="subj-field">
+                                <div class="subj-lbl">Age</div>
+                                <input type="number" id="subj-age" min="1" max="120" placeholder="—" class="wfull">
+                            </div>
+                            <div class="subj-field">
+                                <div class="subj-lbl">Dominant Hand</div>
+                                <div class="subj-radio-row">
+                                    <label class="subj-radio"><input type="radio" name="subj-hand" value="Right"
+                                            checked> Right</label>
+                                    <label class="subj-radio"><input type="radio" name="subj-hand" value="Left">
+                                        Left</label>
+                                    <label class="subj-radio"><input type="radio" name="subj-hand" value="Both">
+                                        Both</label>
+                                </div>
                             </div>
                         </div>
-                        <div class="subj-field">
-                            <div class="subj-lbl">Age</div><input type="number" id="subj-age" min="1" max="120"
-                                placeholder="—" class="wfull">
-                        </div>
-                        <div class="subj-field">
-                            <div class="subj-lbl">Dominant Hand</div>
-                            <div class="subj-radio-row">
-                                <label class="subj-radio"><input type="radio" name="subj-hand" value="Right" checked>
-                                    Right</label>
-                                <label class="subj-radio"><input type="radio" name="subj-hand" value="Left">
-                                    Left</label>
-                                <label class="subj-radio"><input type="radio" name="subj-hand" value="Both">
-                                    Both</label>
-                            </div>
-                        </div>
+                        <div id="cf-list"></div>
+                        <button class="add-btn-subj" onclick="addCustomField()"><span
+                                style="font-size:14px;line-height:1">+</span> Add Custom Field</button>
                     </div>
-                    <div id="cf-list"></div>
-                    <button class="add-btn-subj" onclick="addCustomField()"><span
-                            style="font-size:14px;line-height:1">+</span> Add Custom Field</button>
                 </div>
             </div>
 
-            <!-- 01 STIMULI -->
-            <div class="section">
-                <div class="sec-hdr"><span class="sec-n">01</span><span class="sec-t">Stimulus Configuration</span>
+            <!-- 01 STIMULUS CONFIGURATION -->
+            <div class="section" id="sec-01">
+                <div class="sec-hdr" onclick="toggleSection('sec-01')">
+                    <span class="sec-n">01</span><span class="sec-t">Stimulus Configuration</span>
+                    <button class="sec-toggle-btn" id="sec-01-btn"
+                        onclick="event.stopPropagation();toggleSection('sec-01')">▸ Show</button>
                 </div>
-                <div class="sec-b">
-                    <div class="stim-list" id="stim-list"></div>
-                    <div class="add-row">
-                        <button class="add-btn sh" onclick="addStim('shape')">+ Shape</button>
-                        <button class="add-btn img" onclick="addStim('image')">+ Image</button>
-                        <button class="add-btn wd" onclick="addStim('word')">+ Word / Phrase</button>
+                <div class="sec-body" id="sec-01-body">
+                    <div class="sec-b">
+                        <div class="info-box">
+                            <b>Individual Stimuli</b> (below) are randomly selected on each trial as a pool.
+                            <b>Stimulus Lists</b> (further below) run stimuli in a defined order and repeat count —
+                            useful for structured paradigms.
+                            Both can be used together: lists run first, then individual stimuli fill remaining time.
+                        </div>
+                        <!-- ── Sub-section A: Individual Stimuli ── -->
+                        <div class="sub-section-hdr">
+                            <span class="sub-section-title">Individual Stimuli</span>
+                            <div class="sub-section-line"></div>
+                        </div>
+                        <div class="stim-list" id="stim-list"></div>
+                        <div class="add-row">
+                            <button class="add-btn sh" onclick="addStim('shape','stim-list')">+ Shape</button>
+                            <button class="add-btn img" onclick="addStim('image','stim-list')">+ Image</button>
+                            <button class="add-btn wd" onclick="addStim('word','stim-list')">+ Word / Phrase</button>
+                            <button class="add-btn au" onclick="addStim('audio','stim-list')">+ Audio</button>
+                        </div>
+
+                        <!-- ── Sub-section B: Stimulus Lists ── -->
+                        <div class="stim-lists-area">
+                            <div class="sub-section-hdr">
+                                <span class="sub-section-title">Stimulus Lists</span>
+                                <div class="sub-section-line"></div>
+                            </div>
+                            <div id="list-groups"></div>
+                            <div class="add-row">
+                                <button class="add-btn sh" onclick="addListGroup('shape')">+ Shape List</button>
+                                <button class="add-btn img" onclick="addListGroup('image')">+ Image List</button>
+                                <button class="add-btn wd" onclick="addListGroup('word')">+ Word List</button>
+                                <button class="add-btn au" onclick="addListGroup('audio')">+ Audio List</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- 02 EXPERIMENT TYPE -->
-            <div class="section">
-                <div class="sec-hdr"><span class="sec-n">02</span><span class="sec-t">Experiment Type</span></div>
-                <div class="sec-b">
-                    <div class="r-opts">
-                        <div class="r-opt on" id="ropt-a" onclick="setType('a')"><input type="radio" name="etype"
-                                value="a" checked>
-                            <div class="r-opt-body">
-                                <div class="r-opt-title">A — Simple Reaction Time</div>
-                                <div class="r-opt-desc">Press <kbd>SPACE</kbd> when the stimulus appears. No position
-                                    discrimination.</div>
-                            </div>
-                        </div>
-                        <div class="r-opt" id="ropt-b" onclick="setType('b')"><input type="radio" name="etype"
-                                value="b">
-                            <div class="r-opt-body">
-                                <div class="r-opt-title">B — Vertical Position</div>
-                                <div class="r-opt-desc">Press <kbd>↑</kbd> if above center; <kbd>↓</kbd> if below.
-                                    (Applies to randomly-positioned stimuli.)</div>
-                            </div>
-                        </div>
-                        <div class="r-opt" id="ropt-c" onclick="setType('c')"><input type="radio" name="etype"
-                                value="c">
-                            <div class="r-opt-body">
-                                <div class="r-opt-title">C — Horizontal Position</div>
-                                <div class="r-opt-desc">Press <kbd>←</kbd> if left; <kbd>→</kbd> if right of center.
+            <div class="section" id="sec-02">
+                <div class="sec-hdr" onclick="toggleSection('sec-02')">
+                    <span class="sec-n">02</span><span class="sec-t">Experiment Type</span>
+                    <button class="sec-toggle-btn" id="sec-02-btn"
+                        onclick="event.stopPropagation();toggleSection('sec-02')">▸ Show</button>
+                </div>
+                <div class="sec-body" id="sec-02-body">
+                    <div class="sec-b">
+                        <div class="r-opts">
+                            <div class="r-opt on" id="ropt-a" onclick="setType('a')"><input type="radio" name="etype"
+                                    value="a" checked>
+                                <div class="r-opt-body">
+                                    <div class="r-opt-title">A — Simple Reaction Time</div>
+                                    <div class="r-opt-desc">Press <kbd>SPACE</kbd> when the stimulus appears. No
+                                        position discrimination.</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="r-opt" id="ropt-d" onclick="setType('d')"><input type="radio" name="etype"
-                                value="d">
-                            <div class="r-opt-body">
-                                <div class="r-opt-title">D — Four-Direction</div>
-                                <div class="r-opt-desc">Press <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> to
-                                    match the stimulus direction from center.</div>
+                            <div class="r-opt" id="ropt-b" onclick="setType('b')"><input type="radio" name="etype"
+                                    value="b">
+                                <div class="r-opt-body">
+                                    <div class="r-opt-title">B — Vertical Position</div>
+                                    <div class="r-opt-desc">Press <kbd>↑</kbd> if above center; <kbd>↓</kbd> if below.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="r-opt" id="ropt-c" onclick="setType('c')"><input type="radio" name="etype"
+                                    value="c">
+                                <div class="r-opt-body">
+                                    <div class="r-opt-title">C — Horizontal Position</div>
+                                    <div class="r-opt-desc">Press <kbd>←</kbd> if left; <kbd>→</kbd> if right of center.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="r-opt" id="ropt-d" onclick="setType('d')"><input type="radio" name="etype"
+                                    value="d">
+                                <div class="r-opt-body">
+                                    <div class="r-opt-title">D — Four-Direction</div>
+                                    <div class="r-opt-desc">Press <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> to
+                                        match the stimulus direction from center.</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1347,140 +1653,153 @@
             </div>
 
             <!-- 03 STOP CONDITIONS -->
-            <div class="section">
-                <div class="sec-hdr"><span class="sec-n">03</span><span class="sec-t">Stop Conditions</span></div>
-                <div class="sec-b">
-                    <div class="stop-row">
-                        <input type="checkbox" id="chk-time" checked disabled onchange="updateStopUI()"
-                            style="margin-top:3px">
-                        <div class="stop-b">
-                            <div class="stop-title">Time-Based Stop <span class="badge b-auto"
-                                    id="badge-auto">AUTO</span><span class="badge b-lock" id="badge-lock"
-                                    style="display:none">LOCKED</span></div>
-                            <div class="stop-desc">End after a fixed duration.</div>
-                            <div class="stop-input"><label>Duration:</label><input type="number" id="inp-dur"
-                                    value="60000" min="1" class="w140"><label>ms</label></div>
+            <div class="section" id="sec-03">
+                <div class="sec-hdr" onclick="toggleSection('sec-03')">
+                    <span class="sec-n">03</span><span class="sec-t">Stop Conditions</span>
+                    <button class="sec-toggle-btn" id="sec-03-btn"
+                        onclick="event.stopPropagation();toggleSection('sec-03')">▸ Show</button>
+                </div>
+                <div class="sec-body" id="sec-03-body">
+                    <div class="sec-b">
+                        <div class="stop-row">
+                            <input type="checkbox" id="chk-time" checked disabled onchange="updateStopUI()"
+                                style="margin-top:3px">
+                            <div class="stop-b">
+                                <div class="stop-title">Time-Based Stop <span class="badge b-auto"
+                                        id="badge-auto">AUTO</span><span class="badge b-lock" id="badge-lock"
+                                        style="display:none">LOCKED</span></div>
+                                <div class="stop-desc">End after a fixed duration.</div>
+                                <div class="stop-input"><label>Duration:</label><input type="number" id="inp-dur"
+                                        value="60000" min="1" class="w140"><label>ms</label></div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stop-row">
-                        <input type="checkbox" id="chk-err" disabled onchange="updateStopUI()" style="margin-top:3px">
-                        <div class="stop-b">
-                            <div class="stop-title">Error-Based Stop <span class="badge b-off"
-                                    id="badge-eroff">UNAVAILABLE</span></div>
-                            <div class="stop-desc">End after a specific number of wrong responses. Position-based types
-                                only.</div>
-                            <div class="stop-input"><label>Max errors:</label><input type="number" id="inp-err"
-                                    value="5" min="1" max="9999" class="w90" disabled><label>errors</label></div>
+                        <div class="stop-row">
+                            <input type="checkbox" id="chk-err" disabled onchange="updateStopUI()"
+                                style="margin-top:3px">
+                            <div class="stop-b">
+                                <div class="stop-title">Error-Based Stop <span class="badge b-off"
+                                        id="badge-eroff">UNAVAILABLE</span></div>
+                                <div class="stop-desc">End after a specific number of wrong responses. Position-based
+                                    types only.</div>
+                                <div class="stop-input"><label>Max errors:</label><input type="number" id="inp-err"
+                                        value="5" min="1" max="9999" class="w90" disabled><label>errors</label></div>
+                            </div>
                         </div>
+                        <div class="note" id="stop-note">In type A (simple RT), time-based stopping is automatic and the
+                            only option.</div>
                     </div>
-                    <div class="note" id="stop-note">In type A (simple RT), time-based stopping is automatic and the
-                        only option.</div>
                 </div>
             </div>
 
             <!-- 04 TRIAL SETTINGS -->
-            <div class="section">
-                <div class="sec-hdr"><span class="sec-n">04</span><span class="sec-t">Trial Settings</span></div>
-                <div class="sec-b">
-                    <div class="g2" style="margin-bottom:18px">
-                        <div>
-                            <div class="dl" style="margin-bottom:7px">Inter-Stimulus Interval (ISI)</div>
-                            <div class="irow"><input type="number" id="isi-min" value="800" min="100" class="w72"><span
-                                    class="lbl">–</span><input type="number" id="isi-max" value="1400" min="100"
-                                    class="w72"><span class="lbl">ms</span></div>
-                            <div class="dur-hint">Random blank between trials.</div>
+            <div class="section" id="sec-04">
+                <div class="sec-hdr" onclick="toggleSection('sec-04')">
+                    <span class="sec-n">04</span><span class="sec-t">Trial Settings</span>
+                    <button class="sec-toggle-btn" id="sec-04-btn"
+                        onclick="event.stopPropagation();toggleSection('sec-04')">▸ Show</button>
+                </div>
+                <div class="sec-body" id="sec-04-body">
+                    <div class="sec-b">
+                        <div class="g2" style="margin-bottom:18px">
+                            <div>
+                                <div class="dl" style="margin-bottom:7px">Inter-Stimulus Interval (ISI) — Global</div>
+                                <div class="irow"><input type="number" id="isi-min" value="800" min="100"
+                                        class="w72"><span class="lbl">–</span><input type="number" id="isi-max"
+                                        value="1400" min="100" class="w72"><span class="lbl">ms</span></div>
+                                <div class="dur-hint">Random blank between individual trials and between list groups.
+                                    Each list can override its own internal ISI.</div>
+                            </div>
+                            <div></div>
                         </div>
-                        <div></div>
-                    </div>
-
-                    <!-- Fixation -->
-                    <div style="border-top:1px solid var(--b1);padding-top:12px;margin-bottom:12px">
-                        <div class="irow" style="margin-bottom:6px">
-                            <input type="checkbox" id="chk-fix" checked onchange="onFixChange()">
-                            <label for="chk-fix" style="font-size:12px;font-weight:500;cursor:pointer">Fixation
-                                Cross</label>
-                        </div>
-                        <div id="fix-sp" class="sp vis">
-                            <div class="g4">
-                                <div>
-                                    <div class="dl" style="margin-bottom:5px">Visibility</div>
-                                    <label class="sz-opt" style="margin-bottom:3px"><input type="radio" name="fixmode"
-                                            value="hide" checked> Hide during stimulus</label>
-                                    <label class="sz-opt"><input type="radio" name="fixmode" value="always"> Always
-                                        visible</label>
-                                </div>
-                                <div>
-                                    <div class="dl" style="margin-bottom:5px">Pre-trial Duration</div>
-                                    <div class="irow"><input type="number" id="fix-dur" value="500" min="50" max="5000"
-                                            class="w72"><span class="lbl">ms</span></div>
-                                </div>
-                                <div>
-                                    <div class="dl" style="margin-bottom:5px">Arm Length</div>
-                                    <div class="irow"><input type="number" id="fix-size" value="12" min="3" max="60"
-                                            class="w56"><span class="lbl">px</span></div>
-                                </div>
-                                <div>
-                                    <div class="dl" style="margin-bottom:5px">Color</div>
-                                    <div class="color-pick-row"><input type="color" id="fix-col" value="#2a4a2a"
-                                            oninput="ncol('fix')"><span class="cname" id="fix-cname">Dark Green</span>
+                        <!-- Fixation -->
+                        <div style="border-top:1px solid var(--b1);padding-top:12px;margin-bottom:12px">
+                            <div class="irow" style="margin-bottom:6px">
+                                <input type="checkbox" id="chk-fix" checked onchange="onFixChange()">
+                                <label for="chk-fix" style="font-size:12px;font-weight:500;cursor:pointer">Fixation
+                                    Cross</label>
+                            </div>
+                            <div id="fix-sp" class="sp vis">
+                                <div class="g4">
+                                    <div>
+                                        <div class="dl" style="margin-bottom:5px">Visibility</div>
+                                        <label class="sz-opt" style="margin-bottom:3px"><input type="radio"
+                                                name="fixmode" value="hide" checked> Hide during stimulus</label>
+                                        <label class="sz-opt"><input type="radio" name="fixmode" value="always"> Always
+                                            visible</label>
                                     </div>
-                                    <div class="chex" id="fix-chex">#2a4a2a</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Text overlay -->
-                    <div style="border-top:1px solid var(--b1);padding-top:12px" class="lock-wrap">
-                        <div class="lock-overlay" id="text-lock-overlay">⊘ Disable fixation cross to use text overlay
-                        </div>
-                        <div class="irow" style="margin-bottom:6px">
-                            <input type="checkbox" id="chk-text" onchange="toggleSP('text-sp',this)" disabled>
-                            <label for="chk-text" style="font-size:12px;font-weight:500;cursor:pointer;opacity:.4"
-                                id="text-chk-lbl">Text Overlay</label>
-                        </div>
-                        <div id="text-sp" class="sp">
-                            <div class="tabs">
-                                <div class="tab on" id="ttab-word" onclick="setTextMode('word')">Word by Word</div>
-                                <div class="tab" id="ttab-sub" onclick="setTextMode('sub')">Moving Subtitle</div>
-                            </div>
-                            <div style="margin-bottom:10px">
-                                <div class="dl" style="margin-bottom:4px">Text Content</div>
-                                <textarea id="text-content" rows="2" class="wfull" placeholder="Enter text…"></textarea>
-                            </div>
-                            <div class="g4">
-                                <div>
-                                    <div class="dl" style="margin-bottom:4px">Font Size</div>
-                                    <div class="irow"><input type="number" id="text-size" value="28" min="8" max="200"
-                                            class="w56"><span class="lbl">px</span></div>
-                                </div>
-                                <div>
-                                    <div class="dl" style="margin-bottom:4px">Color</div>
-                                    <div class="color-pick-row"><input type="color" id="text-col" value="#ffffff"
-                                            oninput="ncol('text')"><span class="cname" id="text-cname">White</span>
+                                    <div>
+                                        <div class="dl" style="margin-bottom:5px">Pre-trial Duration</div>
+                                        <div class="irow"><input type="number" id="fix-dur" value="500" min="50"
+                                                max="5000" class="w72"><span class="lbl">ms</span></div>
                                     </div>
-                                    <div class="chex" id="text-chex">#ffffff</div>
+                                    <div>
+                                        <div class="dl" style="margin-bottom:5px">Arm Length</div>
+                                        <div class="irow"><input type="number" id="fix-size" value="12" min="3" max="60"
+                                                class="w56"><span class="lbl">px</span></div>
+                                    </div>
+                                    <div>
+                                        <div class="dl" style="margin-bottom:5px">Color</div>
+                                        <div class="color-pick-row"><input type="color" id="fix-col" value="#2a4a2a"
+                                                oninput="ncol('fix')"><span class="cname" id="fix-cname">Dark
+                                                Green</span></div>
+                                        <div class="chex" id="fix-chex">#2a4a2a</div>
+                                    </div>
                                 </div>
-                                <div id="wp-wtime">
-                                    <div class="dl" style="margin-bottom:4px">Word Display Time</div>
-                                    <div class="irow"><input type="number" id="text-wtime" value="600" min="50"
-                                            max="10000" class="w72"><span class="lbl">ms</span></div>
+                            </div>
+                        </div>
+                        <!-- Text overlay -->
+                        <div style="border-top:1px solid var(--b1);padding-top:12px" class="lock-wrap">
+                            <div class="lock-overlay" id="text-lock-overlay">⊘ Disable fixation cross to use text
+                                overlay</div>
+                            <div class="irow" style="margin-bottom:6px">
+                                <input type="checkbox" id="chk-text" onchange="toggleSP('text-sp',this)" disabled>
+                                <label for="chk-text" style="font-size:12px;font-weight:500;cursor:pointer;opacity:.4"
+                                    id="text-chk-lbl">Text Overlay</label>
+                            </div>
+                            <div id="text-sp" class="sp">
+                                <div class="tabs">
+                                    <div class="tab on" id="ttab-word" onclick="setTextMode('word')">Word by Word</div>
+                                    <div class="tab" id="ttab-sub" onclick="setTextMode('sub')">Moving Subtitle</div>
                                 </div>
-                                <div id="wp-wgap">
-                                    <div class="dl" style="margin-bottom:4px">Gap Between Words</div>
-                                    <div class="irow"><input type="number" id="text-wgap" value="200" min="0" max="5000"
-                                            class="w72"><span class="lbl">ms</span></div>
+                                <div style="margin-bottom:10px">
+                                    <div class="dl" style="margin-bottom:4px">Text Content</div>
+                                    <textarea id="text-content" rows="2" class="wfull"
+                                        placeholder="Enter text…"></textarea>
                                 </div>
-                                <div id="wp-speed" style="display:none">
-                                    <div class="dl" style="margin-bottom:4px">Scroll Speed</div>
-                                    <div class="irow"><input type="number" id="text-speed" value="80" min="5" max="800"
-                                            class="w56"><span class="lbl">px/s</span></div>
-                                </div>
-                                <div id="wp-winw" style="display:none">
-                                    <div class="dl" style="margin-bottom:4px">Window Width</div>
-                                    <div class="irow"><input type="number" id="text-winw" value="600" min="100"
-                                            max="3000" class="w72"><span class="lbl">px</span></div>
-                                    <div class="dur-hint">Invisible centered scroll region.</div>
+                                <div class="g4">
+                                    <div>
+                                        <div class="dl" style="margin-bottom:4px">Font Size</div>
+                                        <div class="irow"><input type="number" id="text-size" value="28" min="8"
+                                                max="200" class="w56"><span class="lbl">px</span></div>
+                                    </div>
+                                    <div>
+                                        <div class="dl" style="margin-bottom:4px">Color</div>
+                                        <div class="color-pick-row"><input type="color" id="text-col" value="#ffffff"
+                                                oninput="ncol('text')"><span class="cname" id="text-cname">White</span>
+                                        </div>
+                                        <div class="chex" id="text-chex">#ffffff</div>
+                                    </div>
+                                    <div id="wp-wtime">
+                                        <div class="dl" style="margin-bottom:4px">Word Display Time</div>
+                                        <div class="irow"><input type="number" id="text-wtime" value="600" min="50"
+                                                max="10000" class="w72"><span class="lbl">ms</span></div>
+                                    </div>
+                                    <div id="wp-wgap">
+                                        <div class="dl" style="margin-bottom:4px">Gap Between Words</div>
+                                        <div class="irow"><input type="number" id="text-wgap" value="200" min="0"
+                                                max="5000" class="w72"><span class="lbl">ms</span></div>
+                                    </div>
+                                    <div id="wp-speed" style="display:none">
+                                        <div class="dl" style="margin-bottom:4px">Scroll Speed</div>
+                                        <div class="irow"><input type="number" id="text-speed" value="80" min="5"
+                                                max="800" class="w56"><span class="lbl">px/s</span></div>
+                                    </div>
+                                    <div id="wp-winw" style="display:none">
+                                        <div class="dl" style="margin-bottom:4px">Window Width</div>
+                                        <div class="irow"><input type="number" id="text-winw" value="600" min="100"
+                                                max="3000" class="w72"><span class="lbl">px</span></div>
+                                        <div class="dur-hint">Invisible centered scroll region.</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1488,56 +1807,63 @@
                 </div>
             </div>
 
-            <!-- 05 DISPLAY -->
-            <div class="section">
-                <div class="sec-hdr"><span class="sec-n">05</span><span class="sec-t">Display Settings</span></div>
-                <div class="sec-b">
-                    <div class="g5">
-                        <div>
-                            <div class="dl" style="margin-bottom:7px">Background</div>
-                            <div class="color-pick-row"><input type="color" id="bg-col" value="#000000"
-                                    oninput="ncol('bg')"><span class="cname" id="bg-cname">Black</span></div>
-                            <div class="chex" id="bg-chex">#000000</div>
-                        </div>
-                        <div>
-                            <div class="dl" style="margin-bottom:7px">Feedback</div>
-                            <label class="sz-opt" style="margin-bottom:5px"><input type="radio" name="fbmode"
-                                    value="show" checked> Show on screen</label>
-                            <label class="sz-opt"><input type="radio" name="fbmode" value="hide"> No feedback</label>
-                        </div>
-                        <div>
-                            <div class="dl" style="margin-bottom:7px">Start Mode</div>
-                            <label class="sz-opt" style="margin-bottom:5px"><input type="radio" name="startmode"
-                                    value="overlay" checked> Instructions overlay</label>
-                            <label class="sz-opt"><input type="radio" name="startmode" value="blank"> Blank (SPACE to
-                                start)</label>
-                        </div>
-                        <div>
-                            <div class="dl" style="margin-bottom:7px">Fullscreen</div>
-                            <label class="sz-opt" style="margin-bottom:5px"><input type="checkbox" id="chk-fs" checked>
-                                Enter fullscreen on start</label>
-                        </div>
-                        <div>
-                            <div class="dl" style="margin-bottom:7px">HUD</div>
-                            <label class="sz-opt" style="margin-bottom:5px"><input type="checkbox" id="chk-hud" checked>
-                                Show trial/time counter</label>
+            <!-- 05 DISPLAY SETTINGS -->
+            <div class="section" id="sec-05">
+                <div class="sec-hdr" onclick="toggleSection('sec-05')">
+                    <span class="sec-n">05</span><span class="sec-t">Display Settings</span>
+                    <button class="sec-toggle-btn" id="sec-05-btn"
+                        onclick="event.stopPropagation();toggleSection('sec-05')">▸ Show</button>
+                </div>
+                <div class="sec-body" id="sec-05-body">
+                    <div class="sec-b">
+                        <div class="g5">
+                            <div>
+                                <div class="dl" style="margin-bottom:7px">Background</div>
+                                <div class="color-pick-row"><input type="color" id="bg-col" value="#000000"
+                                        oninput="ncol('bg')"><span class="cname" id="bg-cname">Black</span></div>
+                                <div class="chex" id="bg-chex">#000000</div>
+                            </div>
+                            <div>
+                                <div class="dl" style="margin-bottom:7px">Feedback</div>
+                                <label class="sz-opt" style="margin-bottom:5px"><input type="radio" name="fbmode"
+                                        value="show" checked> Show on screen</label>
+                                <label class="sz-opt"><input type="radio" name="fbmode" value="hide"> No
+                                    feedback</label>
+                            </div>
+                            <div>
+                                <div class="dl" style="margin-bottom:7px">Start Mode</div>
+                                <label class="sz-opt" style="margin-bottom:5px"><input type="radio" name="startmode"
+                                        value="overlay" checked> Instructions overlay</label>
+                                <label class="sz-opt"><input type="radio" name="startmode" value="blank"> Blank (SPACE
+                                    to start)</label>
+                            </div>
+                            <div>
+                                <div class="dl" style="margin-bottom:7px">Fullscreen</div>
+                                <label class="sz-opt" style="margin-bottom:5px"><input type="checkbox" id="chk-fs"
+                                        checked> Enter fullscreen on start</label>
+                            </div>
+                            <div>
+                                <div class="dl" style="margin-bottom:7px">HUD</div>
+                                <label class="sz-opt" style="margin-bottom:5px"><input type="checkbox" id="chk-hud"
+                                        checked> Show trial/time counter</label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- 06 SAVE / LOAD CONFIG -->
-            <div class="section">
-                <div class="sec-hdr">
-                    <span class="sec-n">06</span>
-                    <span class="sec-t">Save / Load Configuration</span>
-                    <button class="cfg-toggle-btn" onclick="toggleCfgPanel()" id="cfg-panel-btn">▸ Show</button>
+            <div class="section" id="sec-06">
+                <div class="sec-hdr" onclick="toggleSection('sec-06')">
+                    <span class="sec-n">06</span><span class="sec-t">Save / Load Configuration</span>
+                    <button class="sec-toggle-btn" id="sec-06-btn"
+                        onclick="event.stopPropagation();toggleSection('sec-06')">▸ Show</button>
                 </div>
-                <div id="cfg-panel" style="display:none">
+                <div class="sec-body" id="sec-06-body">
                     <div class="sec-b">
                         <div style="margin-bottom:10px;font-size:10px;color:var(--dim);line-height:1.7">
                             Click <b>Export Config</b> to generate a text snapshot of all current settings.<br>
-                            Copy that text, save it anywhere (notepad, email, etc.).<br>
+                            Copy that text and save it anywhere (notepad, email, etc.).<br>
                             Later, paste it back and click <b>Load Config</b> to restore all settings exactly.
                         </div>
                         <textarea id="cfg-textarea" rows="6" class="wfull" style="font-size:11px;line-height:1.6"
@@ -1561,58 +1887,42 @@
         </div>
     </div>
 
-
-    <!-- ════════════════════ PRELOAD MODAL ════════════════════ -->
-    <div id="preload-modal" style="display:none;position:fixed;inset:0;z-index:999;
-  background:rgba(7,9,13,.92);align-items:center;justify-content:center;backdrop-filter:blur(4px)">
-        <div id="preload-box" style="
-    background:var(--s1);border:1px solid var(--b2);padding:36px 40px;
-    max-width:420px;width:90%;font-family:var(--f);">
-
-            <!-- Loading state -->
+    <!-- ═════════════════════ PRELOAD MODAL ═════════════════════ -->
+    <div id="preload-modal"
+        style="display:none;position:fixed;inset:0;z-index:999;background:rgba(7,9,13,.92);align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+        <div
+            style="background:var(--s1);border:1px solid var(--b2);padding:36px 40px;max-width:440px;width:90%;font-family:var(--f);">
             <div id="pre-loading">
                 <div
                     style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:18px">
-                    Preparing Experiment
-                </div>
-                <div style="font-size:12px;color:var(--txt);margin-bottom:20px" id="pre-status">
-                    Loading images…
-                </div>
-                <!-- progress bar track -->
+                    Preparing Experiment</div>
+                <div style="font-size:12px;color:var(--txt);margin-bottom:20px" id="pre-status">Loading assets…</div>
                 <div style="height:3px;background:var(--b2);margin-bottom:10px">
                     <div id="pre-bar" style="height:100%;width:0%;background:var(--acc);transition:width .25s ease">
                     </div>
                 </div>
                 <div style="font-size:10px;color:var(--dim)" id="pre-count">0 / 0</div>
             </div>
-
-            <!-- Ready state -->
             <div id="pre-ready" style="display:none">
                 <div
                     style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:18px">
-                    ✓ Ready
+                    ✓ Ready</div>
+                <div style="font-size:12px;color:var(--txt);line-height:1.8;margin-bottom:8px" id="pre-ready-msg">All
+                    assets loaded.</div>
+                <div id="pre-errors-box"
+                    style="display:none;margin-bottom:14px;padding:8px 10px;border-left:2px solid var(--warn);background:rgba(255,215,64,.05);font-size:10px;color:var(--warn);line-height:1.7">
                 </div>
-                <div style="font-size:12px;color:var(--txt);line-height:1.8;margin-bottom:8px" id="pre-ready-msg">
-                    All assets loaded. The experiment is ready to start.
-                </div>
-                <div id="pre-errors-box" style="display:none;margin-bottom:14px;padding:8px 10px;
-        border-left:2px solid var(--warn);background:rgba(255,215,64,.05);
-        font-size:10px;color:var(--warn);line-height:1.7" id="pre-errs"></div>
                 <div style="display:flex;gap:10px;margin-top:20px">
                     <button id="pre-ok-btn" class="btn btn-p" onclick="dismissPreloadModal()"
-                        style="flex:1;font-size:12px;letter-spacing:.12em">
-                        OK — Start Experiment
-                    </button>
+                        style="flex:1;font-size:12px;letter-spacing:.12em">OK — Start Experiment</button>
                 </div>
-                <div style="margin-top:12px;font-size:9px;color:var(--faint);text-align:center">
-                    Press OK, then SPACE to begin
-                </div>
+                <div style="margin-top:12px;font-size:9px;color:var(--faint);text-align:center">Press OK, then SPACE to
+                    begin</div>
             </div>
-
         </div>
     </div>
 
-    <!-- ════════════════════ EXPERIMENT ════════════════════ -->
+    <!-- ═════════════════════ EXPERIMENT ═════════════════════ -->
     <div id="pg-exp" class="page">
         <canvas id="exp-canvas"></canvas>
         <div id="exp-overlay">
@@ -1628,20 +1938,18 @@
         <div id="exp-text-sub-wrap"><span id="exp-text-sub"></span></div>
     </div>
 
-
-    <!-- ════════════════════ RESULTS ════════════════════ -->
+    <!-- ═════════════════════ RESULTS ═════════════════════ -->
     <div id="pg-results" class="page">
         <div class="sw">
             <div class="pg-hdr">
                 <h1>Results</h1>
                 <p id="res-sub">Session complete</p>
-                <button id="theme-toggle-r" onclick="toggleTheme()" title="Switch light / dark mode"
+                <button id="theme-toggle-r" onclick="toggleTheme()"
                     style="margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--f);font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--dim);background:none;border:1px solid var(--b2);cursor:pointer;padding:5px 12px;text-transform:uppercase;flex-shrink:0;">
                     <span id="tog-icon-r">☀</span>
                     <div class="tog-track">
                         <div class="tog-thumb"></div>
-                    </div>
-                    <span id="tog-lbl-r">Light</span>
+                    </div><span id="tog-lbl-r">Light</span>
                 </button>
             </div>
             <div class="res-subj-box" id="res-subj-box"></div>
@@ -1654,6 +1962,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Type</th>
+                                <th>Source</th>
                                 <th>Label / Name</th>
                                 <th>Detail</th>
                                 <th>Size</th>
@@ -1666,6 +1975,7 @@
                                 <th>Expected</th>
                                 <th>Response</th>
                                 <th>RT (ms)</th>
+                                <th>Anchor RT (ms)</th>
                                 <th>Outcome</th>
                             </tr>
                         </thead>
@@ -1681,31 +1991,34 @@
         </div>
     </div>
 
-
     <script>
         // ══════════════════════════════════════════════════════
-        //  CONSTANTS
+        //  CONSTANTS & HELPERS
         // ══════════════════════════════════════════════════════
-        const COLORS = [
-            { n: 'Red', h: '#ff0000' }, { n: 'Dark Red', h: '#8b0000' }, { n: 'Crimson', h: '#dc143c' },
-            { n: 'Coral', h: '#ff7f50' }, { n: 'Salmon', h: '#fa8072' }, { n: 'Orange Red', h: '#ff4500' },
-            { n: 'Orange', h: '#ff8000' }, { n: 'Gold', h: '#ffd700' }, { n: 'Yellow', h: '#ffff00' },
-            { n: 'Yellow Green', h: '#9acd32' }, { n: 'Lime', h: '#00ff00' }, { n: 'Green', h: '#008000' },
-            { n: 'Forest Green', h: '#228b22' }, { n: 'Teal', h: '#008080' }, { n: 'Cyan', h: '#00ffff' },
-            { n: 'Deep Sky Blue', h: '#00bfff' }, { n: 'Sky Blue', h: '#87ceeb' }, { n: 'Dodger Blue', h: '#1e90ff' },
-            { n: 'Blue', h: '#0000ff' }, { n: 'Navy', h: '#000080' }, { n: 'Indigo', h: '#4b0082' },
-            { n: 'Violet', h: '#ee82ee' }, { n: 'Purple', h: '#800080' }, { n: 'Magenta', h: '#ff00ff' },
-            { n: 'Hot Pink', h: '#ff1493' }, { n: 'Pink', h: '#ff69b4' }, { n: 'Brown', h: '#8b4513' },
-            { n: 'Olive', h: '#808000' }, { n: 'White', h: '#ffffff' }, { n: 'Light Gray', h: '#d3d3d3' },
-            { n: 'Silver', h: '#c0c0c0' }, { n: 'Gray', h: '#808080' }, { n: 'Dark Gray', h: '#404040' },
-            { n: 'Near Black', h: '#111111' }, { n: 'Black', h: '#000000' }
-        ];
+        const COLORS = [{ n: 'Red', h: '#ff0000' }, { n: 'Dark Red', h: '#8b0000' }, { n: 'Crimson', h: '#dc143c' }, { n: 'Coral', h: '#ff7f50' }, { n: 'Salmon', h: '#fa8072' }, { n: 'Orange Red', h: '#ff4500' }, { n: 'Orange', h: '#ff8000' }, { n: 'Gold', h: '#ffd700' }, { n: 'Yellow', h: '#ffff00' }, { n: 'Yellow Green', h: '#9acd32' }, { n: 'Lime', h: '#00ff00' }, { n: 'Green', h: '#008000' }, { n: 'Forest Green', h: '#228b22' }, { n: 'Teal', h: '#008080' }, { n: 'Cyan', h: '#00ffff' }, { n: 'Deep Sky Blue', h: '#00bfff' }, { n: 'Sky Blue', h: '#87ceeb' }, { n: 'Dodger Blue', h: '#1e90ff' }, { n: 'Blue', h: '#0000ff' }, { n: 'Navy', h: '#000080' }, { n: 'Indigo', h: '#4b0082' }, { n: 'Violet', h: '#ee82ee' }, { n: 'Purple', h: '#800080' }, { n: 'Magenta', h: '#ff00ff' }, { n: 'Hot Pink', h: '#ff1493' }, { n: 'Pink', h: '#ff69b4' }, { n: 'Brown', h: '#8b4513' }, { n: 'Olive', h: '#808000' }, { n: 'White', h: '#ffffff' }, { n: 'Light Gray', h: '#d3d3d3' }, { n: 'Silver', h: '#c0c0c0' }, { n: 'Gray', h: '#808080' }, { n: 'Dark Gray', h: '#404040' }, { n: 'Near Black', h: '#111111' }, { n: 'Black', h: '#000000' }];
         const SZ = { triangle: { s: 30, m: 55, l: 90 }, square: { s: 25, m: 50, l: 90 }, circle: { s: 25, m: 50, l: 90 } };
         function hexRgb(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
-        function nearestColor(hex) {
-            const [r1, g1, b1] = hexRgb(hex); let best = COLORS[0], bd = 1e9;
-            for (const c of COLORS) { const [r2, g2, b2] = hexRgb(c.h); const d = (r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2; if (d < bd) { bd = d; best = c; } }
-            return best.n;
+        function nearestColor(hex) { const [r1, g1, b1] = hexRgb(hex); let best = COLORS[0], bd = 1e9; for (const c of COLORS) { const [r2, g2, b2] = hexRgb(c.h); const d = (r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2; if (d < bd) { bd = d; best = c; } } return best.n; }
+        function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+
+        // ══════════════════════════════════════════════════════
+        //  SECTION COLLAPSE/EXPAND
+        // ══════════════════════════════════════════════════════
+        function toggleSection(secId) {
+            const body = document.getElementById(secId + '-body');
+            const btn = document.getElementById(secId + '-btn');
+            if (!body) return;
+            const open = body.style.display === 'none';
+            body.style.display = open ? 'block' : 'none';
+            if (btn) btn.textContent = open ? '▾ Hide' : '▸ Show';
+        }
+        function expandAll() {
+            document.querySelectorAll('.sec-body').forEach(b => b.style.display = 'block');
+            document.querySelectorAll('.sec-toggle-btn').forEach(b => b.textContent = '▾ Hide');
+        }
+        function collapseAll() {
+            document.querySelectorAll('.sec-body').forEach(b => b.style.display = 'none');
+            document.querySelectorAll('.sec-toggle-btn').forEach(b => b.textContent = '▸ Show');
         }
 
         // ══════════════════════════════════════════════════════
@@ -1715,26 +2028,14 @@
         function addCustomField(lbl = '', val = '') {
             cfCount++; const id = 'cf' + cfCount;
             const r = document.createElement('div'); r.className = 'cf-row'; r.id = id;
-            r.innerHTML = `<input type="text" placeholder="Field name" style="flex:1.2" class="cf-label">
-    <span style="font-size:10px;color:var(--dim)">→</span>
-    <input type="text" placeholder="Value" style="flex:1" class="cf-value">
-    <button class="cf-del" onclick="document.getElementById('${id}').remove()">×</button>`;
+            r.innerHTML = `<input type="text" placeholder="Field name" style="flex:1.2" class="cf-label"><span style="font-size:10px;color:var(--dim)">→</span><input type="text" placeholder="Value" style="flex:1" class="cf-value"><button class="cf-del" onclick="document.getElementById('${id}').remove()">×</button>`;
             if (lbl) r.querySelector('.cf-label').value = lbl;
             if (val) r.querySelector('.cf-value').value = val;
             document.getElementById('cf-list').appendChild(r);
         }
         function getSubject() {
-            const d = {
-                id: document.getElementById('subj-id').value.trim() || '—',
-                gender: document.querySelector('input[name="subj-gender"]:checked')?.value || '—',
-                age: document.getElementById('subj-age').value || '—',
-                hand: document.querySelector('input[name="subj-hand"]:checked')?.value || '—', custom: []
-            };
-            document.querySelectorAll('#cf-list .cf-row').forEach(r => {
-                const lbl = r.querySelector('.cf-label').value.trim();
-                const val = r.querySelector('.cf-value').value.trim();
-                if (lbl) d.custom.push({ label: lbl, value: val || '—' });
-            });
+            const d = { id: document.getElementById('subj-id').value.trim() || '—', gender: document.querySelector('input[name="subj-gender"]:checked')?.value || '—', age: document.getElementById('subj-age').value || '—', hand: document.querySelector('input[name="subj-hand"]:checked')?.value || '—', custom: [] };
+            document.querySelectorAll('#cf-list .cf-row').forEach(r => { const lbl = r.querySelector('.cf-label').value.trim(); const val = r.querySelector('.cf-value').value.trim(); if (lbl) d.custom.push({ label: lbl, value: val || '—' }); });
             return d;
         }
 
@@ -1744,63 +2045,96 @@
         let stimIdCnt = 0;
 
         function posBlock(sid) {
-            return `<div class="pos-row">
-    <label class="sz-opt"><input type="checkbox" id="${sid}-rnd" checked onchange="togglePos('${sid}')"> Random position</label>
-    <div class="pos-sep"></div>
-    <span class="lbl">Fixed X:</span>
-    <input type="number" id="${sid}-fx" value="0" class="w72" disabled placeholder="px from center">
-    <span class="lbl">Y:</span>
-    <input type="number" id="${sid}-fy" value="0" class="w72" disabled placeholder="px from center">
-    <span class="lbl" style="font-size:9px;color:var(--faint)">(0,0)=center · X right+ · Y up+</span>
-  </div>`;
+            return `<div class="pos-row"><label class="sz-opt"><input type="checkbox" id="${sid}-rnd" checked onchange="togglePos('${sid}')"> Random position</label><div class="pos-sep"></div><span class="lbl">Fixed X:</span><input type="number" id="${sid}-fx" value="0" class="w72" disabled placeholder="px from center"><span class="lbl">Y:</span><input type="number" id="${sid}-fy" value="0" class="w72" disabled placeholder="px from center"><span class="lbl" style="font-size:9px;color:var(--faint)">(0,0)=center · X right+ · Y up+</span></div>`;
+        }
+        function togglePos(sid) { const rnd = document.getElementById(sid + '-rnd').checked; document.getElementById(sid + '-fx').disabled = rnd; document.getElementById(sid + '-fy').disabled = rnd; }
+        function toggleCust(sid) { document.getElementById(sid + '-scv').disabled = !document.getElementById(sid + '-scx').checked; }
+        function toggleBorder(sid) {
+            const on = document.getElementById(sid + '-bd')?.checked;
+            const bw = document.getElementById(sid + '-bw');
+            if (bw) { bw.disabled = !on; bw.style.opacity = on ? '1' : '.4'; }
+        }
+        function ncol2(sid) { const el = document.getElementById(sid + '-col'); if (!el) return; const hex = el.value; const cn = document.getElementById(sid + '-cname'); const cx = document.getElementById(sid + '-chex'); if (cn) cn.textContent = nearestColor(hex); if (cx) cx.textContent = hex; }
+        function updateStimTitle(sid) {
+            const el = document.getElementById(sid); if (!el) return;
+            const type = el.dataset.type; const title = document.getElementById(sid + '-title'); if (!title) return;
+            if (type === 'shape') { const s = document.getElementById(sid + '-shape'); title.textContent = s ? s.value : '—'; }
+            else if (type === 'image') { const u = document.getElementById(sid + '-url'); const n = document.getElementById(sid + '-name'); title.textContent = (n && n.value) || (u && u.value.split('/').pop().slice(0, 30)) || '—'; }
+            else if (type === 'word') { const t = document.getElementById(sid + '-text'); title.textContent = t ? `"${t.value.slice(0, 24)}"` : '""'; }
+            else if (type === 'audio') { const u = document.getElementById(sid + '-aurl'); const n = document.getElementById(sid + '-aname'); title.textContent = (n && n.value) || (u && u.value.split('/').pop().slice(0, 30)) || '—'; }
         }
 
-        function togglePos(sid) {
-            const rnd = document.getElementById(sid + '-rnd').checked;
-            document.getElementById(sid + '-fx').disabled = rnd;
-            document.getElementById(sid + '-fy').disabled = rnd;
+        function toggleStimCard(sid) {
+            const body = document.getElementById(sid + '-body');
+            const btn = document.getElementById(sid + '-tbtn');
+            if (!body) return;
+            const open = body.style.display === 'none' || body.style.display === '';
+            body.style.display = open ? 'block' : 'none';
+            if (btn) btn.textContent = open ? '▾ Hide' : '▸ Show';
+        }
+        function toggleAnchor(sid) {
+            const on = document.getElementById(sid + '-anchor-on').checked;
+            document.getElementById(sid + '-anchor-box').style.display = on ? 'block' : 'none';
+        }
+        function toggleAudioLoop(sid) {
+            const inf = document.getElementById(sid + '-loop-inf').checked;
+            document.getElementById(sid + '-loop-n').disabled = inf;
         }
 
-        function addStim(type) {
+        // Move stimulus up/down within its container
+        function moveStimUp(sid) { const el = document.getElementById(sid); if (!el) return; const prev = el.previousElementSibling; if (prev && (prev.classList.contains('stim-card'))) el.parentNode.insertBefore(el, prev); }
+        function moveStimDown(sid) { const el = document.getElementById(sid); if (!el) return; const next = el.nextElementSibling; if (next && (next.classList.contains('stim-card'))) el.parentNode.insertBefore(next, el); }
+
+        function addStim(type, containerId) {
             stimIdCnt++;
             const sid = 'st' + stimIdCnt;
             const el = document.createElement('div');
-            el.className = 'stim-card'; el.id = sid;
+            el.className = 'stim-card'; el.id = sid; el.dataset.type = type;
 
-            let body = '';
+            let tag = '', tagCls = '', body = '';
+            if (type === 'shape') { tag = 'Shape'; tagCls = 'sh'; }
+            else if (type === 'image') { tag = 'Image'; tagCls = 'img'; }
+            else if (type === 'word') { tag = 'Word / Phrase'; tagCls = 'wd'; }
+            else if (type === 'audio') { tag = 'Audio'; tagCls = 'au'; }
+
+            const hdr = `<div class="stim-card-hdr" onclick="toggleStimCard('${sid}')">
+    <span class="stim-tag ${tagCls}">${tag}</span>
+    <span class="stim-card-title" id="${sid}-title">—</span>
+    <button class="move-btn" onclick="event.stopPropagation();moveStimUp('${sid}')" title="Move up">↑</button>
+    <button class="move-btn" onclick="event.stopPropagation();moveStimDown('${sid}')" title="Move down">↓</button>
+    <button class="card-toggle-btn" id="${sid}-tbtn" onclick="event.stopPropagation();toggleStimCard('${sid}')">▸ Show</button>
+    <button class="stim-del" onclick="event.stopPropagation();removeStim('${sid}')">Remove</button>
+  </div>`;
+
+            let bodyInner = '';
             if (type === 'shape') {
-                body = `<div class="stim-card-hdr">
-      <span class="stim-tag sh">Shape</span>
-      <span class="stim-card-title" id="${sid}-title">—</span>
-      <button class="stim-del" onclick="removeStim('${sid}')">Remove</button>
-    </div>
-    <div class="stim-card-body" style="grid-template-columns:1fr 1fr 1fr">
+                bodyInner = `<div class="stim-card-body" id="${sid}-body" style="display:none;grid-template-columns:1fr 1fr 1fr">
       <div>
         <div class="dl" style="margin-bottom:5px">Shape Type</div>
         <select id="${sid}-shape" class="wfull" onchange="updateStimTitle('${sid}')">
-          <option value="triangle">Triangle</option>
-          <option value="square">Square</option>
-          <option value="circle">Circle</option>
+          <option value="triangle">Triangle</option><option value="square">Square</option><option value="circle">Circle</option>
         </select>
-        <div style="margin-top:10px">
-          <div class="dl" style="margin-bottom:5px">Sizes</div>
+        <div style="margin-top:10px"><div class="dl" style="margin-bottom:5px">Sizes</div>
           <label class="sz-opt"><input type="checkbox" id="${sid}-ss"> S <span class="sz-px">(small)</span></label>
           <label class="sz-opt"><input type="checkbox" id="${sid}-sm"> M <span class="sz-px">(medium)</span></label>
           <label class="sz-opt"><input type="checkbox" id="${sid}-sl"> L <span class="sz-px">(large)</span></label>
-          <div class="cust-row">
-            <input type="checkbox" id="${sid}-scx" onchange="toggleCust('${sid}')">
-            <label for="${sid}-scx" class="lbl" style="cursor:pointer">Custom</label>
-            <input type="number" id="${sid}-scv" value="60" min="5" max="500" class="w56" disabled>
-            <span class="lbl">px</span>
-          </div>
+          <div class="cust-row"><input type="checkbox" id="${sid}-scx" onchange="toggleCust('${sid}')"><label for="${sid}-scx" class="lbl" style="cursor:pointer">Custom</label>
+          <input type="number" id="${sid}-scv" value="60" min="5" max="500" class="w56" disabled><span class="lbl">px</span></div>
         </div>
       </div>
       <div>
         <div class="dl" style="margin-bottom:5px">Color</div>
         <div class="color-pick-row"><input type="color" id="${sid}-col" value="#ffffff" oninput="ncol2('${sid}')"><span class="cname" id="${sid}-cname">White</span></div>
         <div class="chex" id="${sid}-chex">#ffffff</div>
-        <div style="margin-top:12px">
-          <div class="dl" style="margin-bottom:5px">Display Duration</div>
+        <div style="margin-top:10px">
+          <div class="dl" style="margin-bottom:5px">Border</div>
+          <label class="sz-opt"><input type="checkbox" id="${sid}-bd" onchange="toggleBorder('${sid}')"> Border only (no fill)</label>
+          <div class="border-row" id="${sid}-bd-row">
+            <input type="number" id="${sid}-bw" value="3" min="1" max="80" class="w56" disabled style="opacity:.4">
+            <span class="lbl">px width</span>
+          </div>
+        </div>
+        <div style="margin-top:10px"><div class="dl" style="margin-bottom:5px">Display Duration</div>
           <div class="irow"><input type="number" id="${sid}-dur" value="1000" min="-1" class="w90"><span class="lbl">ms</span></div>
           <div class="dur-hint">−1 = stay until response</div>
         </div>
@@ -1808,81 +2142,188 @@
       <div>${posBlock(sid)}</div>
     </div>`;
             } else if (type === 'image') {
-                body = `<div class="stim-card-hdr">
-      <span class="stim-tag img">Image</span>
-      <span class="stim-card-title" id="${sid}-title">—</span>
-      <button class="stim-del" onclick="removeStim('${sid}')">Remove</button>
-    </div>
-    <div class="stim-card-body" style="grid-template-columns:1fr 1fr 1fr">
+                bodyInner = `<div class="stim-card-body" id="${sid}-body" style="display:none;grid-template-columns:1fr 1fr 1fr">
       <div>
         <div class="dl" style="margin-bottom:5px">Image URL or Path</div>
         <input type="text" id="${sid}-url" class="wfull" placeholder="https://… or relative path" oninput="updateStimTitle('${sid}')">
-        <div style="margin-top:10px">
-          <div class="dl" style="margin-bottom:5px">Display Name (for log)</div>
-          <input type="text" id="${sid}-name" class="wfull" placeholder="e.g. face_neutral">
-        </div>
+        <div style="margin-top:10px"><div class="dl" style="margin-bottom:5px">Display Name (for log)</div>
+          <input type="text" id="${sid}-name" class="wfull" placeholder="e.g. face_neutral" oninput="updateStimTitle('${sid}')"></div>
       </div>
       <div>
         <div class="dl" style="margin-bottom:5px">Display Width</div>
         <div class="irow"><input type="number" id="${sid}-w" value="200" min="10" max="2000" class="w90"><span class="lbl">px (height auto)</span></div>
-        <div style="margin-top:12px">
-          <div class="dl" style="margin-bottom:5px">Display Duration</div>
+        <div style="margin-top:12px"><div class="dl" style="margin-bottom:5px">Display Duration</div>
           <div class="irow"><input type="number" id="${sid}-dur" value="1000" min="-1" class="w90"><span class="lbl">ms</span></div>
-          <div class="dur-hint">−1 = stay until response</div>
-        </div>
+          <div class="dur-hint">−1 = stay until response</div></div>
       </div>
       <div>${posBlock(sid)}</div>
     </div>`;
             } else if (type === 'word') {
-                body = `<div class="stim-card-hdr">
-      <span class="stim-tag wd">Word / Phrase</span>
-      <span class="stim-card-title" id="${sid}-title">—</span>
-      <button class="stim-del" onclick="removeStim('${sid}')">Remove</button>
-    </div>
-    <div class="stim-card-body" style="grid-template-columns:1fr 1fr 1fr">
+                bodyInner = `<div class="stim-card-body" id="${sid}-body" style="display:none;grid-template-columns:1fr 1fr 1fr">
       <div>
         <div class="dl" style="margin-bottom:5px">Text</div>
         <input type="text" id="${sid}-text" class="wfull" placeholder="Word or phrase" oninput="updateStimTitle('${sid}')">
-        <div style="margin-top:10px">
-          <div class="dl" style="margin-bottom:5px">Font Size</div>
-          <div class="irow"><input type="number" id="${sid}-fs" value="48" min="8" max="400" class="w72"><span class="lbl">px</span></div>
-        </div>
+        <div style="margin-top:10px"><div class="dl" style="margin-bottom:5px">Font Size</div>
+          <div class="irow"><input type="number" id="${sid}-fs" value="48" min="8" max="400" class="w72"><span class="lbl">px</span></div></div>
       </div>
       <div>
         <div class="dl" style="margin-bottom:5px">Color</div>
         <div class="color-pick-row"><input type="color" id="${sid}-col" value="#ffffff" oninput="ncol2('${sid}')"><span class="cname" id="${sid}-cname">White</span></div>
         <div class="chex" id="${sid}-chex">#ffffff</div>
-        <div style="margin-top:12px">
-          <div class="dl" style="margin-bottom:5px">Display Duration</div>
+        <div style="margin-top:12px"><div class="dl" style="margin-bottom:5px">Display Duration</div>
           <div class="irow"><input type="number" id="${sid}-dur" value="1000" min="-1" class="w90"><span class="lbl">ms</span></div>
-          <div class="dur-hint">−1 = stay until response</div>
-        </div>
+          <div class="dur-hint">−1 = stay until response</div></div>
       </div>
       <div>${posBlock(sid)}</div>
     </div>`;
+            } else if (type === 'audio') {
+                bodyInner = `<div class="stim-card-body" id="${sid}-body" style="display:none;grid-template-columns:1fr 1fr">
+      <div>
+        <div class="dl" style="margin-bottom:5px">Audio URL or Path</div>
+        <input type="text" id="${sid}-aurl" class="wfull" placeholder="https://… or relative/path.mp3" oninput="updateStimTitle('${sid}')">
+        <div style="margin-top:8px"><div class="dl" style="margin-bottom:5px">Display Name (for log)</div>
+          <input type="text" id="${sid}-aname" class="wfull" placeholder="e.g. tone_440hz" oninput="updateStimTitle('${sid}')"></div>
+        <div style="margin-top:8px"><div class="dl" style="margin-bottom:5px">Visual Label (shown on screen during play)</div>
+          <input type="text" id="${sid}-vlabel" class="wfull" placeholder="e.g. 🔊 Listen…"></div>
+      </div>
+      <div>
+        <div class="g2" style="gap:10px;margin-bottom:10px">
+          <div><div class="dl" style="margin-bottom:4px">Volume</div>
+            <div class="irow"><input type="number" id="${sid}-vol" value="100" min="0" max="100" class="w56"><span class="lbl">%</span></div></div>
+          <div><div class="dl" style="margin-bottom:4px">Speed (× rate)</div>
+            <div class="irow"><input type="number" id="${sid}-speed" value="1.0" min="0.1" max="4.0" step="0.05" class="w72"></div>
+            <div class="dur-hint">0.25 = very slow · 1.0 = normal · 2.0 = double</div></div>
+        </div>
+        <div class="g2" style="gap:10px;margin-bottom:10px">
+          <div><div class="dl" style="margin-bottom:4px">Pitch Shift (semitones)</div>
+            <div class="irow"><input type="number" id="${sid}-pitch" value="0" min="-24" max="24" class="w56"></div>
+            <div class="dur-hint">0 = normal · ±12 = octave</div></div>
+          <div><div class="dl" style="margin-bottom:4px">Loop Count</div>
+            <div class="irow"><input type="number" id="${sid}-loop-n" value="1" min="1" max="999" class="w56">
+            <label class="sz-opt"><input type="checkbox" id="${sid}-loop-inf" onchange="toggleAudioLoop('${sid}')"> ∞ inf.</label></div></div>
+        </div>
+        <div style="margin-bottom:6px"><div class="dl" style="margin-bottom:4px">Max Display Duration</div>
+          <div class="irow"><input type="number" id="${sid}-dur" value="-1" min="-1" class="w90"><span class="lbl">ms</span></div>
+          <div class="dur-hint">−1 = until audio ends + loops complete or response</div></div>
+        <!-- RT Anchor -->
+        <div style="margin-top:8px"><div class="irow" style="margin-bottom:4px">
+          <input type="checkbox" id="${sid}-anchor-on" onchange="toggleAnchor('${sid}')">
+          <label for="${sid}-anchor-on" style="font-size:11px;font-weight:500;cursor:pointer;color:var(--au)">RT Anchor</label>
+          <span style="font-size:9px;color:var(--faint)">— measure RT from a specific moment in the audio</span>
+        </div>
+        <div id="${sid}-anchor-box" class="anchor-box" style="display:none">
+          <div class="anchor-box-title">RT Anchor Settings</div>
+          <div class="g3" style="gap:10px">
+            <div><div class="dl" style="margin-bottom:4px">Anchor time</div>
+              <div class="irow"><input type="number" id="${sid}-anchor-t" value="1.0" min="0" step="0.1" class="w72"><span class="lbl">sec</span></div>
+              <div class="dur-hint">Seconds into audio when target sound occurs</div></div>
+            <div><div class="dl" style="margin-bottom:4px">Response window</div>
+              <div class="irow"><input type="number" id="${sid}-anchor-win" value="2000" min="100" class="w90"><span class="lbl">ms</span></div>
+              <div class="dur-hint">Time to respond after anchor (0 = unlimited)</div></div>
+            <div><div class="dl" style="margin-bottom:4px">Premature responses</div>
+              <label class="sz-opt" style="margin-bottom:3px"><input type="radio" name="${sid}-pre" value="ignore" checked> Ignore</label>
+              <label class="sz-opt" style="margin-bottom:3px"><input type="radio" name="${sid}-pre" value="error"> Count as error</label>
+              <label class="sz-opt"><input type="radio" name="${sid}-pre" value="record"> Record only</label>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>`;
             }
 
-            el.innerHTML = body;
-            el.dataset.type = type;
-            document.getElementById('stim-list').appendChild(el);
+            el.innerHTML = hdr + bodyInner;
+            const container = document.getElementById(containerId) || document.getElementById('stim-list');
+            container.appendChild(el);
             updateStimTitle(sid);
+            if (type === 'shape') ncol2(sid);
+            if (type === 'word') ncol2(sid);
         }
 
         function removeStim(sid) { document.getElementById(sid)?.remove(); }
-        function toggleCust(sid) { document.getElementById(sid + '-scv').disabled = !document.getElementById(sid + '-scx').checked; }
-        function ncol2(sid) {
-            const el = document.getElementById(sid + '-col'); if (!el) return;
-            const hex = el.value;
-            const cn = document.getElementById(sid + '-cname'); const cx = document.getElementById(sid + '-chex');
-            if (cn) cn.textContent = nearestColor(hex); if (cx) cx.textContent = hex;
+
+        // ══════════════════════════════════════════════════════
+        //  STIMULUS LIST GROUPS
+        // ══════════════════════════════════════════════════════
+        let lgIdCnt = 0;
+        function addListGroup(type) {
+            lgIdCnt++;
+            const lgId = 'lg' + lgIdCnt;
+            let typeLabel = '', typeCls = '';
+            if (type === 'shape') { typeLabel = 'Shape List'; typeCls = 'sh'; }
+            else if (type === 'image') { typeLabel = 'Image List'; typeCls = 'img'; }
+            else if (type === 'word') { typeLabel = 'Word List'; typeCls = 'wd'; }
+            else if (type === 'audio') { typeLabel = 'Audio List'; typeCls = 'au'; }
+
+            const el = document.createElement('div');
+            el.className = 'stim-list-group'; el.id = lgId; el.dataset.listType = type;
+            el.innerHTML = `
+  <div class="slg-hdr" onclick="toggleListGroup('${lgId}')">
+    <span class="stim-tag ${typeCls}" style="font-size:9px">${typeLabel}</span>
+    <span class="slg-name-lbl" id="${lgId}-name">${typeLabel} ${lgIdCnt}</span>
+    <button class="move-btn" onclick="event.stopPropagation();moveListGroupUp('${lgId}')" title="Move list up">↑</button>
+    <button class="move-btn" onclick="event.stopPropagation();moveListGroupDown('${lgId}')" title="Move list down">↓</button>
+    <button class="card-toggle-btn" id="${lgId}-btn" onclick="event.stopPropagation();toggleListGroup('${lgId}')">▸ Show</button>
+    <button class="stim-del" onclick="event.stopPropagation();removeListGroup('${lgId}')">Remove</button>
+  </div>
+  <div class="slg-body" id="${lgId}-body" style="display:none">
+    <div style="margin-bottom:8px;font-size:10px;color:var(--dim)">
+      <b>How to use:</b> Add stimuli below, configure list parameters, then run the experiment.
+      The list runs all its stimuli in the specified order/repeat, using its own ISI between items.
+    </div>
+    <div class="slg-params">
+      <div>
+        <div class="dl" style="margin-bottom:5px">Presentation Order</div>
+        <label class="sz-opt" style="margin-bottom:4px"><input type="radio" name="${lgId}-order" value="random" checked> Random (shuffled each repeat)</label>
+        <label class="sz-opt"><input type="radio" name="${lgId}-order" value="sequential"> Sequential (fixed order)</label>
+      </div>
+      <div>
+        <div class="dl" style="margin-bottom:5px">Repeat Count</div>
+        <div class="irow"><input type="number" id="${lgId}-repeat" value="1" min="1" max="999" class="w72"></div>
+        <div class="dur-hint">How many times the list runs in the experiment</div>
+        <div style="margin-top:10px"><div class="dl" style="margin-bottom:5px">Break Between Repeats</div>
+          <div class="irow"><input type="number" id="${lgId}-break" value="0" min="0" class="w72"><span class="lbl">ms</span></div>
+          <div class="dur-hint">0 = no break between repeats</div></div>
+      </div>
+      <div>
+        <div class="dl" style="margin-bottom:5px">ISI Within List</div>
+        <div class="irow"><input type="number" id="${lgId}-isi-min" value="800" min="0" class="w72"><span class="lbl">–</span>
+          <input type="number" id="${lgId}-isi-max" value="1400" min="0" class="w72"><span class="lbl">ms</span></div>
+        <div class="dur-hint">Inter-stimulus interval between items in this list</div>
+        <div style="margin-top:10px">
+          <label class="sz-opt"><input type="checkbox" id="${lgId}-name-edit" onchange="toggleListNameEdit('${lgId}')"> Custom list name</label>
+          <div id="${lgId}-name-row" style="display:none;margin-top:6px">
+            <input type="text" id="${lgId}-name-inp" class="wfull" placeholder="List name…" oninput="updateListName('${lgId}')">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slg-stims" id="${lgId}-stims"></div>
+    <div class="add-row" style="padding:0 0 4px">
+      <button class="add-btn ${typeCls}" onclick="addStim('${type}','${lgId}-stims')">+ Add ${typeLabel.replace(' List', '')} to List</button>
+    </div>
+  </div>`;
+            document.getElementById('list-groups').appendChild(el);
         }
-        function updateStimTitle(sid) {
-            const el = document.getElementById(sid); if (!el) return;
-            const type = el.dataset.type;
-            const title = document.getElementById(sid + '-title'); if (!title) return;
-            if (type === 'shape') { const s = document.getElementById(sid + '-shape'); title.textContent = s ? s.value : '—'; }
-            else if (type === 'image') { const u = document.getElementById(sid + '-url'); const n = document.getElementById(sid + '-name'); title.textContent = (n && n.value) || (u && u.value.split('/').pop().slice(0, 30)) || '—'; }
-            else if (type === 'word') { const t = document.getElementById(sid + '-text'); title.textContent = t ? `"${t.value.slice(0, 24)}"` : '"—"'; }
+
+        function removeListGroup(lgId) { document.getElementById(lgId)?.remove(); }
+        function toggleListGroup(lgId) {
+            const body = document.getElementById(lgId + '-body');
+            const btn = document.getElementById(lgId + '-btn');
+            if (!body) return;
+            const open = body.style.display === 'none';
+            body.style.display = open ? 'block' : 'none';
+            if (btn) btn.textContent = open ? '▾ Hide' : '▸ Show';
+        }
+        function moveListGroupUp(lgId) { const el = document.getElementById(lgId); if (!el) return; const prev = el.previousElementSibling; if (prev) el.parentNode.insertBefore(el, prev); }
+        function moveListGroupDown(lgId) { const el = document.getElementById(lgId); if (!el) return; const next = el.nextElementSibling; if (next) el.parentNode.insertBefore(next, el); }
+        function toggleListNameEdit(lgId) {
+            const on = document.getElementById(lgId + '-name-edit').checked;
+            document.getElementById(lgId + '-name-row').style.display = on ? 'block' : 'none';
+        }
+        function updateListName(lgId) {
+            const v = document.getElementById(lgId + '-name-inp').value;
+            const n = document.getElementById(lgId + '-name');
+            if (n && v) n.textContent = v;
         }
 
         // ══════════════════════════════════════════════════════
@@ -1890,12 +2331,7 @@
         // ══════════════════════════════════════════════════════
         function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
         function toggleSP(id, chk) { document.getElementById(id).classList.toggle('vis', chk.checked); }
-        function ncol(pfx) {
-            const el = document.getElementById(pfx + '-col'); if (!el) return;
-            const hex = el.value;
-            const cn = document.getElementById(pfx + '-cname'); const cx = document.getElementById(pfx + '-chex');
-            if (cn) cn.textContent = nearestColor(hex); if (cx) cx.textContent = hex;
-        }
+        function ncol(pfx) { const el = document.getElementById(pfx + '-col'); if (!el) return; const hex = el.value; const cn = document.getElementById(pfx + '-cname'); const cx = document.getElementById(pfx + '-chex'); if (cn) cn.textContent = nearestColor(hex); if (cx) cx.textContent = hex; }
         function onFixChange() {
             const on = document.getElementById('chk-fix').checked;
             document.getElementById('fix-sp').classList.toggle('vis', on);
@@ -1939,6 +2375,7 @@
             document.querySelector('input[name="subj-hand"][value="Right"]').checked = true;
             document.getElementById('cf-list').innerHTML = ''; cfCount = 0;
             document.getElementById('stim-list').innerHTML = ''; stimIdCnt = 0;
+            document.getElementById('list-groups').innerHTML = ''; lgIdCnt = 0;
             setType('a');
             document.getElementById('inp-dur').value = 60000; document.getElementById('inp-err').value = 5;
             document.getElementById('isi-min').value = 800; document.getElementById('isi-max').value = 1400;
@@ -1957,46 +2394,89 @@
             document.querySelector('input[name="startmode"][value="overlay"]').checked = true;
             document.getElementById('chk-fs').checked = true; document.getElementById('chk-hud').checked = true;
             document.getElementById('val-msg').textContent = '';
+            addStim('shape', 'stim-list');
         }
 
         // ══════════════════════════════════════════════════════
-        //  READ STIMULUS CARDS → CONFIG OBJECTS
+        //  READ STIMULUS CARDS
         // ══════════════════════════════════════════════════════
-        function readStimuli() {
+        function readStimCard(card) {
+            const sid = card.id; const type = card.dataset.type;
+            const rnd = document.getElementById(sid + '-rnd')?.checked ?? true;
+            const fx = parseInt(document.getElementById(sid + '-fx')?.value) || 0;
+            const fy = parseInt(document.getElementById(sid + '-fy')?.value) || 0;
+            const pos = { random: rnd, x: fx, y: fy };
+
+            if (type === 'shape') {
+                const shape = document.getElementById(sid + '-shape').value;
+                const color = document.getElementById(sid + '-col').value;
+                const colorName = nearestColor(color);
+                const szM = SZ[shape] || { s: 30, m: 55, l: 90 };
+                const dur = parseInt(document.getElementById(sid + '-dur').value);
+                const sizes = [];
+                if (document.getElementById(sid + '-ss').checked) sizes.push(szM.s);
+                if (document.getElementById(sid + '-sm').checked) sizes.push(szM.m);
+                if (document.getElementById(sid + '-sl').checked) sizes.push(szM.l);
+                if (document.getElementById(sid + '-scx').checked) { const cv = parseInt(document.getElementById(sid + '-scv').value); if (cv >= 5) sizes.push(cv); }
+                return sizes.map(size => ({
+                    type: 'shape', shape, size, color, colorName, duration: dur, pos,
+                    border: document.getElementById(sid + '-bd')?.checked || false,
+                    borderWidth: parseInt(document.getElementById(sid + '-bw')?.value) || 3
+                }));
+            } else if (type === 'image') {
+                const url = document.getElementById(sid + '-url').value.trim();
+                const name = document.getElementById(sid + '-name').value.trim() || url.split('/').pop().split('?')[0];
+                const w = parseInt(document.getElementById(sid + '-w').value) || 200;
+                const dur = parseInt(document.getElementById(sid + '-dur').value);
+                return [{ type: 'image', url, name, width: w, duration: dur, pos }];
+            } else if (type === 'word') {
+                const text = document.getElementById(sid + '-text').value.trim();
+                const fs = parseInt(document.getElementById(sid + '-fs').value) || 48;
+                const color = document.getElementById(sid + '-col').value;
+                const colorName = nearestColor(color);
+                const dur = parseInt(document.getElementById(sid + '-dur').value);
+                return [{ type: 'word', text, fontSize: fs, color, colorName, duration: dur, pos }];
+            } else if (type === 'audio') {
+                const url = document.getElementById(sid + '-aurl').value.trim();
+                const name = document.getElementById(sid + '-aname').value.trim() || url.split('/').pop();
+                const vlabel = document.getElementById(sid + '-vlabel').value.trim() || ('🔊 ' + name);
+                const vol = (parseInt(document.getElementById(sid + '-vol').value) || 100) / 100;
+                const speed = parseFloat(document.getElementById(sid + '-speed').value) || 1.0;
+                const pitch = parseFloat(document.getElementById(sid + '-pitch').value) || 0;
+                const loopInf = document.getElementById(sid + '-loop-inf').checked;
+                const loopN = loopInf ? 999 : Math.max(1, parseInt(document.getElementById(sid + '-loop-n').value) || 1);
+                const dur = parseInt(document.getElementById(sid + '-dur').value);
+                const anchorOn = document.getElementById(sid + '-anchor-on').checked;
+                const anchorTime = anchorOn ? (parseFloat(document.getElementById(sid + '-anchor-t').value) || 0) : null;
+                const anchorWin = anchorOn ? (parseInt(document.getElementById(sid + '-anchor-win').value) || 2000) : null;
+                const preMode = anchorOn ? (document.querySelector(`input[name="${sid}-pre"]:checked`)?.value || 'ignore') : null;
+                return [{ type: 'audio', url, name, vlabel, volume: vol, speed, pitch, loopN, duration: dur, pos, anchorOn, anchorTime, anchorWin, preMode }];
+            }
+            return [];
+        }
+
+        function readIndividualStimuli() {
             const list = [];
             document.querySelectorAll('#stim-list .stim-card').forEach(card => {
-                const sid = card.id; const type = card.dataset.type;
-                const rnd = document.getElementById(sid + '-rnd').checked;
-                const fx = parseInt(document.getElementById(sid + '-fx').value) || 0;
-                const fy = parseInt(document.getElementById(sid + '-fy').value) || 0;
-                const dur = parseInt(document.getElementById(sid + '-dur').value);
-                const pos = { random: rnd, x: fx, y: fy };
-
-                if (type === 'shape') {
-                    const shape = document.getElementById(sid + '-shape').value;
-                    const color = document.getElementById(sid + '-col').value;
-                    const colorName = nearestColor(color);
-                    const szM = SZ[shape];
-                    const sizes = [];
-                    if (document.getElementById(sid + '-ss').checked) sizes.push(szM.s);
-                    if (document.getElementById(sid + '-sm').checked) sizes.push(szM.m);
-                    if (document.getElementById(sid + '-sl').checked) sizes.push(szM.l);
-                    if (document.getElementById(sid + '-scx').checked) { const cv = parseInt(document.getElementById(sid + '-scv').value); if (cv >= 5) sizes.push(cv); }
-                    for (const size of sizes) list.push({ type: 'shape', shape, size, color, colorName, duration: dur, pos });
-                } else if (type === 'image') {
-                    const url = document.getElementById(sid + '-url').value.trim();
-                    const name = document.getElementById(sid + '-name').value.trim() || url.split('/').pop().split('?')[0];
-                    const w = parseInt(document.getElementById(sid + '-w').value) || 200;
-                    list.push({ type: 'image', url, name, width: w, duration: dur, pos });
-                } else if (type === 'word') {
-                    const text = document.getElementById(sid + '-text').value.trim();
-                    const fs = parseInt(document.getElementById(sid + '-fs').value) || 48;
-                    const color = document.getElementById(sid + '-col').value;
-                    const colorName = nearestColor(color);
-                    list.push({ type: 'word', text, fontSize: fs, color, colorName, duration: dur, pos });
-                }
+                list.push(...readStimCard(card));
             });
             return list;
+        }
+
+        function readListGroups() {
+            const groups = [];
+            document.querySelectorAll('#list-groups .stim-list-group').forEach(lg => {
+                const lgId = lg.id;
+                const orderMode = document.querySelector(`input[name="${lgId}-order"]:checked`)?.value || 'random';
+                const repeat = Math.max(1, parseInt(document.getElementById(lgId + '-repeat').value) || 1);
+                const brk = parseInt(document.getElementById(lgId + '-break').value) || 0;
+                const isiMin = parseInt(document.getElementById(lgId + '-isi-min').value) || 800;
+                const isiMax = parseInt(document.getElementById(lgId + '-isi-max').value) || 1400;
+                const stims = [];
+                lg.querySelectorAll('.stim-card').forEach(card => { stims.push(...readStimCard(card)); });
+                if (stims.length > 0) groups.push({ lgId, orderMode, repeat, brk, isiMin, isiMax, stims });
+            });
+            return groups;
         }
 
         // ══════════════════════════════════════════════════════
@@ -2005,21 +2485,39 @@
         function verr(m) { document.getElementById('val-msg').textContent = '✖ ' + m; return false; }
         function validateAndStart() {
             document.getElementById('val-msg').textContent = '';
-            const cards = document.querySelectorAll('#stim-list .stim-card');
-            if (!cards.length) return verr('Add at least one stimulus (shape, image, or word).');
-            for (const card of cards) {
+            const indivCards = document.querySelectorAll('#stim-list .stim-card');
+            const listGroups = document.querySelectorAll('#list-groups .stim-list-group');
+            if (!indivCards.length && !listGroups.length) return verr('Add at least one stimulus or stimulus list.');
+
+            // Validate individual cards
+            for (const card of indivCards) {
                 const sid = card.id; const type = card.dataset.type;
                 const dur = parseInt(document.getElementById(sid + '-dur').value);
-                if (isNaN(dur) || (dur !== -1 && dur < 50)) return verr(`A stimulus has invalid duration (must be ≥ 50 ms or −1).`);
+                if (isNaN(dur) || (dur !== -1 && dur < 50)) return verr('A stimulus has invalid duration (must be ≥ 50 ms or −1).');
                 if (type === 'shape') {
-                    const hasSz = ['ss', 'sm', 'sl', 'scx'].some(k => document.getElementById(sid + '-' + k).checked);
-                    if (!hasSz) return verr(`A Shape stimulus has no size selected.`);
+                    const hasSz = ['ss', 'sm', 'sl', 'scx'].some(k => document.getElementById(sid + '-' + k)?.checked);
+                    if (!hasSz) return verr('A Shape stimulus has no size selected.');
                 } else if (type === 'image') {
-                    if (!document.getElementById(sid + '-url').value.trim()) return verr(`An Image stimulus has no URL.`);
+                    if (!document.getElementById(sid + '-url').value.trim()) return verr('An Image stimulus has no URL.');
                 } else if (type === 'word') {
-                    if (!document.getElementById(sid + '-text').value.trim()) return verr(`A Word stimulus has no text.`);
+                    if (!document.getElementById(sid + '-text').value.trim()) return verr('A Word stimulus has no text.');
+                } else if (type === 'audio') {
+                    if (!document.getElementById(sid + '-aurl').value.trim()) return verr('An Audio stimulus has no URL.');
                 }
             }
+            // Validate list groups
+            for (const lg of listGroups) {
+                const lgCards = lg.querySelectorAll('.stim-card');
+                if (!lgCards.length) return verr(`A stimulus list has no stimuli. Add at least one or remove it.`);
+                for (const card of lgCards) {
+                    const sid = card.id; const type = card.dataset.type;
+                    if (type === 'shape') { const hasSz = ['ss', 'sm', 'sl', 'scx'].some(k => document.getElementById(sid + '-' + k)?.checked); if (!hasSz) return verr('A Shape stimulus in a list has no size selected.'); }
+                    else if (type === 'image') { if (!document.getElementById(sid + '-url').value.trim()) return verr('An Image in a list has no URL.'); }
+                    else if (type === 'word') { if (!document.getElementById(sid + '-text').value.trim()) return verr('A Word in a list has no text.'); }
+                    else if (type === 'audio') { if (!document.getElementById(sid + '-aurl').value.trim()) return verr('An Audio in a list has no URL.'); }
+                }
+            }
+
             const type = document.querySelector('input[name="etype"]:checked').value;
             const tCk = document.getElementById('chk-time').checked, eCk = document.getElementById('chk-err').checked;
             if (type !== 'a' && !tCk && !eCk) return verr('Select at least one stop condition.');
@@ -2027,8 +2525,7 @@
             if (eCk) { const e = parseInt(document.getElementById('inp-err').value); if (!e || e <= 0) return verr('Enter a valid error count.'); }
             const iMin = parseInt(document.getElementById('isi-min').value), iMax = parseInt(document.getElementById('isi-max').value);
             if (iMin < 100 || iMax < iMin) return verr('ISI: min ≥ 100 ms and max ≥ min.');
-            if (document.getElementById('chk-text').checked && !document.getElementById('text-content').value.trim())
-                return verr('Text overlay enabled but no text entered.');
+            if (document.getElementById('chk-text').checked && !document.getElementById('text-content').value.trim()) return verr('Text overlay enabled but no text entered.');
             buildAndRun();
         }
 
@@ -2038,17 +2535,31 @@
         let EC = {};
         let trials = [], errorCount = 0, trialNum = 0, expPhase = 'idle';
         let expStartMs = 0, trialStartMs = 0;
-        let tStim = null, tIsi = null, tFb = null, tDur = null, tHud = null;
+        let tStim = null, tIsi = null, tFb = null, tDur = null, tHud = null, tAnchor = null;
         let kListener = null;
         let canvas, ctx, CW = 0, CH = 0;
         let curTrial = null;
         let subAF = null, subX = 0, subLastT = 0, wordTimers = [];
+        // Trial queue for list-based presentation
+        let trialQueue = [], trialQueueIdx = 0;
+        // Audio context
+        let audioCtx = null;
+        let curAudioSrc = null;
+
+        function getAudioCtx() {
+            if (!audioCtx || audioCtx.state === 'closed') {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
 
         function buildAndRun() {
             const textIsWord = document.getElementById('ttab-word').classList.contains('on');
             EC = {
                 subject: getSubject(),
-                stimuli: readStimuli(),
+                stimuli: readIndividualStimuli(),
+                listGroups: readListGroups(),
                 type: document.querySelector('input[name="etype"]:checked').value,
                 stopTime: document.getElementById('chk-time').checked,
                 stopErr: document.getElementById('chk-err').checked,
@@ -2076,40 +2587,99 @@
                 fullscreen: document.getElementById('chk-fs').checked,
                 showHUD: document.getElementById('chk-hud').checked,
             };
-            // ── Preload all images (and any other future async assets) ──
-            const imgs = EC.stimuli.filter(s => s.type === 'image');
-            if (imgs.length) {
-                showPreloadModal(imgs.length);
-                let loaded = 0;
-                const errors = [];
+
+            // Build ordered trial queue from list groups
+            trialQueue = [];
+            for (const lg of EC.listGroups) {
+                for (let r = 0; r < lg.repeat; r++) {
+                    let seq = [...lg.stims];
+                    if (lg.orderMode === 'random') shuffle(seq);
+                    for (let i = 0; i < seq.length; i++) {
+                        trialQueue.push({ stim: seq[i], isiMin: lg.isiMin, isiMax: lg.isiMax });
+                    }
+                    if (r < lg.repeat - 1 && lg.brk > 0) {
+                        trialQueue.push({ _break: true, dur: lg.brk });
+                    }
+                }
+            }
+            trialQueueIdx = 0;
+
+            // Collect all assets to preload
+            const imgs = [];
+            const auds = [];
+            [...EC.stimuli, ...trialQueue.map(t => t.stim).filter(Boolean)].forEach(s => {
+                if (!s) return;
+                if (s.type === 'image' && s.url && !imgs.find(x => x.url === s.url)) imgs.push(s);
+                if (s.type === 'audio' && s.url && !auds.find(x => x.url === s.url)) auds.push(s);
+            });
+
+            const total = imgs.length + auds.length;
+            if (total > 0) {
+                showPreloadModal(total);
+                let loaded = 0; const errors = [];
+                const done = () => { loaded++; updatePreloadModal(loaded, total, errors); if (loaded === total) readyPreloadModal(errors); };
                 for (const s of imgs) {
                     const img = new Image();
-                    img.onload = () => {
-                        s._img = img; s._iw = img.naturalWidth; s._ih = img.naturalHeight;
-                        loaded++; updatePreloadModal(loaded, imgs.length, errors);
-                        if (loaded === imgs.length) readyPreloadModal(errors);
-                    };
-                    img.onerror = () => {
-                        s._loadErr = true;
-                        loaded++; errors.push(s.name || s.url);
-                        updatePreloadModal(loaded, imgs.length, errors);
-                        if (loaded === imgs.length) readyPreloadModal(errors);
-                    };
+                    img.onload = () => { s._img = img; s._iw = img.naturalWidth; s._ih = img.naturalHeight; done(); };
+                    img.onerror = () => { s._loadErr = true; errors.push(s.name || s.url); done(); };
                     img.src = s.url;
                 }
+                for (const s of auds) {
+                    fetch(s.url).then(r => r.arrayBuffer()).then(ab => getAudioCtx().decodeAudioData(ab)).then(buf => {
+                        s._buf = buf; done();
+                    }).catch(() => { s._loadErr = true; errors.push(s.name || s.url); done(); });
+                }
             } else {
-                // No images — show a brief "ready" modal so the user always
-                // has a deliberate confirmation step before the experiment starts
                 showReadyModal([]);
             }
         }
+
+        // ══════════════════════════════════════════════════════
+        //  PRELOAD MODAL
+        // ══════════════════════════════════════════════════════
+        function showPreloadModal(total) {
+            const m = document.getElementById('preload-modal'); m.style.display = 'flex';
+            document.getElementById('pre-loading').style.display = 'block';
+            document.getElementById('pre-ready').style.display = 'none';
+            document.getElementById('pre-bar').style.width = '0%';
+            document.getElementById('pre-count').textContent = '0 / ' + total;
+            document.getElementById('pre-status').textContent = 'Loading assets…';
+        }
+        function updatePreloadModal(loaded, total, errors) {
+            const pct = Math.round(loaded / total * 100);
+            document.getElementById('pre-bar').style.width = pct + '%';
+            document.getElementById('pre-count').textContent = loaded + ' / ' + total;
+            document.getElementById('pre-status').textContent = errors.length ? loaded + ' processed (' + errors.length + ' failed)…' : 'Loaded ' + loaded + ' of ' + total + '…';
+        }
+        function readyPreloadModal(errors) {
+            document.getElementById('pre-loading').style.display = 'none';
+            document.getElementById('pre-ready').style.display = 'block';
+            if (errors.length) {
+                const eb = document.getElementById('pre-errors-box');
+                eb.style.display = 'block';
+                eb.innerHTML = '⚠ ' + errors.length + ' asset' + (errors.length > 1 ? 's' : '') + ' failed to load:<br>' + errors.map(e => '· ' + e).join('<br>');
+                document.getElementById('pre-ready-msg').textContent = 'Experiment ready. Failed assets will show placeholders.';
+            } else {
+                document.getElementById('pre-errors-box').style.display = 'none';
+                document.getElementById('pre-ready-msg').textContent = 'All assets loaded successfully. The experiment is ready to start.';
+            }
+        }
+        function showReadyModal() {
+            const m = document.getElementById('preload-modal'); m.style.display = 'flex';
+            document.getElementById('pre-loading').style.display = 'none';
+            document.getElementById('pre-ready').style.display = 'block';
+            document.getElementById('pre-errors-box').style.display = 'none';
+            document.getElementById('pre-ready-msg').textContent = 'All settings are prepared. The experiment is ready to start.';
+        }
+        function dismissPreloadModal() { document.getElementById('preload-modal').style.display = 'none'; initExperiment(); }
 
         // ══════════════════════════════════════════════════════
         //  EXPERIMENT ENGINE
         // ══════════════════════════════════════════════════════
         function initExperiment() {
             trials = []; errorCount = 0; trialNum = 0; curTrial = null; expPhase = 'idle';
-            clearAllTimers(); stopSub(); clearWordT();
+            trialQueueIdx = 0;
+            clearAllTimers(); stopSub(); clearWordT(); stopCurrentAudio();
             canvas = document.getElementById('exp-canvas'); ctx = canvas.getContext('2d');
             resize(); window.addEventListener('resize', resize);
             if (EC.fullscreen && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => { });
@@ -2145,29 +2715,48 @@
             addKey(handleKey); nextTrial();
         }
 
+        // Current ISI (can be overridden by list)
+        let curIsiMin = 800, curIsiMax = 1400;
+
         function nextTrial() {
             if (expPhase !== 'running') return;
             bgLayer(); expPhase = 'isi';
-            const isi = EC.isiMin + Math.random() * (EC.isiMax - EC.isiMin);
+
+            // Get next stimulus from queue or individual pool
+            let nextItem = null;
+            if (trialQueueIdx < trialQueue.length) {
+                const qi = trialQueue[trialQueueIdx++];
+                if (qi._break) {
+                    // Inter-repeat break
+                    setTimeout(() => { if (expPhase === 'isi') { expPhase = 'running'; nextTrial(); } }, qi.dur);
+                    return;
+                }
+                nextItem = qi;
+                curIsiMin = qi.isiMin || EC.isiMin;
+                curIsiMax = qi.isiMax || EC.isiMax;
+            } else if (EC.stimuli.length > 0) {
+                const s = EC.stimuli[Math.floor(Math.random() * EC.stimuli.length)];
+                nextItem = { stim: s, isiMin: EC.isiMin, isiMax: EC.isiMax };
+                curIsiMin = EC.isiMin; curIsiMax = EC.isiMax;
+            } else {
+                // No more stimuli
+                endExp('trials'); return;
+            }
+
+            const isi = curIsiMin + Math.random() * (curIsiMax - curIsiMin);
             if (EC.fixOn) {
                 tIsi = setTimeout(() => {
                     if (expPhase !== 'isi') return;
                     bgLayer(); drawFix(); expPhase = 'fixation';
-                    tIsi = setTimeout(() => { if (expPhase === 'fixation') showStim(); }, EC.fixDur);
+                    tIsi = setTimeout(() => { if (expPhase === 'fixation') showStimItem(nextItem.stim); }, EC.fixDur);
                 }, isi * 0.5);
             } else {
-                tIsi = setTimeout(() => { if (expPhase === 'isi') showStim(); }, isi);
+                tIsi = setTimeout(() => { if (expPhase === 'isi') showStimItem(nextItem.stim); }, isi);
             }
         }
 
         function resolvePos(stim, sizeRef) {
-            // Returns canvas {x,y} from stim.pos config
-            // sizeRef = half-extent to keep stim on screen (radius/half-side/half-text)
-            if (!stim.pos.random) {
-                // user-specified center-relative: x right+, y up+
-                return { x: CW / 2 + stim.pos.x, y: CH / 2 - stim.pos.y };
-            }
-            // random placement based on experiment type
+            if (!stim.pos || !stim.pos.random) return { x: CW / 2 + (stim.pos?.x || 0), y: CH / 2 - (stim.pos?.y || 0) };
             const pad = Math.max(sizeRef, 30) + 5;
             let x, y;
             switch (EC.type) {
@@ -2179,65 +2768,143 @@
             }
             return { x, y };
         }
-
         function expectedKey(x, y) {
-            // derives expected key from canvas position for positional types
             switch (EC.type) {
                 case 'a': return ' ';
                 case 'b': return y < CH / 2 ? 'ArrowUp' : 'ArrowDown';
                 case 'c': return x < CW / 2 ? 'ArrowLeft' : 'ArrowRight';
-                case 'd': {
-                    const aboveBelow = Math.abs(y - CH / 2), leftRight = Math.abs(x - CW / 2);
-                    if (aboveBelow > leftRight) return y < CH / 2 ? 'ArrowUp' : 'ArrowDown';
-                    return x < CW / 2 ? 'ArrowLeft' : 'ArrowRight';
-                }
+                case 'd': { const ab = Math.abs(y - CH / 2), lr = Math.abs(x - CW / 2); if (ab > lr) return y < CH / 2 ? 'ArrowUp' : 'ArrowDown'; return x < CW / 2 ? 'ArrowLeft' : 'ArrowRight'; }
             }
         }
 
-        function showStim() {
+        let anchorFired = false;
+
+        function showStimItem(st) {
             if (expPhase === 'done') return;
             expPhase = 'stimulus'; trialNum++;
-            const st = EC.stimuli[Math.floor(Math.random() * EC.stimuli.length)];
+            anchorFired = false;
+            stopCurrentAudio();
 
-            let canvasX, canvasY, sizeRef = 40;
+            let canvasX = CW / 2, canvasY = CH / 2, sizeRef = 40;
             if (st.type === 'shape') sizeRef = st.size / 2;
             else if (st.type === 'image') sizeRef = st.width / 2;
             else if (st.type === 'word') sizeRef = st.fontSize;
 
-            const { x, y } = resolvePos(st, sizeRef);
+            const isAudio = (st.type === 'audio');
+            const { x, y } = isAudio ? { x: CW / 2, y: CH / 2 } : resolvePos(st, sizeRef);
             canvasX = x; canvasY = y;
             const ek = expectedKey(x, y);
-            const posMode = st.pos.random ? 'random' : 'fixed';
+            const posMode = st.pos?.random ? 'random' : 'fixed';
 
-            // Build trial record
             curTrial = {
-                n: trialNum,
-                stimType: st.type,
-                stimLabel: st.type === 'shape' ? st.shape : st.type === 'image' ? st.name : st.text,
-                stimDetail: st.type === 'shape' ? `${st.size}px` : st.type === 'image' ? st.url : `${st.fontSize}px`,
-                size: st.type === 'shape' ? st.size : st.type === 'image' ? st.width : st.fontSize,
-                color: (st.color || 'N/A'),
-                colorName: (st.colorName || 'N/A'),
-                posMode,
-                cx: Math.round(x - CW / 2), cy: Math.round(-(y - CH / 2)),
-                expectedKey: ek, responseKey: null, rt: null, outcome: 'miss'
+                n: trialNum, stimType: st.type, stimSource: 'pool',
+                stimLabel: st.type === 'shape' ? st.shape : st.type === 'image' ? st.name : st.type === 'word' ? st.text : st.name,
+                stimDetail: st.type === 'shape' ? `${st.size}px` : st.type === 'image' ? st.url : st.type === 'word' ? `${st.fontSize}px` : (st.url || ''),
+                size: st.type === 'shape' ? st.size : st.type === 'image' ? st.width : st.type === 'word' ? st.fontSize : 0,
+                color: (st.color || 'N/A'), colorName: (st.colorName || 'N/A'),
+                posMode, cx: Math.round(x - CW / 2), cy: Math.round(-(y - CH / 2)),
+                expectedKey: ek, responseKey: null, rt: null, anchorRt: null, outcome: 'miss',
+                _anchorOn: st.anchorOn, _anchorTime: st.anchorTime, _preMode: st.preMode
             };
 
             bgLayer();
             if (EC.fixOn && EC.fixMode === 'always') drawFix();
             drawStim(st, x, y);
-            trialStartMs = performance.now();
-            if (st.duration !== -1) tStim = setTimeout(() => { if (expPhase === 'stimulus') registerResp(null); }, st.duration);
+
+            if (isAudio) {
+                // Play audio
+                playAudioStim(st);
+                if (st.anchorOn && st.anchorTime != null) {
+                    // RT starts at anchor time
+                    trialStartMs = performance.now(); // placeholder until anchor fires
+                    tAnchor = setTimeout(() => {
+                        anchorFired = true;
+                        trialStartMs = performance.now();
+                        // Draw anchor cue
+                        bgLayer(); drawStim(st, x, y); drawAnchorCue();
+                        if (st.anchorWin && st.anchorWin > 0) {
+                            // Auto-miss after response window
+                            tStim = setTimeout(() => { if (expPhase === 'stimulus') registerResp(null); }, st.anchorWin);
+                        }
+                    }, st.anchorTime * 1000);
+                } else {
+                    trialStartMs = performance.now();
+                    anchorFired = true;
+                    if (st.duration !== -1) tStim = setTimeout(() => { if (expPhase === 'stimulus') registerResp(null); }, st.duration);
+                }
+            } else {
+                trialStartMs = performance.now();
+                anchorFired = true;
+                if (st.duration !== -1) tStim = setTimeout(() => { if (expPhase === 'stimulus') registerResp(null); }, st.duration);
+            }
+        }
+
+        function drawAnchorCue() {
+            ctx.fillStyle = 'rgba(255,209,102,0.85)';
+            ctx.font = "12px 'IBM Plex Mono',monospace";
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText('▸ RESPOND NOW', CW / 2, CH / 2 + 80);
+            ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+        }
+
+        function playAudioStim(st) {
+            if (!st._buf) return;
+            const ac = getAudioCtx();
+            const src = ac.createBufferSource();
+            src.buffer = st._buf;
+            src.playbackRate.value = Math.max(0.1, Math.min(4, st.speed || 1));
+            src.detune.value = (st.pitch || 0) * 100; // semitones → cents
+            src.loop = false;
+            const gain = ac.createGain();
+            gain.gain.value = Math.max(0, Math.min(1, st.volume || 1));
+            src.connect(gain); gain.connect(ac.destination);
+            src.start(0);
+            curAudioSrc = { src, gain };
+            // Handle looping manually for N loops
+            let loopCount = 1;
+            const maxLoops = st.loopN || 1;
+            if (maxLoops > 1) {
+                src.onended = () => {
+                    if (expPhase !== 'stimulus') return;
+                    loopCount++;
+                    if (loopCount <= maxLoops) {
+                        const s2 = ac.createBufferSource();
+                        s2.buffer = st._buf; s2.playbackRate.value = src.playbackRate.value; s2.detune.value = src.detune.value;
+                        const g2 = ac.createGain(); g2.gain.value = gain.gain.value;
+                        s2.connect(g2); g2.connect(ac.destination);
+                        s2.start(0); curAudioSrc = { src: s2, gain: g2 };
+                        s2.onended = src.onended;
+                    } else if (expPhase === 'stimulus') {
+                        registerResp(null);
+                    }
+                };
+            } else {
+                src.onended = () => { if (expPhase === 'stimulus' && st.duration === -1) registerResp(null); };
+            }
+        }
+
+        function stopCurrentAudio() {
+            if (curAudioSrc) {
+                try { curAudioSrc.src.onended = null; curAudioSrc.src.stop(); } catch (e) { }
+                curAudioSrc = null;
+            }
+            if (tAnchor) { clearTimeout(tAnchor); tAnchor = null; }
         }
 
         function drawStim(st, x, y) {
             if (st.type === 'shape') {
-                ctx.fillStyle = st.color;
-                if (st.shape === 'circle') { ctx.beginPath(); ctx.arc(x, y, st.size / 2, 0, Math.PI * 2); ctx.fill(); }
-                else if (st.shape === 'square') { ctx.fillRect(x - st.size / 2, y - st.size / 2, st.size, st.size); }
-                else if (st.shape === 'triangle') {
-                    const h = st.size * Math.sqrt(3) / 2;
-                    ctx.beginPath(); ctx.moveTo(x, y - h * 2 / 3); ctx.lineTo(x + st.size / 2, y + h / 3); ctx.lineTo(x - st.size / 2, y + h / 3); ctx.closePath(); ctx.fill();
+                if (st.border && st.borderWidth > 0) {
+                    // border-only mode: stroke, no fill
+                    ctx.strokeStyle = st.color; ctx.lineWidth = st.borderWidth;
+                    if (st.shape === 'circle') { ctx.beginPath(); ctx.arc(x, y, st.size / 2, 0, Math.PI * 2); ctx.stroke(); }
+                    else if (st.shape === 'square') { ctx.strokeRect(x - st.size / 2, y - st.size / 2, st.size, st.size); }
+                    else if (st.shape === 'triangle') { const ht = st.size * Math.sqrt(3) / 2; ctx.beginPath(); ctx.moveTo(x, y - ht * 2 / 3); ctx.lineTo(x + st.size / 2, y + ht / 3); ctx.lineTo(x - st.size / 2, y + ht / 3); ctx.closePath(); ctx.stroke(); }
+                } else {
+                    // default: filled, no border
+                    ctx.fillStyle = st.color;
+                    if (st.shape === 'circle') { ctx.beginPath(); ctx.arc(x, y, st.size / 2, 0, Math.PI * 2); ctx.fill(); }
+                    else if (st.shape === 'square') { ctx.fillRect(x - st.size / 2, y - st.size / 2, st.size, st.size); }
+                    else if (st.shape === 'triangle') { const ht = st.size * Math.sqrt(3) / 2; ctx.beginPath(); ctx.moveTo(x, y - ht * 2 / 3); ctx.lineTo(x + st.size / 2, y + ht / 3); ctx.lineTo(x - st.size / 2, y + ht / 3); ctx.closePath(); ctx.fill(); }
                 }
             } else if (st.type === 'image') {
                 if (st._loadErr) {
@@ -2248,11 +2915,29 @@
                     ctx.drawImage(st._img, x - st.width / 2, y - dh / 2, st.width, dh);
                 }
             } else if (st.type === 'word') {
-                ctx.fillStyle = st.color;
-                ctx.font = `${st.fontSize}px 'IBM Plex Mono', monospace`;
+                ctx.fillStyle = st.color; ctx.font = `${st.fontSize}px 'IBM Plex Mono',monospace`;
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(st.text, x, y);
+                ctx.fillText(st.text, x, y); ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+            } else if (st.type === 'audio') {
+                // Draw audio indicator
+                const label = st.vlabel || ('🔊 ' + st.name);
+                ctx.fillStyle = 'rgba(255,209,102,0.85)';
+                ctx.font = `20px 'IBM Plex Mono',monospace`;
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(label, CW / 2, CH / 2);
+                if (st.anchorOn && !anchorFired) {
+                    ctx.font = `11px 'IBM Plex Mono',monospace`;
+                    ctx.fillStyle = 'rgba(255,209,102,0.5)';
+                    ctx.fillText('Waiting for target sound…', CW / 2, CH / 2 + 36);
+                }
                 ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+                // Draw simple waveform bars decoration
+                const bx = CW / 2 - 40, by = CH / 2 + 56, bw = 8, bh = 16, gap = 5, bars = 8;
+                for (let i = 0; i < bars; i++) {
+                    const h2 = bh * (0.3 + 0.7 * Math.abs(Math.sin(i * 1.3)));
+                    ctx.fillStyle = `rgba(255,209,102,${0.2 + 0.5 * Math.abs(Math.sin(i))})`;
+                    ctx.fillRect(bx + i * (bw + gap), by + bh / 2 - h2 / 2, bw, h2);
+                }
             }
         }
 
@@ -2261,24 +2946,41 @@
                 const valid = EC.type === 'a' ? [' '] : ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
                 const k = e.code === 'Space' ? ' ' : e.key;
                 if (!valid.includes(k)) return;
-                e.preventDefault(); registerResp(k);
-            } else if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) || e.code === 'Space') {
                 e.preventDefault();
-            }
+                // Audio anchor: handle premature
+                if (curTrial && curTrial._anchorOn && !anchorFired) {
+                    const preMode = curTrial._preMode || 'ignore';
+                    if (preMode === 'ignore') return;
+                    if (preMode === 'error') { registerResp(k, true); return; }
+                    // record only: log with negative RT
+                    registerResp(k, false, true); return;
+                }
+                registerResp(k);
+            } else if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) || e.code === 'Space') { e.preventDefault(); }
         }
 
-        function registerResp(key) {
+        function registerResp(key, forcePremature = false, prematureRecord = false) {
             if (!curTrial) return;
+            if (tAnchor) { clearTimeout(tAnchor); tAnchor = null; }
             clearTimeout(tStim); tStim = null; expPhase = 'feedback';
+            stopCurrentAudio();
             const rt = key !== null ? Math.round(performance.now() - trialStartMs) : null;
-            let outcome = key === null ? 'miss' : (EC.type === 'a' ? 'correct' : (key === curTrial.expectedKey ? 'correct' : 'error'));
-            curTrial.responseKey = key; curTrial.rt = rt; curTrial.outcome = outcome;
+            let anchorRt = null;
+            if (curTrial._anchorOn && key !== null && curTrial._anchorTime != null) {
+                anchorRt = rt; // rt is already from anchor if anchorFired
+            }
+            let outcome;
+            if (prematureRecord) { outcome = 'premature'; }
+            else if (forcePremature) { outcome = 'premature-error'; }
+            else if (key === null) { outcome = 'miss'; }
+            else { outcome = EC.type === 'a' ? 'correct' : (key === curTrial.expectedKey ? 'correct' : 'error'); }
+            curTrial.responseKey = key; curTrial.rt = rt; curTrial.anchorRt = anchorRt; curTrial.outcome = outcome;
             trials.push({ ...curTrial });
-            if (outcome !== 'correct') errorCount++;
+            if (outcome === 'error' || outcome === 'premature-error') errorCount++;
             updateHUD(); bgLayer();
             if (EC.showFB) {
                 const fb = document.getElementById('exp-fb');
-                fb.textContent = outcome === 'correct' ? '✓ CORRECT' : outcome === 'error' ? '✗ ERROR' : '– MISSED';
+                fb.textContent = outcome === 'correct' ? '✓ CORRECT' : outcome === 'error' ? '✗ ERROR' : outcome === 'miss' ? '– MISSED' : '⚠ PREMATURE';
                 fb.className = outcome === 'correct' ? 'ok' : 'er';
             }
             if (EC.stopErr && errorCount >= EC.maxErr) { tFb = setTimeout(() => endExp('errors'), 500); return; }
@@ -2286,7 +2988,7 @@
         }
 
         function endExp(reason) {
-            expPhase = 'done'; clearAllTimers(); stopSub(); clearWordT(); removeKey();
+            expPhase = 'done'; clearAllTimers(); stopSub(); clearWordT(); removeKey(); stopCurrentAudio();
             window.removeEventListener('resize', resize);
             document.getElementById('exp-text-word').style.display = 'none';
             document.getElementById('exp-text-sub-wrap').style.display = 'none';
@@ -2294,15 +2996,10 @@
             if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => { });
             bgLayer(); showResults(reason);
         }
-
-        function clearAllTimers() {
-            [tStim, tIsi, tFb, tDur].forEach(t => { if (t) clearTimeout(t); });
-            if (tHud) clearInterval(tHud); tStim = tIsi = tFb = tDur = tHud = null;
-        }
+        function clearAllTimers() { [tStim, tIsi, tFb, tDur, tAnchor].forEach(t => { if (t) clearTimeout(t); }); if (tHud) clearInterval(tHud); tStim = tIsi = tFb = tDur = tHud = tAnchor = null; }
         function addKey(fn) { removeKey(); kListener = fn; document.addEventListener('keydown', fn); }
         function removeKey() { if (kListener) { document.removeEventListener('keydown', kListener); kListener = null; } }
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && expPhase !== 'idle' && expPhase !== 'done') { clearAllTimers(); endExp('aborted'); } });
-
         function updateHUD() {
             const elMs = expStartMs ? Math.floor(performance.now() - expStartMs) : 0;
             const remMs = EC.stopTime ? Math.max(0, Math.floor(EC.durMs) - elMs) : null;
@@ -2312,20 +3009,12 @@
             if (EC.stopErr) document.getElementById('hud-err').textContent = 'ERR ' + errorCount + '/' + EC.maxErr;
         }
 
-        // ══════════════════════════════════════════════════════
-        //  CANVAS HELPERS
-        // ══════════════════════════════════════════════════════
+        // ── Canvas helpers ──
         function resize() { CW = canvas.width = window.innerWidth; CH = canvas.height = window.innerHeight; ctx.fillStyle = EC.bgColor || '#000'; ctx.fillRect(0, 0, CW, CH); }
         function bgLayer() { ctx.fillStyle = EC.bgColor || '#000'; ctx.fillRect(0, 0, CW, CH); }
-        function drawFix() {
-            const cx = CW / 2, cy = CH / 2, s = EC.fixSize;
-            ctx.strokeStyle = EC.fixColor; ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.moveTo(cx - s, cy); ctx.lineTo(cx + s, cy); ctx.moveTo(cx, cy - s); ctx.lineTo(cx, cy + s); ctx.stroke();
-        }
+        function drawFix() { const cx = CW / 2, cy = CH / 2, s = EC.fixSize; ctx.strokeStyle = EC.fixColor; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(cx - s, cy); ctx.lineTo(cx + s, cy); ctx.moveTo(cx, cy - s); ctx.lineTo(cx, cy + s); ctx.stroke(); }
 
-        // ══════════════════════════════════════════════════════
-        //  TEXT OVERLAY
-        // ══════════════════════════════════════════════════════
+        // ── Text overlay ──
         function startSub() {
             const wrap = document.getElementById('exp-text-sub-wrap'); const el = document.getElementById('exp-text-sub');
             el.textContent = EC.textContent;
@@ -2341,185 +3030,87 @@
         }
         function stopSub() { if (subAF) { cancelAnimationFrame(subAF); subAF = null; } }
         function startWords() {
-            const words = EC.textContent.split(/\s+/).filter(Boolean); if (!words.length) return;
-            const el = document.getElementById('exp-text-word'); el.style.display = 'block';
-            let idx = 0;
-            function cycle() {
-                if (expPhase === 'done') { el.style.display = 'none'; return; }
-                el.textContent = words[idx]; idx = (idx + 1) % words.length;
-                const t1 = setTimeout(() => {
-                    if (expPhase === 'done') { el.style.display = 'none'; return; }
-                    el.textContent = '';
-                    const t2 = EC.textWGap > 0 ? setTimeout(cycle, EC.textWGap) : (cycle(), null); if (t2) wordTimers.push(t2);
-                }, EC.textWTime); wordTimers.push(t1);
-            } cycle();
+            const words = EC.textContent.split(/\s+/).filter(Boolean);
+            const we = document.getElementById('exp-text-word'); we.style.display = 'block';
+            let i = 0;
+            (function next() {
+                if (i >= words.length || expPhase === 'done') { we.style.display = 'none'; return; }
+                we.textContent = words[i++];
+                const t1 = setTimeout(() => { we.textContent = ''; const t2 = setTimeout(next, EC.textWGap); wordTimers.push(t2); }, EC.textWTime);
+                wordTimers.push(t1);
+            })();
         }
-        function clearWordT() { wordTimers.forEach(t => clearTimeout(t)); wordTimers = []; document.getElementById('exp-text-word').style.display = 'none'; }
+        function clearWordT() { wordTimers.forEach(clearTimeout); wordTimers = []; document.getElementById('exp-text-word').style.display = 'none'; }
 
         // ══════════════════════════════════════════════════════
         //  RESULTS
         // ══════════════════════════════════════════════════════
-        function computeStats() {
-            const correct = trials.filter(t => t.outcome === 'correct');
-            const rts = correct.map(t => t.rt).filter(r => r !== null);
-            const mean = rts.length ? Math.round(rts.reduce((a, b) => a + b, 0) / rts.length) : null;
-            const sd = rts.length > 1 ? Math.round(Math.sqrt(rts.map(r => (r - mean) ** 2).reduce((a, b) => a + b, 0) / rts.length)) : null;
-            const minRT = rts.length ? Math.min(...rts) : null; const maxRT = rts.length ? Math.max(...rts) : null;
-            const acc = trials.length ? Math.round(correct.length / trials.length * 100) : 0;
-            return { correct, rts, mean, sd, minRT, maxRT, acc, total: trials.length, errors: trials.filter(t => t.outcome === 'error').length, misses: trials.filter(t => t.outcome === 'miss').length };
-        }
-
         function showResults(reason) {
-            const labs = { time: 'Time limit reached', errors: 'Error limit reached', aborted: 'Manually aborted' };
-            document.getElementById('res-sub').textContent = (labs[reason] || 'Session complete') + ' · ' + trials.length + ' trials';
             const subj = EC.subject;
-            let sh = `<div class="res-subj-box-title">Subject Data</div><div class="res-subj-grid">
-    <div class="res-subj-item"><span>ID</span><span>${subj.id}</span></div>
-    <div class="res-subj-item"><span>Gender</span><span>${subj.gender}</span></div>
-    <div class="res-subj-item"><span>Age</span><span>${subj.age}</span></div>
-    <div class="res-subj-item"><span>Hand</span><span>${subj.hand}</span></div>`;
-            for (const cf of subj.custom) sh += `<div class="res-subj-item"><span>${cf.label}</span><span>${cf.value}</span></div>`;
-            sh += '</div>'; document.getElementById('res-subj-box').innerHTML = sh;
-            const s = computeStats(); const f = v => v !== null ? v : '—';
-            document.getElementById('res-stats').innerHTML = `
-    <div class="stat-c"><div class="stat-l">Trials</div><div class="stat-v">${s.total}</div></div>
-    <div class="stat-c"><div class="stat-l">Mean RT</div><div class="stat-v">${f(s.mean)}<span class="stat-u">ms</span></div></div>
-    <div class="stat-c"><div class="stat-l">SD</div><div class="stat-v">${f(s.sd)}<span class="stat-u">ms</span></div></div>
-    <div class="stat-c"><div class="stat-l">Min / Max RT</div><div class="stat-v sm">${f(s.minRT)}<span class="stat-u">ms</span> / ${f(s.maxRT)}<span class="stat-u">ms</span></div></div>
-    <div class="stat-c"><div class="stat-l">Accuracy</div><div class="stat-v">${s.acc}<span class="stat-u">%</span></div></div>`;
-            const kL = k => k === null ? 'MISSED' : k === ' ' ? 'SPACE' : ({ 'ArrowUp': '↑', 'ArrowDown': '↓', 'ArrowLeft': '←', 'ArrowRight': '→' }[k] || k);
-            const zL = k => k === ' ' ? '(random)' : ({ 'ArrowUp': 'upper', 'ArrowDown': 'lower', 'ArrowLeft': 'left', 'ArrowRight': 'right' }[k] || k);
-            const tb = document.getElementById('res-tbody'); tb.innerHTML = '';
+            document.getElementById('res-sub').textContent = `Subject ${subj.id} · ${reason === 'aborted' ? 'Aborted' : reason === 'time' ? 'Time limit reached' : reason === 'errors' ? 'Error limit reached' : reason === 'trials' ? 'All trials complete' : 'Complete'} · ${trialNum} trials`;
+            const box = document.getElementById('res-subj-box');
+            const grid = [['ID', subj.id], ['Gender', subj.gender], ['Age', subj.age], ['Hand', subj.hand], ...(subj.custom || []).map(c => [c.label, c.value])];
+            box.innerHTML = `<div class="res-subj-box-title">Subject</div><div class="res-subj-grid">${grid.map(([k, v]) => `<div class="res-subj-item"><span>${k}</span><span>${v}</span></div>`).join('')}</div>`;
+            const corrects = trials.filter(t => t.outcome === 'correct' && t.rt !== null).map(t => t.rt);
+            const mean = corrects.length ? Math.round(corrects.reduce((a, b) => a + b, 0) / corrects.length) : 0;
+            const sd = corrects.length > 1 ? Math.round(Math.sqrt(corrects.map(x => (x - mean) ** 2).reduce((a, b) => a + b, 0) / (corrects.length - 1))) : 0;
+            const minRT = corrects.length ? Math.min(...corrects) : 0;
+            const maxRT = corrects.length ? Math.max(...corrects) : 0;
+            const errors = trials.filter(t => t.outcome === 'error').length;
+            const misses = trials.filter(t => t.outcome === 'miss').length;
+            document.getElementById('res-stats').innerHTML = [
+                ['Trials', trialNum, ''], ['Correct', corrects.length, ''],
+                ['Mean RT', mean, 'ms'], ['SD', sd, 'ms'], ['Min/Max', minRT + '/' + maxRT, 'ms']
+            ].map(([l, v, u]) => `<div class="stat-c"><div class="stat-l">${l}</div><div class="stat-v${String(v).length > 6 ? ' sm' : ''}">${v}<span class="stat-u">${u}</span></div></div>`).join('');
+            const tbody = document.getElementById('res-tbody'); tbody.innerHTML = '';
+            const zL = k => k === null ? '—' : k === ' ' ? 'SPACE' : k; const kL = k => k === null ? '—' : k === ' ' ? '⎵' : k.replace('Arrow', '');
             for (const t of trials) {
-                const tr = document.createElement('tr'); tr.className = 'rr-' + t.outcome;
-                tr.innerHTML = `<td>${t.n}</td><td>${t.stimType}</td><td>${t.stimLabel}</td><td>${t.stimDetail}</td>
-      <td>${t.size}px</td>
-      <td><span style="display:inline-block;width:8px;height:8px;background:${t.color};vertical-align:middle;margin-right:3px;border:1px solid #333;${t.color === 'N/A' ? 'display:none' : ''}"></span>${t.color}</td>
-      <td>${t.colorName}</td>
-      <td>${t.cx}</td><td>${t.cy}</td><td>${t.posMode}</td>
-      <td>${zL(t.expectedKey)}</td><td>${kL(t.expectedKey)}</td><td>${kL(t.responseKey)}</td>
-      <td>${t.rt !== null ? t.rt : '—'}</td><td>${t.outcome.toUpperCase()}</td>`;
-                tb.appendChild(tr);
+                const cls = t.outcome === 'correct' ? 'rr-correct' : t.outcome === 'error' || t.outcome === 'premature-error' ? 'rr-error' : 'rr-miss';
+                const tr = document.createElement('tr'); tr.className = cls;
+                tr.innerHTML = `<td>${t.n}</td><td>${t.stimType}</td><td>${t.stimSource || 'pool'}</td><td>${t.stimLabel || '—'}</td><td>${t.stimDetail || '—'}</td><td>${t.size || '—'}</td><td>${t.color || '—'}</td><td>${t.colorName || '—'}</td><td>${t.cx}</td><td>${t.cy}</td><td>${t.posMode}</td><td>${zL(t.expectedKey)}</td><td>${kL(t.expectedKey)}</td><td>${kL(t.responseKey)}</td><td>${t.rt ?? '—'}</td><td>${t.anchorRt ?? '—'}</td><td>${t.outcome.toUpperCase()}</td>`;
+                tbody.appendChild(tr);
             }
             showPage('pg-results');
         }
 
-        // ══════════════════════════════════════════════════════
-        //  SUBJECT COLUMNS (shared by CSV + Excel)
-        // ══════════════════════════════════════════════════════
-        function subjCols() {
-            const subj = EC.subject;
-            const hdrs = ['Subject_ID', 'Gender', 'Age', 'Dominant_Hand'];
-            const vals = [subj.id, subj.gender, subj.age, subj.hand];
-            for (const cf of subj.custom) { hdrs.push(cf.label.replace(/,/g, ';')); vals.push(String(cf.value).replace(/,/g, ';')); }
-            return { hdrs, vals };
-        }
-
-        // ══════════════════════════════════════════════════════
-        //  EXPORT CSV
-        // ══════════════════════════════════════════════════════
         function exportCSV() {
-            const kL = k => k === null ? 'NONE' : k === ' ' ? 'SPACE' : ({ 'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 'ArrowLeft': 'LEFT', 'ArrowRight': 'RIGHT' }[k] || k);
-            const zL = k => k === ' ' ? 'random' : ({ 'ArrowUp': 'upper', 'ArrowDown': 'lower', 'ArrowLeft': 'left', 'ArrowRight': 'right' }[k] || k);
-            const { hdrs, vals } = subjCols();
-            const trialHdr = ['Trial', 'Stim_Type', 'Stim_Label', 'Stim_Detail', 'Size_px', 'Color_Hex', 'Color_Name', 'X_from_center', 'Y_from_center', 'Pos_Mode', 'Zone', 'Expected_Key', 'Response_Key', 'RT_ms', 'Outcome'];
-            const hdr = [...hdrs, ...trialHdr];
-            const rows = trials.map(t => [...vals, t.n, t.stimType, t.stimLabel, t.stimDetail, t.size, t.color, t.colorName, t.cx, t.cy, t.posMode, zL(t.expectedKey), kL(t.expectedKey), kL(t.responseKey), t.rt !== null ? t.rt : 'NA', t.outcome]);
-            const csv = [hdr, ...rows].map(r => r.join(',')).join('\n');
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-            a.download = `reactionlab_${EC.subject.id || 'subj'}_${new Date().toISOString().slice(0, 10)}.csv`;
-            a.click();
+            const subj = EC.subject;
+            const hdr = ['Trial', 'Type', 'Source', 'Label', 'Detail', 'Size', 'ColorHex', 'ColorName', 'X', 'Y', 'PosMode', 'Expected', 'Response', 'RT_ms', 'AnchorRT_ms', 'Outcome', 'SubjID', 'Gender', 'Age', 'Hand'];
+            const rows = [hdr];
+            for (const t of trials) {
+                rows.push([t.n, t.stimType, t.stimSource || 'pool', t.stimLabel, t.stimDetail, t.size, t.color, t.colorName, t.cx, t.cy, t.posMode, t.expectedKey, t.responseKey, t.rt ?? '', t.anchorRt ?? '', t.outcome, subj.id, subj.gender, subj.age, subj.hand]);
+            }
+            const csv = rows.map(r => r.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
+            const blob = new Blob([csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `reactionlab_${subj.id || 'subj'}_${new Date().toISOString().slice(0, 10)}.csv`; a.click();
         }
-
-        // ══════════════════════════════════════════════════════
-        //  EXPORT EXCEL
-        // ══════════════════════════════════════════════════════
-        function xlCell(v, type = 'String') {
-            if (v === null || v === undefined || v === '—' || v === 'NA') return `<Cell><Data ss:Type="String">—</Data></Cell>`;
-            return `<Cell><Data ss:Type="${type}">${String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</Data></Cell>`;
-        }
-        function xlRow(...cells) { return `<Row>${cells.join('')}</Row>`; }
-        function xlHdr(l) { return `<Cell ss:StyleID="hdr"><Data ss:Type="String">${l}</Data></Cell>`; }
-        function xlN(v) { return xlCell(v !== null && v !== 'NA' && v !== '—' ? v : 'NA', (v !== null && v !== 'NA' && v !== '—' ? 'Number' : 'String')); }
 
         function exportExcel() {
-            const s = computeStats(); const subj = EC.subject;
-            const kL = k => k === null ? 'NONE' : k === ' ' ? 'SPACE' : ({ 'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 'ArrowLeft': 'LEFT', 'ArrowRight': 'RIGHT' }[k] || k);
-            const zL = k => k === ' ' ? 'random' : ({ 'ArrowUp': 'upper', 'ArrowDown': 'lower', 'ArrowLeft': 'left', 'ArrowRight': 'right' }[k] || k);
-            const { hdrs, vals } = subjCols();
-
-            // Summary sheet
+            const subj = EC.subject;
+            const xlHdr = v => `<Cell ss:StyleID="hdr"><Data ss:Type="String">${String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;')}</Data></Cell>`;
+            const xlCell = v => `<Cell><Data ss:Type="String">${String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;')}</Data></Cell>`;
+            const xlN = v => `<Cell><Data ss:Type="Number">${v ?? 0}</Data></Cell>`;
+            const xlRow = (...cells) => `<Row>${cells.join('')}</Row>`;
+            const hdrs = ['SubjID', 'Gender', 'Age', 'Hand'];
+            const vals = [subj.id, subj.gender, subj.age, subj.hand];
             let summ = '';
-            summ += xlRow(xlHdr('SUBJECT DATA'), '');
-            summ += xlRow(xlCell('Subject ID'), xlCell(subj.id));
-            summ += xlRow(xlCell('Gender'), xlCell(subj.gender));
-            summ += xlRow(xlCell('Age'), xlCell(subj.age));
-            summ += xlRow(xlCell('Dominant Hand'), xlCell(subj.hand));
-            for (const cf of subj.custom) summ += xlRow(xlCell(cf.label), xlCell(cf.value));
-            summ += xlRow('', '');
-            summ += xlRow(xlHdr('EXPERIMENT'), '');
-            summ += xlRow(xlCell('Type'), xlCell({ a: 'A-Simple RT', b: 'B-Vertical', c: 'C-Horizontal', d: 'D-Four Direction' }[EC.type]));
-            summ += xlRow(xlCell('Total Trials'), xlN(s.total));
-            summ += xlRow(xlCell('Correct'), xlN(s.correct.length));
-            summ += xlRow(xlCell('Errors'), xlN(s.errors));
-            summ += xlRow(xlCell('Misses'), xlN(s.misses));
-            summ += xlRow(xlCell('Accuracy (%)'), xlN(s.acc));
-            summ += xlRow('', '');
-            summ += xlRow(xlHdr('RT STATISTICS'), '');
-            summ += xlRow(xlCell('Mean RT (ms)'), xlN(s.mean));
-            summ += xlRow(xlCell('SD (ms)'), xlN(s.sd));
-            summ += xlRow(xlCell('Min RT (ms)'), xlN(s.minRT));
-            summ += xlRow(xlCell('Max RT (ms)'), xlN(s.maxRT));
-            // per-type breakdown
-            for (const typ of ['shape', 'image', 'word']) {
-                const tRTs = trials.filter(t => t.stimType === typ && t.outcome === 'correct' && t.rt !== null).map(t => t.rt);
-                if (!tRTs.length) continue;
-                summ += xlRow('', ''); summ += xlRow(xlHdr('RT — ' + typ.toUpperCase()), '');
-                const tM = Math.round(tRTs.reduce((a, b) => a + b, 0) / tRTs.length);
-                summ += xlRow(xlCell('Mean'), xlN(tM));
-                summ += xlRow(xlCell('Min'), xlN(Math.min(...tRTs)));
-                summ += xlRow(xlCell('Max'), xlN(Math.max(...tRTs)));
-            }
+            summ += xlRow(xlHdr('Subject'));
+            hdrs.forEach((h, i) => summ += xlRow(xlCell(h), xlCell(vals[i])));
+            if (subj.custom?.length) { subj.custom.forEach(c => summ += xlRow(xlCell(c.label), xlCell(c.value))); }
+            summ += xlRow('', ''); summ += xlRow(xlHdr('Statistics'), '');
+            const corrects = trials.filter(t => t.outcome === 'correct' && t.rt !== null).map(t => t.rt);
+            const mean = corrects.length ? Math.round(corrects.reduce((a, b) => a + b, 0) / corrects.length) : 0;
+            const sd = corrects.length > 1 ? Math.round(Math.sqrt(corrects.map(x => (x - mean) ** 2).reduce((a, b) => a + b, 0) / (corrects.length - 1))) : 0;
+            [['Total Trials', trialNum], ['Correct', corrects.length], ['Mean RT (ms)', mean], ['SD (ms)', sd], ['Min RT (ms)', corrects.length ? Math.min(...corrects) : 0], ['Max RT (ms)', corrects.length ? Math.max(...corrects) : 0]].forEach(([l, v]) => summ += xlRow(xlCell(l), xlN(v)));
 
-            // Trial log sheet — subject cols prepended
             let log = '';
-            log += xlRow(...hdrs.map(h => xlHdr(h)),
-                xlHdr('#'), xlHdr('Stim Type'), xlHdr('Label / Name'), xlHdr('Detail'),
-                xlHdr('Size (px)'), xlHdr('Color Hex'), xlHdr('Color Name'),
-                xlHdr('X (0=center)'), xlHdr('Y (0=center)'), xlHdr('Pos Mode'),
-                xlHdr('Zone'), xlHdr('Expected Key'), xlHdr('Response Key'), xlHdr('RT (ms)'), xlHdr('Outcome')
-            );
+            log += xlRow(xlHdr('#'), xlHdr('Type'), xlHdr('Source'), xlHdr('Label'), xlHdr('Detail'), xlHdr('Size'), xlHdr('ColorHex'), xlHdr('ColorName'), xlHdr('X'), xlHdr('Y'), xlHdr('PosMode'), xlHdr('Expected'), xlHdr('Response'), xlHdr('RT (ms)'), xlHdr('AnchorRT (ms)'), xlHdr('Outcome'));
             for (const t of trials) {
-                log += xlRow(
-                    ...vals.map(v => xlCell(v)),
-                    xlN(t.n), xlCell(t.stimType), xlCell(t.stimLabel), xlCell(t.stimDetail),
-                    xlN(t.size), xlCell(t.color), xlCell(t.colorName),
-                    xlN(t.cx), xlN(t.cy), xlCell(t.posMode),
-                    xlCell(zL(t.expectedKey)), xlCell(kL(t.expectedKey)), xlCell(kL(t.responseKey)),
-                    xlN(t.rt), xlCell(t.outcome.toUpperCase())
-                );
+                log += xlRow(xlN(t.n), xlCell(t.stimType), xlCell(t.stimSource || 'pool'), xlCell(t.stimLabel), xlCell(t.stimDetail), xlN(t.size), xlCell(t.color), xlCell(t.colorName), xlN(t.cx), xlN(t.cy), xlCell(t.posMode), xlCell(t.expectedKey), xlCell(t.responseKey), xlN(t.rt ?? ''), xlN(t.anchorRt ?? ''), xlCell(t.outcome.toUpperCase()));
             }
-
-            const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<?mso-application progid="Excel.Sheet"?>
-<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
- xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
- <Styles>
-  <Style ss:ID="hdr"><Font ss:Bold="1" ss:Color="#007060"/></Style>
- </Styles>
- <Worksheet ss:Name="Summary">
-  <Table><Column ss:Width="200"/><Column ss:Width="200"/>${summ}</Table>
- </Worksheet>
- <Worksheet ss:Name="Trial Log">
-  <Table ss:DefaultColumnWidth="100">${log}</Table>
- </Worksheet>
-</Workbook>`;
-
-            const blob = new Blob([xml], { type: 'application/vnd.ms-excel' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `reactionlab_${subj.id || 'subj'}_${new Date().toISOString().slice(0, 10)}.xls`;
-            a.click();
+            const xml = `<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="hdr"><Font ss:Bold="1" ss:Color="#007060"/></Style></Styles><Worksheet ss:Name="Summary"><Table><Column ss:Width="200"/><Column ss:Width="200"/>${summ}</Table></Worksheet><Worksheet ss:Name="Trial Log"><Table ss:DefaultColumnWidth="110">${log}</Table></Worksheet></Workbook>`;
+            const blob = new Blob([xml], { type: 'application/vnd.ms-excel' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `reactionlab_${subj.id || 'subj'}_${new Date().toISOString().slice(0, 10)}.xls`; a.click();
         }
 
         // ══════════════════════════════════════════════════════
@@ -2527,261 +3118,158 @@
         // ══════════════════════════════════════════════════════
         function toggleTheme() {
             const light = document.body.classList.toggle('light');
-            const icon = light ? '🌙' : '☀';
-            const lbl = light ? 'Dark' : 'Light';
-            ['tog-icon', 'tog-lbl', 'tog-icon-r', 'tog-lbl-r'].forEach(id => {
-                const el = document.getElementById(id); if (el) { if (id.includes('icon')) el.textContent = icon; else el.textContent = lbl; }
-            });
+            const icon = light ? '🌙' : '☀'; const lbl = light ? 'Dark' : 'Light';
+            ['tog-icon', 'tog-lbl', 'tog-icon-r', 'tog-lbl-r'].forEach(id => { const el = document.getElementById(id); if (el) { if (id.includes('icon')) el.textContent = icon; else el.textContent = lbl; } });
         }
 
         // ══════════════════════════════════════════════════════
         //  SAVE / LOAD CONFIG
         // ══════════════════════════════════════════════════════
-        function toggleCfgPanel() {
-            const p = document.getElementById('cfg-panel');
-            const btn = document.getElementById('cfg-panel-btn');
-            const open = p.style.display === 'none';
-            p.style.display = open ? 'block' : 'none';
-            btn.textContent = open ? '▾ Hide' : '▸ Show';
-        }
-
-        function cfgMsg(txt, ok = true) {
-            const el = document.getElementById('cfg-msg');
-            el.textContent = txt; el.style.color = ok ? 'var(--ok)' : 'var(--err)';
-            setTimeout(() => { el.textContent = ''; }, 3000);
-        }
+        function cfgMsg(txt, ok = true) { const el = document.getElementById('cfg-msg'); el.textContent = txt; el.style.color = ok ? 'var(--ok)' : 'var(--err)'; setTimeout(() => { el.textContent = ''; }, 3500); }
 
         function exportConfig() {
-            // Read all current card states into a plain object
             const cards = [];
             document.querySelectorAll('#stim-list .stim-card').forEach(card => {
                 const sid = card.id; const type = card.dataset.type;
                 const c = {
                     type, dur: parseInt(document.getElementById(sid + '-dur').value),
-                    pos: {
-                        random: document.getElementById(sid + '-rnd').checked,
-                        x: parseInt(document.getElementById(sid + '-fx').value) || 0,
-                        y: parseInt(document.getElementById(sid + '-fy').value) || 0
-                    }
+                    pos: { random: document.getElementById(sid + '-rnd')?.checked ?? true, x: parseInt(document.getElementById(sid + '-fx')?.value) || 0, y: parseInt(document.getElementById(sid + '-fy')?.value) || 0 }
                 };
-                if (type === 'shape') {
-                    c.shape = document.getElementById(sid + '-shape').value;
-                    c.color = document.getElementById(sid + '-col').value;
-                    c.ss = document.getElementById(sid + '-ss').checked;
-                    c.sm = document.getElementById(sid + '-sm').checked;
-                    c.sl = document.getElementById(sid + '-sl').checked;
-                    c.scx = document.getElementById(sid + '-scx').checked;
-                    c.scv = parseInt(document.getElementById(sid + '-scv').value) || 60;
-                } else if (type === 'image') {
-                    c.url = document.getElementById(sid + '-url').value;
-                    c.name = document.getElementById(sid + '-name').value;
-                    c.w = parseInt(document.getElementById(sid + '-w').value) || 200;
-                } else if (type === 'word') {
-                    c.text = document.getElementById(sid + '-text').value;
-                    c.fs = parseInt(document.getElementById(sid + '-fs').value) || 48;
-                    c.color = document.getElementById(sid + '-col').value;
-                }
+                if (type === 'shape') { c.shape = document.getElementById(sid + '-shape').value; c.color = document.getElementById(sid + '-col').value; c.ss = document.getElementById(sid + '-ss').checked; c.sm = document.getElementById(sid + '-sm').checked; c.sl = document.getElementById(sid + '-sl').checked; c.scx = document.getElementById(sid + '-scx').checked; c.scv = parseInt(document.getElementById(sid + '-scv').value) || 60; c.bd = document.getElementById(sid + '-bd')?.checked || false; c.bw = parseInt(document.getElementById(sid + '-bw')?.value) || 3; }
+                else if (type === 'image') { c.url = document.getElementById(sid + '-url').value; c.name = document.getElementById(sid + '-name').value; c.w = parseInt(document.getElementById(sid + '-w').value) || 200; }
+                else if (type === 'word') { c.text = document.getElementById(sid + '-text').value; c.fs = parseInt(document.getElementById(sid + '-fs').value) || 48; c.color = document.getElementById(sid + '-col').value; }
+                else if (type === 'audio') { c.aurl = document.getElementById(sid + '-aurl').value; c.aname = document.getElementById(sid + '-aname').value; c.vlabel = document.getElementById(sid + '-vlabel').value; c.vol = parseInt(document.getElementById(sid + '-vol').value) || 100; c.speed = parseFloat(document.getElementById(sid + '-speed').value) || 1; c.pitch = parseFloat(document.getElementById(sid + '-pitch').value) || 0; c.loopInf = document.getElementById(sid + '-loop-inf').checked; c.loopN = parseInt(document.getElementById(sid + '-loop-n').value) || 1; c.anchorOn = document.getElementById(sid + '-anchor-on').checked; c.anchorT = parseFloat(document.getElementById(sid + '-anchor-t')?.value) || 0; c.anchorWin = parseInt(document.getElementById(sid + '-anchor-win')?.value) || 2000; c.preMode = document.querySelector(`input[name="${sid}-pre"]:checked`)?.value || 'ignore'; }
                 cards.push(c);
             });
 
-            // Custom subject fields
-            const customFields = [];
-            document.querySelectorAll('#cf-list .cf-row').forEach(r => {
-                customFields.push({ label: r.querySelector('.cf-label').value, value: r.querySelector('.cf-value').value });
+            const listGroupsCfg = [];
+            document.querySelectorAll('#list-groups .stim-list-group').forEach(lg => {
+                const lgId = lg.id; const type = lg.dataset.listType;
+                const stimCfgs = [];
+                lg.querySelectorAll('.stim-card').forEach(card => {
+                    const sid = card.id; const ct = card.dataset.type;
+                    const sc = { type: ct, dur: parseInt(document.getElementById(sid + '-dur').value), pos: { random: document.getElementById(sid + '-rnd')?.checked ?? true, x: parseInt(document.getElementById(sid + '-fx')?.value) || 0, y: parseInt(document.getElementById(sid + '-fy')?.value) || 0 } };
+                    if (ct === 'shape') { sc.shape = document.getElementById(sid + '-shape').value; sc.color = document.getElementById(sid + '-col').value; sc.ss = document.getElementById(sid + '-ss').checked; sc.sm = document.getElementById(sid + '-sm').checked; sc.sl = document.getElementById(sid + '-sl').checked; sc.scx = document.getElementById(sid + '-scx').checked; sc.scv = parseInt(document.getElementById(sid + '-scv').value) || 60; sc.bd = document.getElementById(sid + '-bd')?.checked || false; sc.bw = parseInt(document.getElementById(sid + '-bw')?.value) || 3; }
+                    else if (ct === 'image') { sc.url = document.getElementById(sid + '-url').value; sc.name = document.getElementById(sid + '-name').value; sc.w = parseInt(document.getElementById(sid + '-w').value) || 200; }
+                    else if (ct === 'word') { sc.text = document.getElementById(sid + '-text').value; sc.fs = parseInt(document.getElementById(sid + '-fs').value) || 48; sc.color = document.getElementById(sid + '-col').value; }
+                    else if (ct === 'audio') { sc.aurl = document.getElementById(sid + '-aurl').value; sc.aname = document.getElementById(sid + '-aname').value; sc.vlabel = document.getElementById(sid + '-vlabel').value; sc.vol = parseInt(document.getElementById(sid + '-vol').value) || 100; sc.speed = parseFloat(document.getElementById(sid + '-speed').value) || 1; sc.pitch = parseFloat(document.getElementById(sid + '-pitch').value) || 0; sc.loopInf = document.getElementById(sid + '-loop-inf').checked; sc.loopN = parseInt(document.getElementById(sid + '-loop-n').value) || 1; sc.anchorOn = document.getElementById(sid + '-anchor-on').checked; sc.anchorT = parseFloat(document.getElementById(sid + '-anchor-t')?.value) || 0; sc.anchorWin = parseInt(document.getElementById(sid + '-anchor-win')?.value) || 2000; sc.preMode = document.querySelector(`input[name="${sid}-pre"]:checked`)?.value || 'ignore'; }
+                    stimCfgs.push(sc);
+                });
+                listGroupsCfg.push({ type, orderMode: document.querySelector(`input[name="${lgId}-order"]:checked`)?.value || 'random', repeat: parseInt(document.getElementById(lgId + '-repeat').value) || 1, brk: parseInt(document.getElementById(lgId + '-break').value) || 0, isiMin: parseInt(document.getElementById(lgId + '-isi-min').value) || 800, isiMax: parseInt(document.getElementById(lgId + '-isi-max').value) || 1400, stims: stimCfgs });
             });
 
+            const customFields = [];
+            document.querySelectorAll('#cf-list .cf-row').forEach(r => customFields.push({ label: r.querySelector('.cf-label').value, value: r.querySelector('.cf-value').value }));
+
             const cfg = {
-                _v: 1,
-                subject: {
-                    id: document.getElementById('subj-id').value,
-                    gender: document.querySelector('input[name="subj-gender"]:checked')?.value || 'Male',
-                    age: document.getElementById('subj-age').value,
-                    hand: document.querySelector('input[name="subj-hand"]:checked')?.value || 'Right',
-                    customFields
-                },
-                stimCards: cards,
+                _v: 2, subject: { id: document.getElementById('subj-id').value, gender: document.querySelector('input[name="subj-gender"]:checked')?.value || 'Male', age: document.getElementById('subj-age').value, hand: document.querySelector('input[name="subj-hand"]:checked')?.value || 'Right', customFields },
+                stimCards: cards, listGroups: listGroupsCfg,
                 expType: document.querySelector('input[name="etype"]:checked').value,
-                stopTime: document.getElementById('chk-time').checked,
-                stopErr: document.getElementById('chk-err').checked,
-                dur: document.getElementById('inp-dur').value,
-                maxErr: document.getElementById('inp-err').value,
-                isiMin: document.getElementById('isi-min').value,
-                isiMax: document.getElementById('isi-max').value,
-                fixOn: document.getElementById('chk-fix').checked,
-                fixMode: document.querySelector('input[name="fixmode"]:checked').value,
-                fixDur: document.getElementById('fix-dur').value,
-                fixSize: document.getElementById('fix-size').value,
-                fixColor: document.getElementById('fix-col').value,
-                textOn: document.getElementById('chk-text').checked,
-                textMode: document.getElementById('ttab-word').classList.contains('on') ? 'word' : 'sub',
-                textContent: document.getElementById('text-content').value,
-                textSize: document.getElementById('text-size').value,
-                textColor: document.getElementById('text-col').value,
-                textWTime: document.getElementById('text-wtime').value,
-                textWGap: document.getElementById('text-wgap').value,
-                textSpeed: document.getElementById('text-speed').value,
-                textWinW: document.getElementById('text-winw').value,
-                bgColor: document.getElementById('bg-col').value,
-                fbMode: document.querySelector('input[name="fbmode"]:checked').value,
-                startMode: document.querySelector('input[name="startmode"]:checked').value,
-                fs: document.getElementById('chk-fs').checked,
-                hud: document.getElementById('chk-hud').checked,
+                stopTime: document.getElementById('chk-time').checked, stopErr: document.getElementById('chk-err').checked,
+                dur: document.getElementById('inp-dur').value, maxErr: document.getElementById('inp-err').value,
+                isiMin: document.getElementById('isi-min').value, isiMax: document.getElementById('isi-max').value,
+                fixOn: document.getElementById('chk-fix').checked, fixMode: document.querySelector('input[name="fixmode"]:checked').value,
+                fixDur: document.getElementById('fix-dur').value, fixSize: document.getElementById('fix-size').value, fixColor: document.getElementById('fix-col').value,
+                textOn: document.getElementById('chk-text').checked, textMode: document.getElementById('ttab-word').classList.contains('on') ? 'word' : 'sub',
+                textContent: document.getElementById('text-content').value, textSize: document.getElementById('text-size').value, textColor: document.getElementById('text-col').value,
+                textWTime: document.getElementById('text-wtime').value, textWGap: document.getElementById('text-wgap').value, textSpeed: document.getElementById('text-speed').value, textWinW: document.getElementById('text-winw').value,
+                bgColor: document.getElementById('bg-col').value, fbMode: document.querySelector('input[name="fbmode"]:checked').value,
+                startMode: document.querySelector('input[name="startmode"]:checked').value, fs: document.getElementById('chk-fs').checked, hud: document.getElementById('chk-hud').checked
             };
 
             document.getElementById('cfg-textarea').value = JSON.stringify(cfg, null, 2);
             cfgMsg('✓ Config exported — copy the text above to save it.');
         }
 
+        function applyStimCard(sid, c) {
+            // Helper to restore a stimulus card from config data
+            const type = c.type;
+            if (document.getElementById(sid + '-rnd')) document.getElementById(sid + '-rnd').checked = c.pos?.random ?? true;
+            if (document.getElementById(sid + '-fx')) document.getElementById(sid + '-fx').value = c.pos?.x || 0;
+            if (document.getElementById(sid + '-fy')) document.getElementById(sid + '-fy').value = c.pos?.y || 0;
+            togglePos(sid);
+            if (type === 'shape') {
+                document.getElementById(sid + '-shape').value = c.shape;
+                document.getElementById(sid + '-col').value = c.color; ncol2(sid);
+                document.getElementById(sid + '-ss').checked = c.ss; document.getElementById(sid + '-sm').checked = c.sm; document.getElementById(sid + '-sl').checked = c.sl;
+                document.getElementById(sid + '-scx').checked = c.scx; document.getElementById(sid + '-scv').value = c.scv || 60; toggleCust(sid);
+                if (document.getElementById(sid + '-bd')) { document.getElementById(sid + '-bd').checked = c.bd || false; document.getElementById(sid + '-bw').value = c.bw || 3; toggleBorder(sid); }
+                document.getElementById(sid + '-dur').value = c.dur; updateStimTitle(sid);
+            } else if (type === 'image') {
+                document.getElementById(sid + '-url').value = c.url || ''; document.getElementById(sid + '-name').value = c.name || '';
+                document.getElementById(sid + '-w').value = c.w || 200; document.getElementById(sid + '-dur').value = c.dur; updateStimTitle(sid);
+            } else if (type === 'word') {
+                document.getElementById(sid + '-text').value = c.text || ''; document.getElementById(sid + '-fs').value = c.fs || 48;
+                document.getElementById(sid + '-col').value = c.color; ncol2(sid); document.getElementById(sid + '-dur').value = c.dur; updateStimTitle(sid);
+            } else if (type === 'audio') {
+                document.getElementById(sid + '-aurl').value = c.aurl || ''; document.getElementById(sid + '-aname').value = c.aname || '';
+                document.getElementById(sid + '-vlabel').value = c.vlabel || ''; document.getElementById(sid + '-vol').value = c.vol || 100;
+                document.getElementById(sid + '-speed').value = c.speed || 1; document.getElementById(sid + '-pitch').value = c.pitch || 0;
+                document.getElementById(sid + '-loop-inf').checked = c.loopInf || false; document.getElementById(sid + '-loop-n').value = c.loopN || 1; toggleAudioLoop(sid);
+                document.getElementById(sid + '-dur').value = c.dur;
+                document.getElementById(sid + '-anchor-on').checked = c.anchorOn || false;
+                if (c.anchorOn && document.getElementById(sid + '-anchor-t')) { document.getElementById(sid + '-anchor-t').value = c.anchorT || 0; document.getElementById(sid + '-anchor-win').value = c.anchorWin || 2000; const pr = document.querySelector(`input[name="${sid}-pre"][value="${c.preMode || 'ignore'}"]`); if (pr) pr.checked = true; }
+                toggleAnchor(sid); updateStimTitle(sid);
+            }
+        }
+
         function importConfig() {
             const raw = document.getElementById('cfg-textarea').value.trim();
             if (!raw) { cfgMsg('Paste a config first.', false); return; }
-            let cfg;
-            try { cfg = JSON.parse(raw); } catch (e) { cfgMsg('Invalid config text — could not parse JSON.', false); return; }
+            let cfg; try { cfg = JSON.parse(raw); } catch (e) { cfgMsg('Invalid config text — could not parse JSON.', false); return; }
             if (!cfg._v) { cfgMsg('Unrecognised config format.', false); return; }
 
-            // ── Subject ──
             if (cfg.subject) {
-                document.getElementById('subj-id').value = cfg.subject.id || '';
-                document.getElementById('subj-age').value = cfg.subject.age || '';
-                const gEl = document.querySelector(`input[name="subj-gender"][value="${cfg.subject.gender}"]`);
-                if (gEl) gEl.checked = true;
-                const hEl = document.querySelector(`input[name="subj-hand"][value="${cfg.subject.hand}"]`);
-                if (hEl) hEl.checked = true;
+                document.getElementById('subj-id').value = cfg.subject.id || ''; document.getElementById('subj-age').value = cfg.subject.age || '';
+                const gEl = document.querySelector(`input[name="subj-gender"][value="${cfg.subject.gender}"]`); if (gEl) gEl.checked = true;
+                const hEl = document.querySelector(`input[name="subj-hand"][value="${cfg.subject.hand}"]`); if (hEl) hEl.checked = true;
                 document.getElementById('cf-list').innerHTML = ''; cfCount = 0;
                 for (const cf of (cfg.subject.customFields || [])) addCustomField(cf.label, cf.value);
             }
 
-            // ── Stimulus cards ──
             document.getElementById('stim-list').innerHTML = ''; stimIdCnt = 0;
             for (const c of (cfg.stimCards || [])) {
-                addStim(c.type);
-                const sid = 'st' + stimIdCnt;
-                document.getElementById(sid + '-dur').value = c.dur;
-                document.getElementById(sid + '-rnd').checked = c.pos.random;
-                document.getElementById(sid + '-fx').value = c.pos.x;
-                document.getElementById(sid + '-fy').value = c.pos.y;
-                togglePos(sid);
-                if (c.type === 'shape') {
-                    document.getElementById(sid + '-shape').value = c.shape;
-                    document.getElementById(sid + '-col').value = c.color; ncol2(sid);
-                    document.getElementById(sid + '-ss').checked = c.ss;
-                    document.getElementById(sid + '-sm').checked = c.sm;
-                    document.getElementById(sid + '-sl').checked = c.sl;
-                    document.getElementById(sid + '-scx').checked = c.scx;
-                    document.getElementById(sid + '-scv').value = c.scv;
-                    toggleCust(sid); updateStimTitle(sid);
-                } else if (c.type === 'image') {
-                    document.getElementById(sid + '-url').value = c.url;
-                    document.getElementById(sid + '-name').value = c.name;
-                    document.getElementById(sid + '-w').value = c.w;
-                    updateStimTitle(sid);
-                } else if (c.type === 'word') {
-                    document.getElementById(sid + '-text').value = c.text;
-                    document.getElementById(sid + '-fs').value = c.fs;
-                    document.getElementById(sid + '-col').value = c.color; ncol2(sid);
-                    updateStimTitle(sid);
+                addStim(c.type, 'stim-list');
+                const sid = 'st' + stimIdCnt; applyStimCard(sid, c);
+            }
+
+            document.getElementById('list-groups').innerHTML = ''; lgIdCnt = 0;
+            for (const lg of (cfg.listGroups || [])) {
+                addListGroup(lg.type);
+                const lgId = 'lg' + lgIdCnt;
+                const orderEl = document.querySelector(`input[name="${lgId}-order"][value="${lg.orderMode}"]`); if (orderEl) orderEl.checked = true;
+                document.getElementById(lgId + '-repeat').value = lg.repeat || 1;
+                document.getElementById(lgId + '-break').value = lg.brk || 0;
+                document.getElementById(lgId + '-isi-min').value = lg.isiMin || 800;
+                document.getElementById(lgId + '-isi-max').value = lg.isiMax || 1400;
+                for (const sc of (lg.stims || [])) {
+                    addStim(sc.type, lgId + '-stims');
+                    const sid = 'st' + stimIdCnt; applyStimCard(sid, sc);
                 }
             }
 
-            // ── Experiment type ──
             if (cfg.expType) setType(cfg.expType);
-
-            // ── Stop conditions ──
-            const tc = document.getElementById('chk-time');
-            const ec = document.getElementById('chk-err');
-            if (!tc.disabled) tc.checked = !!cfg.stopTime;
-            if (!ec.disabled) ec.checked = !!cfg.stopErr;
-            document.getElementById('inp-dur').value = cfg.dur || 60000;
-            document.getElementById('inp-err').value = cfg.maxErr || 5;
+            const tc = document.getElementById('chk-time'), ec = document.getElementById('chk-err');
+            if (!tc.disabled) tc.checked = !!cfg.stopTime; if (!ec.disabled) ec.checked = !!cfg.stopErr;
+            document.getElementById('inp-dur').value = cfg.dur || 60000; document.getElementById('inp-err').value = cfg.maxErr || 5;
             updateStopUI();
-
-            // ── Trial settings ──
-            document.getElementById('isi-min').value = cfg.isiMin || 800;
-            document.getElementById('isi-max').value = cfg.isiMax || 1400;
+            document.getElementById('isi-min').value = cfg.isiMin || 800; document.getElementById('isi-max').value = cfg.isiMax || 1400;
             document.getElementById('chk-fix').checked = !!cfg.fixOn; onFixChange();
-            const fm = document.querySelector(`input[name="fixmode"][value="${cfg.fixMode}"]`);
-            if (fm) fm.checked = true;
-            document.getElementById('fix-dur').value = cfg.fixDur || 500;
-            document.getElementById('fix-size').value = cfg.fixSize || 12;
+            const fm = document.querySelector(`input[name="fixmode"][value="${cfg.fixMode}"]`); if (fm) fm.checked = true;
+            document.getElementById('fix-dur').value = cfg.fixDur || 500; document.getElementById('fix-size').value = cfg.fixSize || 12;
             document.getElementById('fix-col').value = cfg.fixColor || '#2a4a2a'; ncol('fix');
-            document.getElementById('chk-text').checked = !!cfg.textOn;
-            document.getElementById('text-sp').classList.toggle('vis', !!cfg.textOn);
-            document.getElementById('text-content').value = cfg.textContent || '';
-            document.getElementById('text-size').value = cfg.textSize || 28;
+            document.getElementById('chk-text').checked = !!cfg.textOn; document.getElementById('text-sp').classList.toggle('vis', !!cfg.textOn);
+            document.getElementById('text-content').value = cfg.textContent || ''; document.getElementById('text-size').value = cfg.textSize || 28;
             document.getElementById('text-col').value = cfg.textColor || '#ffffff'; ncol('text');
-            document.getElementById('text-wtime').value = cfg.textWTime || 600;
-            document.getElementById('text-wgap').value = cfg.textWGap || 200;
-            document.getElementById('text-speed').value = cfg.textSpeed || 80;
-            document.getElementById('text-winw').value = cfg.textWinW || 600;
+            document.getElementById('text-wtime').value = cfg.textWTime || 600; document.getElementById('text-wgap').value = cfg.textWGap || 200;
+            document.getElementById('text-speed').value = cfg.textSpeed || 80; document.getElementById('text-winw').value = cfg.textWinW || 600;
             setTextMode(cfg.textMode || 'word');
-
-            // ── Display ──
             document.getElementById('bg-col').value = cfg.bgColor || '#000000'; ncol('bg');
-            const fb = document.querySelector(`input[name="fbmode"][value="${cfg.fbMode}"]`);
-            if (fb) fb.checked = true;
-            const sm = document.querySelector(`input[name="startmode"][value="${cfg.startMode}"]`);
-            if (sm) sm.checked = true;
-            document.getElementById('chk-fs').checked = cfg.fs !== false;
-            document.getElementById('chk-hud').checked = cfg.hud !== false;
+            const fb = document.querySelector(`input[name="fbmode"][value="${cfg.fbMode}"]`); if (fb) fb.checked = true;
+            const sm = document.querySelector(`input[name="startmode"][value="${cfg.startMode}"]`); if (sm) sm.checked = true;
+            document.getElementById('chk-fs').checked = cfg.fs !== false; document.getElementById('chk-hud').checked = cfg.hud !== false;
 
             cfgMsg('✓ Config loaded — all settings restored.');
-        }
-
-        // ══════════════════════════════════════════════════════
-        //  PRELOAD MODAL
-        // ══════════════════════════════════════════════════════
-        function showPreloadModal(total) {
-            const m = document.getElementById('preload-modal');
-            m.style.display = 'flex';
-            document.getElementById('pre-loading').style.display = 'block';
-            document.getElementById('pre-ready').style.display = 'none';
-            document.getElementById('pre-bar').style.width = '0%';
-            document.getElementById('pre-count').textContent = '0 / ' + total;
-            document.getElementById('pre-status').textContent = 'Loading images…';
-        }
-
-        function updatePreloadModal(loaded, total, errors) {
-            const pct = Math.round(loaded / total * 100);
-            document.getElementById('pre-bar').style.width = pct + '%';
-            document.getElementById('pre-count').textContent = loaded + ' / ' + total;
-            document.getElementById('pre-status').textContent =
-                errors.length
-                    ? loaded + ' processed (' + errors.length + ' failed)…'
-                    : 'Loaded ' + loaded + ' of ' + total + '…';
-        }
-
-        function readyPreloadModal(errors) {
-            document.getElementById('pre-loading').style.display = 'none';
-            document.getElementById('pre-ready').style.display = 'block';
-            if (errors.length) {
-                const eb = document.getElementById('pre-errors-box');
-                eb.style.display = 'block';
-                eb.innerHTML = '⚠ ' + errors.length + ' image' + (errors.length > 1 ? 's' : '') + ' failed to load:<br>'
-                    + errors.map(e => '· ' + e).join('<br>');
-                document.getElementById('pre-ready-msg').textContent =
-                    'Experiment is ready. Failed images will show an error placeholder on screen.';
-            } else {
-                document.getElementById('pre-errors-box').style.display = 'none';
-                document.getElementById('pre-ready-msg').textContent =
-                    'All ' + document.getElementById('pre-count').textContent.split('/')[1].trim()
-                    + ' images loaded successfully. The experiment is ready to start.';
-            }
-        }
-
-        function showReadyModal(errors) {
-            // Called when there are no images — still show a ready confirmation
-            const m = document.getElementById('preload-modal');
-            m.style.display = 'flex';
-            document.getElementById('pre-loading').style.display = 'none';
-            document.getElementById('pre-ready').style.display = 'block';
-            document.getElementById('pre-errors-box').style.display = 'none';
-            document.getElementById('pre-ready-msg').textContent =
-                'All settings are prepared. The experiment is ready to start.';
-        }
-
-        function dismissPreloadModal() {
-            document.getElementById('preload-modal').style.display = 'none';
-            initExperiment();
         }
 
         // ══════════════════════════════════════════════════════
@@ -2789,8 +3277,9 @@
         // ══════════════════════════════════════════════════════
         ['fix', 'text', 'bg'].forEach(ncol);
         onFixChange();
-        // Add one default shape to get started
-        addStim('shape');
+        addStim('shape', 'stim-list');
+        // Open section 01 (stimuli) by default so user sees stimuli right away
+        toggleSection('sec-01');
     </script>
 </body>
 
