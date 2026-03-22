@@ -1,0 +1,2797 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReactionLab — RT Study</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #07090d;
+            --s1: #0d1017;
+            --s2: #121620;
+            --b1: #1a2133;
+            --b2: #26354f;
+            --acc: #64ffda;
+            --txt: #c8d6f0;
+            --dim: #4a6080;
+            --faint: #243040;
+            --err: #ff5252;
+            --warn: #ffd740;
+            --ok: #69f0ae;
+            --f: 'IBM Plex Mono', monospace;
+            --sh: #ff9e64;
+            --img: #7ec8e3;
+            --wd: #c3a6ff;
+        }
+
+        body.light {
+            --bg: #f4f5f7;
+            --s1: #ffffff;
+            --s2: #eaecf0;
+            --b1: #ced4de;
+            --b2: #b0b8ca;
+            --acc: #007a63;
+            --txt: #1a2233;
+            --dim: #5a6a84;
+            --faint: #98a6bc;
+            --err: #d32f2f;
+            --warn: #8a6200;
+            --ok: #2e7d32;
+            --sh: #b84d00;
+            --img: #1356a8;
+            --wd: #5c1a8a;
+        }
+
+        #theme-toggle {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--f);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            color: var(--dim);
+            background: none;
+            border: 1px solid var(--b2);
+            cursor: pointer;
+            padding: 5px 12px;
+            transition: border-color .15s, color .15s;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        #theme-toggle:hover {
+            border-color: var(--acc);
+            color: var(--acc)
+        }
+
+        .tog-track {
+            width: 28px;
+            height: 15px;
+            border: 1px solid var(--b2);
+            border-radius: 8px;
+            background: var(--faint);
+            position: relative;
+            transition: background .2s, border-color .2s;
+            flex-shrink: 0
+        }
+
+        .tog-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--dim);
+            transition: transform .2s, background .2s
+        }
+
+        body.light .tog-track {
+            background: var(--acc);
+            border-color: var(--acc)
+        }
+
+        body.light .tog-thumb {
+            transform: translateX(13px);
+            background: #fff
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--txt);
+            font-family: var(--f);
+            font-size: 13px;
+            min-height: 100vh
+        }
+
+        .page {
+            display: none
+        }
+
+        .page.active {
+            display: block
+        }
+
+        /* ── LAYOUT ── */
+        .sw {
+            max-width: 940px;
+            margin: 0 auto;
+            padding: 36px 24px 100px
+        }
+
+        .pg-hdr {
+            border-bottom: 1px solid var(--b1);
+            padding-bottom: 18px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: baseline;
+            gap: 16px
+        }
+
+        .pg-hdr h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--acc);
+            letter-spacing: .14em;
+            text-transform: uppercase
+        }
+
+        .pg-hdr p {
+            color: var(--dim);
+            font-size: 10px;
+            letter-spacing: .06em
+        }
+
+        .section {
+            border: 1px solid var(--b1);
+            background: var(--s1);
+            margin-bottom: 18px
+        }
+
+        .sec-hdr {
+            background: var(--s2);
+            border-bottom: 1px solid var(--b1);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .sec-n {
+            font-size: 9px;
+            color: var(--acc);
+            letter-spacing: .1em;
+            opacity: .55
+        }
+
+        .sec-t {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            flex: 1
+        }
+
+        .sec-b {
+            padding: 16px
+        }
+
+        .dl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--dim);
+            margin-bottom: 7px
+        }
+
+        .irow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .lbl {
+            font-size: 10px;
+            color: var(--dim)
+        }
+
+        .g2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px
+        }
+
+        .g3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px
+        }
+
+        .g4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 12px
+        }
+
+        .g5 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            gap: 10px
+        }
+
+        .dur-hint {
+            font-size: 9px;
+            color: var(--faint);
+            margin-top: 3px;
+            line-height: 1.5
+        }
+
+        .note {
+            font-size: 10px;
+            color: var(--dim);
+            padding: 8px 10px;
+            border-left: 2px solid rgba(100, 255, 218, .4);
+            background: rgba(100, 255, 218, .02);
+            margin-top: 10px;
+            line-height: 1.6
+        }
+
+        /* ── SUBJECT FORM ── */
+        .subj-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 14px
+        }
+
+        .subj-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+
+        .subj-lbl {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--dim)
+        }
+
+        .subj-radio-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap
+        }
+
+        .subj-radio {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--dim);
+            cursor: pointer
+        }
+
+        .cf-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px
+        }
+
+        .cf-del {
+            font-family: var(--f);
+            font-size: 12px;
+            color: var(--err);
+            background: none;
+            border: 1px solid rgba(255, 82, 82, .3);
+            cursor: pointer;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+
+        .cf-del:hover {
+            background: rgba(255, 82, 82, .12)
+        }
+
+        /* ── STIMULUS CARDS ── */
+        .stim-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px
+        }
+
+        .stim-card {
+            border: 1px solid var(--b2);
+            background: var(--bg)
+        }
+
+        .stim-card-hdr {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--b1)
+        }
+
+        .stim-tag {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border: 1px solid
+        }
+
+        .stim-tag.sh {
+            color: var(--sh);
+            border-color: rgba(255, 158, 100, .3);
+            background: rgba(255, 158, 100, .06)
+        }
+
+        .stim-tag.img {
+            color: var(--img);
+            border-color: rgba(126, 200, 227, .3);
+            background: rgba(126, 200, 227, .06)
+        }
+
+        .stim-tag.wd {
+            color: var(--wd);
+            border-color: rgba(195, 166, 255, .3);
+            background: rgba(195, 166, 255, .06)
+        }
+
+        .stim-card-title {
+            flex: 1;
+            font-size: 11px;
+            color: var(--dim)
+        }
+
+        .stim-del {
+            font-family: var(--f);
+            font-size: 11px;
+            color: var(--err);
+            background: none;
+            border: 1px solid rgba(255, 82, 82, .25);
+            cursor: pointer;
+            padding: 2px 7px;
+            letter-spacing: .06em
+        }
+
+        .stim-del:hover {
+            background: rgba(255, 82, 82, .1)
+        }
+
+        .stim-card-body {
+            padding: 12px;
+            display: grid;
+            gap: 14px
+        }
+
+        /* position row inside card */
+        .pos-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 8px 10px;
+            border: 1px solid var(--b1);
+            background: var(--s1)
+        }
+
+        .pos-sep {
+            width: 1px;
+            height: 14px;
+            background: var(--b2);
+            flex-shrink: 0
+        }
+
+        /* add buttons row */
+        .add-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--f);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            cursor: pointer;
+            padding: 6px 14px;
+            border: 1px solid;
+            transition: background .12s;
+            text-transform: uppercase
+        }
+
+        .add-btn.sh {
+            color: var(--sh);
+            border-color: rgba(255, 158, 100, .35);
+            background: rgba(255, 158, 100, .04)
+        }
+
+        .add-btn.sh:hover {
+            background: rgba(255, 158, 100, .1)
+        }
+
+        .add-btn.img {
+            color: var(--img);
+            border-color: rgba(126, 200, 227, .35);
+            background: rgba(126, 200, 227, .04)
+        }
+
+        .add-btn.img:hover {
+            background: rgba(126, 200, 227, .1)
+        }
+
+        .add-btn.wd {
+            color: var(--wd);
+            border-color: rgba(195, 166, 255, .35);
+            background: rgba(195, 166, 255, .04)
+        }
+
+        .add-btn.wd:hover {
+            background: rgba(195, 166, 255, .1)
+        }
+
+        .add-btn-subj {
+            color: var(--acc);
+            border-color: rgba(100, 255, 218, .25);
+            background: none;
+            font-family: var(--f);
+            font-size: 10px;
+            letter-spacing: .06em;
+            cursor: pointer;
+            padding: 5px 12px;
+            border: 1px solid;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .add-btn-subj:hover {
+            background: rgba(100, 255, 218, .05)
+        }
+
+        /* sz checkboxes */
+        .sz-opt {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 2px 0;
+            cursor: pointer;
+            font-size: 11px;
+            color: var(--dim);
+            user-select: none
+        }
+
+        .sz-opt:hover {
+            color: var(--txt)
+        }
+
+        .sz-px {
+            font-size: 9px;
+            color: var(--faint)
+        }
+
+        .cust-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 2px 0
+        }
+
+        /* color pick */
+        .color-pick-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px
+        }
+
+        .cname {
+            font-size: 10px;
+            color: var(--dim);
+            font-style: italic
+        }
+
+        .chex {
+            font-size: 9px;
+            color: var(--faint)
+        }
+
+        /* inputs */
+        input[type=number],
+        input[type=text],
+        textarea,
+        select {
+            background: var(--bg);
+            border: 1px solid var(--b2);
+            color: var(--txt);
+            font-family: var(--f);
+            font-size: 12px;
+            padding: 3px 7px;
+            outline: none;
+            transition: border-color .15s
+        }
+
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none
+        }
+
+        textarea {
+            resize: vertical;
+            line-height: 1.5
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 18px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234a6080'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 6px center
+        }
+
+        .w44 {
+            width: 44px
+        }
+
+        .w56 {
+            width: 56px
+        }
+
+        .w72 {
+            width: 72px
+        }
+
+        .w90 {
+            width: 90px
+        }
+
+        .w110 {
+            width: 110px
+        }
+
+        .w140 {
+            width: 140px
+        }
+
+        .wfull {
+            width: 100%
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: var(--acc)
+        }
+
+        input:disabled,
+        textarea:disabled,
+        select:disabled {
+            opacity: .28;
+            cursor: not-allowed
+        }
+
+        input[type=checkbox] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--b2);
+            background: var(--bg);
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            vertical-align: middle;
+            transition: background .12s, border-color .12s
+        }
+
+        input[type=checkbox]:checked {
+            background: var(--acc);
+            border-color: var(--acc)
+        }
+
+        input[type=checkbox]:checked::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 0;
+            width: 5px;
+            height: 9px;
+            border-right: 2px solid var(--bg);
+            border-bottom: 2px solid var(--bg);
+            transform: rotate(40deg)
+        }
+
+        input[type=checkbox]:disabled {
+            opacity: .25;
+            cursor: not-allowed
+        }
+
+        input[type=radio] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--b2);
+            background: var(--bg);
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0
+        }
+
+        input[type=radio]:checked {
+            border-color: var(--acc)
+        }
+
+        input[type=radio]:checked::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--acc);
+            border-radius: 50%;
+            top: 3px;
+            left: 3px
+        }
+
+        input[type=color] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 28px;
+            height: 22px;
+            border: 1px solid var(--b2);
+            background: none;
+            cursor: pointer;
+            padding: 0
+        }
+
+        input[type=color]::-webkit-color-swatch-wrapper {
+            padding: 2px
+        }
+
+        input[type=color]::-webkit-color-swatch {
+            border: none
+        }
+
+        /* experiment type */
+        .r-opts {
+            display: flex;
+            flex-direction: column;
+            gap: 5px
+        }
+
+        .r-opt {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 9px 12px;
+            border: 1px solid var(--b1);
+            cursor: pointer;
+            transition: border-color .12s, background .12s
+        }
+
+        .r-opt:hover {
+            border-color: var(--b2)
+        }
+
+        .r-opt.on {
+            border-color: var(--acc);
+            background: rgba(100, 255, 218, .03)
+        }
+
+        .r-opt-body {
+            flex: 1
+        }
+
+        .r-opt-title {
+            font-size: 12px;
+            font-weight: 500
+        }
+
+        .r-opt-desc {
+            font-size: 10px;
+            color: var(--dim);
+            margin-top: 2px;
+            line-height: 1.5
+        }
+
+        kbd {
+            background: var(--s2);
+            border: 1px solid var(--b2);
+            padding: 0 4px;
+            font-size: 10px;
+            font-family: var(--f)
+        }
+
+        /* stop rows */
+        .stop-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--b1)
+        }
+
+        .stop-row:last-child {
+            border-bottom: none
+        }
+
+        .stop-b {
+            flex: 1
+        }
+
+        .stop-title {
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 3px
+        }
+
+        .stop-desc {
+            font-size: 10px;
+            color: var(--dim);
+            line-height: 1.5
+        }
+
+        .stop-input {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 8px
+        }
+
+        .stop-input label {
+            font-size: 10px;
+            color: var(--dim)
+        }
+
+        .badge {
+            font-size: 8px;
+            padding: 1px 6px;
+            border: 1px solid;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-weight: 600
+        }
+
+        .b-auto {
+            color: var(--acc);
+            border-color: rgba(100, 255, 218, .3)
+        }
+
+        .b-lock {
+            color: var(--warn);
+            border-color: rgba(255, 215, 64, .3)
+        }
+
+        .b-off {
+            color: var(--faint);
+            border-color: var(--b1)
+        }
+
+        .cfg-toggle-btn {
+            margin-left: auto;
+            font-family: var(--f);
+            font-size: 10px;
+            color: var(--dim);
+            background: none;
+            border: 1px solid var(--b2);
+            cursor: pointer;
+            padding: 3px 10px;
+            letter-spacing: .06em;
+            transition: color .12s, border-color .12s
+        }
+
+        .cfg-toggle-btn:hover {
+            color: var(--acc);
+            border-color: var(--acc)
+        }
+
+        /* sub-panel & lock */
+        .sp {
+            display: none;
+            margin-top: 10px;
+            padding: 12px;
+            background: var(--bg);
+            border: 1px solid var(--b1)
+        }
+
+        .sp.vis {
+            display: block
+        }
+
+        .lock-wrap {
+            position: relative
+        }
+
+        .lock-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(7, 9, 13, .75);
+            z-index: 5;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--warn);
+            letter-spacing: .06em;
+            border: 1px solid rgba(255, 215, 64, .2)
+        }
+
+        .lock-overlay.vis {
+            display: flex
+        }
+
+        /* text tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 12px
+        }
+
+        .tab {
+            padding: 6px 14px;
+            font-family: var(--f);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1px solid var(--b2);
+            background: var(--bg);
+            color: var(--dim);
+            transition: all .12s
+        }
+
+        .tab:first-child {
+            border-right: none
+        }
+
+        .tab.on {
+            background: var(--b1);
+            color: var(--acc);
+            border-color: var(--acc)
+        }
+
+        /* sz-opt */
+        .sz-opt input[type=checkbox] {
+            vertical-align: middle
+        }
+
+        /* validation & actions */
+        #val-msg {
+            font-size: 10px;
+            color: var(--err);
+            min-height: 14px;
+            margin-top: 4px;
+            letter-spacing: .03em
+        }
+
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px
+        }
+
+        .btn {
+            font-family: var(--f);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            padding: 11px 26px;
+            transition: opacity .15s
+        }
+
+        .btn:disabled {
+            opacity: .3;
+            cursor: not-allowed
+        }
+
+        .btn-p {
+            background: var(--acc);
+            color: var(--bg)
+        }
+
+        .btn-p:hover:not(:disabled) {
+            opacity: .82
+        }
+
+        .btn-s {
+            background: transparent;
+            color: var(--dim);
+            border: 1px solid var(--b2)
+        }
+
+        .btn-s:hover:not(:disabled) {
+            border-color: var(--dim);
+            color: var(--txt)
+        }
+
+        /* ── EXPERIMENT ── */
+        #pg-exp {
+            position: fixed;
+            inset: 0;
+            overflow: hidden
+        }
+
+        #exp-canvas {
+            display: block;
+            position: absolute;
+            inset: 0
+        }
+
+        #exp-overlay {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20
+        }
+
+        #exp-overlay.gone {
+            display: none
+        }
+
+        #ov-title {
+            font-family: var(--f);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 400;
+            letter-spacing: .14em;
+            margin-bottom: 18px
+        }
+
+        #ov-lines {
+            font-family: var(--f);
+            color: #555;
+            font-size: 11px;
+            letter-spacing: .05em;
+            text-align: center;
+            line-height: 2.1
+        }
+
+        #ov-key {
+            margin-top: 28px;
+            padding: 8px 22px;
+            border: 1px solid #2a2a2a;
+            color: #888;
+            font-family: var(--f);
+            font-size: 10px;
+            letter-spacing: .12em;
+            animation: blink 2s ease-in-out infinite
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        #exp-hud {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            z-index: 10;
+            font-family: var(--f);
+            font-size: 10px;
+            color: #1e2e1e;
+            letter-spacing: .05em;
+            text-align: right
+        }
+
+        #exp-hud span {
+            display: block;
+            margin-bottom: 3px
+        }
+
+        #exp-esc {
+            position: absolute;
+            bottom: 16px;
+            right: 18px;
+            z-index: 10;
+            font-family: var(--f);
+            font-size: 9px;
+            color: #1a2a1a;
+            letter-spacing: .05em
+        }
+
+        #exp-fb {
+            position: absolute;
+            bottom: 26px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--f);
+            font-size: 12px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity .1s;
+            z-index: 10;
+            pointer-events: none;
+            white-space: nowrap
+        }
+
+        #exp-fb.ok {
+            opacity: 1;
+            color: var(--ok)
+        }
+
+        #exp-fb.er {
+            opacity: 1;
+            color: var(--err)
+        }
+
+        #exp-text-word {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            pointer-events: none;
+            text-align: center;
+            white-space: nowrap;
+            display: none
+        }
+
+        #exp-text-sub-wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            z-index: 5;
+            pointer-events: none;
+            display: none
+        }
+
+        #exp-text-sub {
+            display: inline-block;
+            white-space: nowrap;
+            will-change: transform
+        }
+
+        /* ── RESULTS ── */
+        .res-stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 9px;
+            margin-bottom: 18px
+        }
+
+        .stat-c {
+            border: 1px solid var(--b1);
+            background: var(--s1);
+            padding: 12px
+        }
+
+        .stat-l {
+            font-size: 8px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--dim);
+            margin-bottom: 4px
+        }
+
+        .stat-v {
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--acc)
+        }
+
+        .stat-v.sm {
+            font-size: 13px
+        }
+
+        .stat-u {
+            font-size: 10px;
+            color: var(--dim);
+            margin-left: 2px
+        }
+
+        .tbl-wrap {
+            border: 1px solid var(--b1);
+            max-height: 420px;
+            overflow: auto;
+            margin-bottom: 14px
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px
+        }
+
+        th {
+            background: var(--s2);
+            padding: 6px 10px;
+            text-align: left;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            color: var(--dim);
+            border-bottom: 1px solid var(--b1);
+            position: sticky;
+            top: 0;
+            white-space: nowrap
+        }
+
+        td {
+            padding: 5px 10px;
+            border-bottom: 1px solid var(--b1);
+            font-size: 11px;
+            white-space: nowrap
+        }
+
+        tr:last-child td {
+            border-bottom: none
+        }
+
+        .rr-correct td {
+            color: var(--txt)
+        }
+
+        .rr-error td {
+            color: var(--err)
+        }
+
+        .rr-miss td {
+            color: var(--dim);
+            font-style: italic
+        }
+
+        .res-subj-box {
+            border: 1px solid var(--b1);
+            background: var(--s1);
+            padding: 12px 14px;
+            margin-bottom: 14px
+        }
+
+        .res-subj-box-title {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--acc);
+            opacity: .6;
+            margin-bottom: 8px
+        }
+
+        .res-subj-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px
+        }
+
+        .res-subj-item span:first-child {
+            font-size: 9px;
+            color: var(--dim);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-right: 6px
+        }
+
+        .res-actions {
+            display: flex;
+            gap: 10px
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--b2)
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ════════════════════ SETTINGS ════════════════════ -->
+    <div id="pg-settings" class="page active">
+        <div class="sw">
+            <div class="pg-hdr">
+                <h1>ReactionLab</h1>
+                <p>Cognitive Response Time Study — Configuration</p>
+                <button id="theme-toggle" onclick="toggleTheme()" title="Switch light / dark mode">
+                    <span id="tog-icon">☀</span>
+                    <div class="tog-track">
+                        <div class="tog-thumb"></div>
+                    </div>
+                    <span id="tog-lbl">Light</span>
+                </button>
+            </div>
+
+            <!-- 00 SUBJECT DATA -->
+            <div class="section">
+                <div class="sec-hdr"><span class="sec-n">00</span><span class="sec-t">Subject Data</span></div>
+                <div class="sec-b">
+                    <div class="subj-grid">
+                        <div class="subj-field">
+                            <div class="subj-lbl">Subject ID</div><input type="text" id="subj-id"
+                                placeholder="e.g. S001" class="wfull">
+                        </div>
+                        <div class="subj-field">
+                            <div class="subj-lbl">Gender</div>
+                            <div class="subj-radio-row">
+                                <label class="subj-radio"><input type="radio" name="subj-gender" value="Male" checked>
+                                    Male</label>
+                                <label class="subj-radio"><input type="radio" name="subj-gender" value="Female">
+                                    Female</label>
+                            </div>
+                        </div>
+                        <div class="subj-field">
+                            <div class="subj-lbl">Age</div><input type="number" id="subj-age" min="1" max="120"
+                                placeholder="—" class="wfull">
+                        </div>
+                        <div class="subj-field">
+                            <div class="subj-lbl">Dominant Hand</div>
+                            <div class="subj-radio-row">
+                                <label class="subj-radio"><input type="radio" name="subj-hand" value="Right" checked>
+                                    Right</label>
+                                <label class="subj-radio"><input type="radio" name="subj-hand" value="Left">
+                                    Left</label>
+                                <label class="subj-radio"><input type="radio" name="subj-hand" value="Both">
+                                    Both</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="cf-list"></div>
+                    <button class="add-btn-subj" onclick="addCustomField()"><span
+                            style="font-size:14px;line-height:1">+</span> Add Custom Field</button>
+                </div>
+            </div>
+
+            <!-- 01 STIMULI -->
+            <div class="section">
+                <div class="sec-hdr"><span class="sec-n">01</span><span class="sec-t">Stimulus Configuration</span>
+                </div>
+                <div class="sec-b">
+                    <div class="stim-list" id="stim-list"></div>
+                    <div class="add-row">
+                        <button class="add-btn sh" onclick="addStim('shape')">+ Shape</button>
+                        <button class="add-btn img" onclick="addStim('image')">+ Image</button>
+                        <button class="add-btn wd" onclick="addStim('word')">+ Word / Phrase</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 02 EXPERIMENT TYPE -->
+            <div class="section">
+                <div class="sec-hdr"><span class="sec-n">02</span><span class="sec-t">Experiment Type</span></div>
+                <div class="sec-b">
+                    <div class="r-opts">
+                        <div class="r-opt on" id="ropt-a" onclick="setType('a')"><input type="radio" name="etype"
+                                value="a" checked>
+                            <div class="r-opt-body">
+                                <div class="r-opt-title">A — Simple Reaction Time</div>
+                                <div class="r-opt-desc">Press <kbd>SPACE</kbd> when the stimulus appears. No position
+                                    discrimination.</div>
+                            </div>
+                        </div>
+                        <div class="r-opt" id="ropt-b" onclick="setType('b')"><input type="radio" name="etype"
+                                value="b">
+                            <div class="r-opt-body">
+                                <div class="r-opt-title">B — Vertical Position</div>
+                                <div class="r-opt-desc">Press <kbd>↑</kbd> if above center; <kbd>↓</kbd> if below.
+                                    (Applies to randomly-positioned stimuli.)</div>
+                            </div>
+                        </div>
+                        <div class="r-opt" id="ropt-c" onclick="setType('c')"><input type="radio" name="etype"
+                                value="c">
+                            <div class="r-opt-body">
+                                <div class="r-opt-title">C — Horizontal Position</div>
+                                <div class="r-opt-desc">Press <kbd>←</kbd> if left; <kbd>→</kbd> if right of center.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="r-opt" id="ropt-d" onclick="setType('d')"><input type="radio" name="etype"
+                                value="d">
+                            <div class="r-opt-body">
+                                <div class="r-opt-title">D — Four-Direction</div>
+                                <div class="r-opt-desc">Press <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> to
+                                    match the stimulus direction from center.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 03 STOP CONDITIONS -->
+            <div class="section">
+                <div class="sec-hdr"><span class="sec-n">03</span><span class="sec-t">Stop Conditions</span></div>
+                <div class="sec-b">
+                    <div class="stop-row">
+                        <input type="checkbox" id="chk-time" checked disabled onchange="updateStopUI()"
+                            style="margin-top:3px">
+                        <div class="stop-b">
+                            <div class="stop-title">Time-Based Stop <span class="badge b-auto"
+                                    id="badge-auto">AUTO</span><span class="badge b-lock" id="badge-lock"
+                                    style="display:none">LOCKED</span></div>
+                            <div class="stop-desc">End after a fixed duration.</div>
+                            <div class="stop-input"><label>Duration:</label><input type="number" id="inp-dur"
+                                    value="60000" min="1" class="w140"><label>ms</label></div>
+                        </div>
+                    </div>
+                    <div class="stop-row">
+                        <input type="checkbox" id="chk-err" disabled onchange="updateStopUI()" style="margin-top:3px">
+                        <div class="stop-b">
+                            <div class="stop-title">Error-Based Stop <span class="badge b-off"
+                                    id="badge-eroff">UNAVAILABLE</span></div>
+                            <div class="stop-desc">End after a specific number of wrong responses. Position-based types
+                                only.</div>
+                            <div class="stop-input"><label>Max errors:</label><input type="number" id="inp-err"
+                                    value="5" min="1" max="9999" class="w90" disabled><label>errors</label></div>
+                        </div>
+                    </div>
+                    <div class="note" id="stop-note">In type A (simple RT), time-based stopping is automatic and the
+                        only option.</div>
+                </div>
+            </div>
+
+            <!-- 04 TRIAL SETTINGS -->
+            <div class="section">
+                <div class="sec-hdr"><span class="sec-n">04</span><span class="sec-t">Trial Settings</span></div>
+                <div class="sec-b">
+                    <div class="g2" style="margin-bottom:18px">
+                        <div>
+                            <div class="dl" style="margin-bottom:7px">Inter-Stimulus Interval (ISI)</div>
+                            <div class="irow"><input type="number" id="isi-min" value="800" min="100" class="w72"><span
+                                    class="lbl">–</span><input type="number" id="isi-max" value="1400" min="100"
+                                    class="w72"><span class="lbl">ms</span></div>
+                            <div class="dur-hint">Random blank between trials.</div>
+                        </div>
+                        <div></div>
+                    </div>
+
+                    <!-- Fixation -->
+                    <div style="border-top:1px solid var(--b1);padding-top:12px;margin-bottom:12px">
+                        <div class="irow" style="margin-bottom:6px">
+                            <input type="checkbox" id="chk-fix" checked onchange="onFixChange()">
+                            <label for="chk-fix" style="font-size:12px;font-weight:500;cursor:pointer">Fixation
+                                Cross</label>
+                        </div>
+                        <div id="fix-sp" class="sp vis">
+                            <div class="g4">
+                                <div>
+                                    <div class="dl" style="margin-bottom:5px">Visibility</div>
+                                    <label class="sz-opt" style="margin-bottom:3px"><input type="radio" name="fixmode"
+                                            value="hide" checked> Hide during stimulus</label>
+                                    <label class="sz-opt"><input type="radio" name="fixmode" value="always"> Always
+                                        visible</label>
+                                </div>
+                                <div>
+                                    <div class="dl" style="margin-bottom:5px">Pre-trial Duration</div>
+                                    <div class="irow"><input type="number" id="fix-dur" value="500" min="50" max="5000"
+                                            class="w72"><span class="lbl">ms</span></div>
+                                </div>
+                                <div>
+                                    <div class="dl" style="margin-bottom:5px">Arm Length</div>
+                                    <div class="irow"><input type="number" id="fix-size" value="12" min="3" max="60"
+                                            class="w56"><span class="lbl">px</span></div>
+                                </div>
+                                <div>
+                                    <div class="dl" style="margin-bottom:5px">Color</div>
+                                    <div class="color-pick-row"><input type="color" id="fix-col" value="#2a4a2a"
+                                            oninput="ncol('fix')"><span class="cname" id="fix-cname">Dark Green</span>
+                                    </div>
+                                    <div class="chex" id="fix-chex">#2a4a2a</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text overlay -->
+                    <div style="border-top:1px solid var(--b1);padding-top:12px" class="lock-wrap">
+                        <div class="lock-overlay" id="text-lock-overlay">⊘ Disable fixation cross to use text overlay
+                        </div>
+                        <div class="irow" style="margin-bottom:6px">
+                            <input type="checkbox" id="chk-text" onchange="toggleSP('text-sp',this)" disabled>
+                            <label for="chk-text" style="font-size:12px;font-weight:500;cursor:pointer;opacity:.4"
+                                id="text-chk-lbl">Text Overlay</label>
+                        </div>
+                        <div id="text-sp" class="sp">
+                            <div class="tabs">
+                                <div class="tab on" id="ttab-word" onclick="setTextMode('word')">Word by Word</div>
+                                <div class="tab" id="ttab-sub" onclick="setTextMode('sub')">Moving Subtitle</div>
+                            </div>
+                            <div style="margin-bottom:10px">
+                                <div class="dl" style="margin-bottom:4px">Text Content</div>
+                                <textarea id="text-content" rows="2" class="wfull" placeholder="Enter text…"></textarea>
+                            </div>
+                            <div class="g4">
+                                <div>
+                                    <div class="dl" style="margin-bottom:4px">Font Size</div>
+                                    <div class="irow"><input type="number" id="text-size" value="28" min="8" max="200"
+                                            class="w56"><span class="lbl">px</span></div>
+                                </div>
+                                <div>
+                                    <div class="dl" style="margin-bottom:4px">Color</div>
+                                    <div class="color-pick-row"><input type="color" id="text-col" value="#ffffff"
+                                            oninput="ncol('text')"><span class="cname" id="text-cname">White</span>
+                                    </div>
+                                    <div class="chex" id="text-chex">#ffffff</div>
+                                </div>
+                                <div id="wp-wtime">
+                                    <div class="dl" style="margin-bottom:4px">Word Display Time</div>
+                                    <div class="irow"><input type="number" id="text-wtime" value="600" min="50"
+                                            max="10000" class="w72"><span class="lbl">ms</span></div>
+                                </div>
+                                <div id="wp-wgap">
+                                    <div class="dl" style="margin-bottom:4px">Gap Between Words</div>
+                                    <div class="irow"><input type="number" id="text-wgap" value="200" min="0" max="5000"
+                                            class="w72"><span class="lbl">ms</span></div>
+                                </div>
+                                <div id="wp-speed" style="display:none">
+                                    <div class="dl" style="margin-bottom:4px">Scroll Speed</div>
+                                    <div class="irow"><input type="number" id="text-speed" value="80" min="5" max="800"
+                                            class="w56"><span class="lbl">px/s</span></div>
+                                </div>
+                                <div id="wp-winw" style="display:none">
+                                    <div class="dl" style="margin-bottom:4px">Window Width</div>
+                                    <div class="irow"><input type="number" id="text-winw" value="600" min="100"
+                                            max="3000" class="w72"><span class="lbl">px</span></div>
+                                    <div class="dur-hint">Invisible centered scroll region.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 05 DISPLAY -->
+            <div class="section">
+                <div class="sec-hdr"><span class="sec-n">05</span><span class="sec-t">Display Settings</span></div>
+                <div class="sec-b">
+                    <div class="g5">
+                        <div>
+                            <div class="dl" style="margin-bottom:7px">Background</div>
+                            <div class="color-pick-row"><input type="color" id="bg-col" value="#000000"
+                                    oninput="ncol('bg')"><span class="cname" id="bg-cname">Black</span></div>
+                            <div class="chex" id="bg-chex">#000000</div>
+                        </div>
+                        <div>
+                            <div class="dl" style="margin-bottom:7px">Feedback</div>
+                            <label class="sz-opt" style="margin-bottom:5px"><input type="radio" name="fbmode"
+                                    value="show" checked> Show on screen</label>
+                            <label class="sz-opt"><input type="radio" name="fbmode" value="hide"> No feedback</label>
+                        </div>
+                        <div>
+                            <div class="dl" style="margin-bottom:7px">Start Mode</div>
+                            <label class="sz-opt" style="margin-bottom:5px"><input type="radio" name="startmode"
+                                    value="overlay" checked> Instructions overlay</label>
+                            <label class="sz-opt"><input type="radio" name="startmode" value="blank"> Blank (SPACE to
+                                start)</label>
+                        </div>
+                        <div>
+                            <div class="dl" style="margin-bottom:7px">Fullscreen</div>
+                            <label class="sz-opt" style="margin-bottom:5px"><input type="checkbox" id="chk-fs" checked>
+                                Enter fullscreen on start</label>
+                        </div>
+                        <div>
+                            <div class="dl" style="margin-bottom:7px">HUD</div>
+                            <label class="sz-opt" style="margin-bottom:5px"><input type="checkbox" id="chk-hud" checked>
+                                Show trial/time counter</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 06 SAVE / LOAD CONFIG -->
+            <div class="section">
+                <div class="sec-hdr">
+                    <span class="sec-n">06</span>
+                    <span class="sec-t">Save / Load Configuration</span>
+                    <button class="cfg-toggle-btn" onclick="toggleCfgPanel()" id="cfg-panel-btn">▸ Show</button>
+                </div>
+                <div id="cfg-panel" style="display:none">
+                    <div class="sec-b">
+                        <div style="margin-bottom:10px;font-size:10px;color:var(--dim);line-height:1.7">
+                            Click <b>Export Config</b> to generate a text snapshot of all current settings.<br>
+                            Copy that text, save it anywhere (notepad, email, etc.).<br>
+                            Later, paste it back and click <b>Load Config</b> to restore all settings exactly.
+                        </div>
+                        <textarea id="cfg-textarea" rows="6" class="wfull" style="font-size:11px;line-height:1.6"
+                            placeholder="Config text will appear here after Export — or paste a saved config here and click Load Config…"></textarea>
+                        <div style="display:flex;gap:10px;margin-top:10px;align-items:center;flex-wrap:wrap">
+                            <button class="btn btn-p" onclick="exportConfig()">Export Config</button>
+                            <button class="btn btn-s" onclick="importConfig()">Load Config</button>
+                            <button class="btn btn-s"
+                                onclick="document.getElementById('cfg-textarea').value=''">Clear</button>
+                            <span id="cfg-msg" style="font-size:10px;color:var(--ok);letter-spacing:.04em"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="val-msg"></div>
+            <div class="action-row">
+                <button class="btn btn-p" onclick="validateAndStart()">Initialize Experiment →</button>
+                <button class="btn btn-s" onclick="resetAll()">Reset Defaults</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ════════════════════ PRELOAD MODAL ════════════════════ -->
+    <div id="preload-modal" style="display:none;position:fixed;inset:0;z-index:999;
+  background:rgba(7,9,13,.92);align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+        <div id="preload-box" style="
+    background:var(--s1);border:1px solid var(--b2);padding:36px 40px;
+    max-width:420px;width:90%;font-family:var(--f);">
+
+            <!-- Loading state -->
+            <div id="pre-loading">
+                <div
+                    style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:18px">
+                    Preparing Experiment
+                </div>
+                <div style="font-size:12px;color:var(--txt);margin-bottom:20px" id="pre-status">
+                    Loading images…
+                </div>
+                <!-- progress bar track -->
+                <div style="height:3px;background:var(--b2);margin-bottom:10px">
+                    <div id="pre-bar" style="height:100%;width:0%;background:var(--acc);transition:width .25s ease">
+                    </div>
+                </div>
+                <div style="font-size:10px;color:var(--dim)" id="pre-count">0 / 0</div>
+            </div>
+
+            <!-- Ready state -->
+            <div id="pre-ready" style="display:none">
+                <div
+                    style="font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);margin-bottom:18px">
+                    ✓ Ready
+                </div>
+                <div style="font-size:12px;color:var(--txt);line-height:1.8;margin-bottom:8px" id="pre-ready-msg">
+                    All assets loaded. The experiment is ready to start.
+                </div>
+                <div id="pre-errors-box" style="display:none;margin-bottom:14px;padding:8px 10px;
+        border-left:2px solid var(--warn);background:rgba(255,215,64,.05);
+        font-size:10px;color:var(--warn);line-height:1.7" id="pre-errs"></div>
+                <div style="display:flex;gap:10px;margin-top:20px">
+                    <button id="pre-ok-btn" class="btn btn-p" onclick="dismissPreloadModal()"
+                        style="flex:1;font-size:12px;letter-spacing:.12em">
+                        OK — Start Experiment
+                    </button>
+                </div>
+                <div style="margin-top:12px;font-size:9px;color:var(--faint);text-align:center">
+                    Press OK, then SPACE to begin
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ════════════════════ EXPERIMENT ════════════════════ -->
+    <div id="pg-exp" class="page">
+        <canvas id="exp-canvas"></canvas>
+        <div id="exp-overlay">
+            <div id="ov-title">EXPERIMENT READY</div>
+            <div id="ov-lines"></div>
+            <div id="ov-key">PRESS SPACE TO BEGIN</div>
+        </div>
+        <div id="exp-hud"><span id="hud-trial">TRIAL —</span><span id="hud-time">TIME —</span><span id="hud-err"
+                style="display:none">ERR 0</span></div>
+        <div id="exp-esc">ESC = ABORT</div>
+        <div id="exp-fb"></div>
+        <div id="exp-text-word"></div>
+        <div id="exp-text-sub-wrap"><span id="exp-text-sub"></span></div>
+    </div>
+
+
+    <!-- ════════════════════ RESULTS ════════════════════ -->
+    <div id="pg-results" class="page">
+        <div class="sw">
+            <div class="pg-hdr">
+                <h1>Results</h1>
+                <p id="res-sub">Session complete</p>
+                <button id="theme-toggle-r" onclick="toggleTheme()" title="Switch light / dark mode"
+                    style="margin-left:auto;display:flex;align-items:center;gap:8px;font-family:var(--f);font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--dim);background:none;border:1px solid var(--b2);cursor:pointer;padding:5px 12px;text-transform:uppercase;flex-shrink:0;">
+                    <span id="tog-icon-r">☀</span>
+                    <div class="tog-track">
+                        <div class="tog-thumb"></div>
+                    </div>
+                    <span id="tog-lbl-r">Light</span>
+                </button>
+            </div>
+            <div class="res-subj-box" id="res-subj-box"></div>
+            <div class="res-stats" id="res-stats"></div>
+            <div class="section" style="margin-bottom:14px">
+                <div class="sec-hdr"><span class="sec-n">•</span><span class="sec-t">Trial Log</span></div>
+                <div class="tbl-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Type</th>
+                                <th>Label / Name</th>
+                                <th>Detail</th>
+                                <th>Size</th>
+                                <th>Color Hex</th>
+                                <th>Color Name</th>
+                                <th>X (0=ctr)</th>
+                                <th>Y (0=ctr)</th>
+                                <th>Pos.Mode</th>
+                                <th>Zone</th>
+                                <th>Expected</th>
+                                <th>Response</th>
+                                <th>RT (ms)</th>
+                                <th>Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody id="res-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="res-actions">
+                <button class="btn btn-p" onclick="exportExcel()">Export Excel (.xls)</button>
+                <button class="btn btn-s" onclick="exportCSV()">Export CSV</button>
+                <button class="btn btn-s" onclick="showPage('pg-settings')">← New Experiment</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // ══════════════════════════════════════════════════════
+        //  CONSTANTS
+        // ══════════════════════════════════════════════════════
+        const COLORS = [
+            { n: 'Red', h: '#ff0000' }, { n: 'Dark Red', h: '#8b0000' }, { n: 'Crimson', h: '#dc143c' },
+            { n: 'Coral', h: '#ff7f50' }, { n: 'Salmon', h: '#fa8072' }, { n: 'Orange Red', h: '#ff4500' },
+            { n: 'Orange', h: '#ff8000' }, { n: 'Gold', h: '#ffd700' }, { n: 'Yellow', h: '#ffff00' },
+            { n: 'Yellow Green', h: '#9acd32' }, { n: 'Lime', h: '#00ff00' }, { n: 'Green', h: '#008000' },
+            { n: 'Forest Green', h: '#228b22' }, { n: 'Teal', h: '#008080' }, { n: 'Cyan', h: '#00ffff' },
+            { n: 'Deep Sky Blue', h: '#00bfff' }, { n: 'Sky Blue', h: '#87ceeb' }, { n: 'Dodger Blue', h: '#1e90ff' },
+            { n: 'Blue', h: '#0000ff' }, { n: 'Navy', h: '#000080' }, { n: 'Indigo', h: '#4b0082' },
+            { n: 'Violet', h: '#ee82ee' }, { n: 'Purple', h: '#800080' }, { n: 'Magenta', h: '#ff00ff' },
+            { n: 'Hot Pink', h: '#ff1493' }, { n: 'Pink', h: '#ff69b4' }, { n: 'Brown', h: '#8b4513' },
+            { n: 'Olive', h: '#808000' }, { n: 'White', h: '#ffffff' }, { n: 'Light Gray', h: '#d3d3d3' },
+            { n: 'Silver', h: '#c0c0c0' }, { n: 'Gray', h: '#808080' }, { n: 'Dark Gray', h: '#404040' },
+            { n: 'Near Black', h: '#111111' }, { n: 'Black', h: '#000000' }
+        ];
+        const SZ = { triangle: { s: 30, m: 55, l: 90 }, square: { s: 25, m: 50, l: 90 }, circle: { s: 25, m: 50, l: 90 } };
+        function hexRgb(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+        function nearestColor(hex) {
+            const [r1, g1, b1] = hexRgb(hex); let best = COLORS[0], bd = 1e9;
+            for (const c of COLORS) { const [r2, g2, b2] = hexRgb(c.h); const d = (r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2; if (d < bd) { bd = d; best = c; } }
+            return best.n;
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  SUBJECT
+        // ══════════════════════════════════════════════════════
+        let cfCount = 0;
+        function addCustomField(lbl = '', val = '') {
+            cfCount++; const id = 'cf' + cfCount;
+            const r = document.createElement('div'); r.className = 'cf-row'; r.id = id;
+            r.innerHTML = `<input type="text" placeholder="Field name" style="flex:1.2" class="cf-label">
+    <span style="font-size:10px;color:var(--dim)">→</span>
+    <input type="text" placeholder="Value" style="flex:1" class="cf-value">
+    <button class="cf-del" onclick="document.getElementById('${id}').remove()">×</button>`;
+            if (lbl) r.querySelector('.cf-label').value = lbl;
+            if (val) r.querySelector('.cf-value').value = val;
+            document.getElementById('cf-list').appendChild(r);
+        }
+        function getSubject() {
+            const d = {
+                id: document.getElementById('subj-id').value.trim() || '—',
+                gender: document.querySelector('input[name="subj-gender"]:checked')?.value || '—',
+                age: document.getElementById('subj-age').value || '—',
+                hand: document.querySelector('input[name="subj-hand"]:checked')?.value || '—', custom: []
+            };
+            document.querySelectorAll('#cf-list .cf-row').forEach(r => {
+                const lbl = r.querySelector('.cf-label').value.trim();
+                const val = r.querySelector('.cf-value').value.trim();
+                if (lbl) d.custom.push({ label: lbl, value: val || '—' });
+            });
+            return d;
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  DYNAMIC STIMULUS CARDS
+        // ══════════════════════════════════════════════════════
+        let stimIdCnt = 0;
+
+        function posBlock(sid) {
+            return `<div class="pos-row">
+    <label class="sz-opt"><input type="checkbox" id="${sid}-rnd" checked onchange="togglePos('${sid}')"> Random position</label>
+    <div class="pos-sep"></div>
+    <span class="lbl">Fixed X:</span>
+    <input type="number" id="${sid}-fx" value="0" class="w72" disabled placeholder="px from center">
+    <span class="lbl">Y:</span>
+    <input type="number" id="${sid}-fy" value="0" class="w72" disabled placeholder="px from center">
+    <span class="lbl" style="font-size:9px;color:var(--faint)">(0,0)=center · X right+ · Y up+</span>
+  </div>`;
+        }
+
+        function togglePos(sid) {
+            const rnd = document.getElementById(sid + '-rnd').checked;
+            document.getElementById(sid + '-fx').disabled = rnd;
+            document.getElementById(sid + '-fy').disabled = rnd;
+        }
+
+        function addStim(type) {
+            stimIdCnt++;
+            const sid = 'st' + stimIdCnt;
+            const el = document.createElement('div');
+            el.className = 'stim-card'; el.id = sid;
+
+            let body = '';
+            if (type === 'shape') {
+                body = `<div class="stim-card-hdr">
+      <span class="stim-tag sh">Shape</span>
+      <span class="stim-card-title" id="${sid}-title">—</span>
+      <button class="stim-del" onclick="removeStim('${sid}')">Remove</button>
+    </div>
+    <div class="stim-card-body" style="grid-template-columns:1fr 1fr 1fr">
+      <div>
+        <div class="dl" style="margin-bottom:5px">Shape Type</div>
+        <select id="${sid}-shape" class="wfull" onchange="updateStimTitle('${sid}')">
+          <option value="triangle">Triangle</option>
+          <option value="square">Square</option>
+          <option value="circle">Circle</option>
+        </select>
+        <div style="margin-top:10px">
+          <div class="dl" style="margin-bottom:5px">Sizes</div>
+          <label class="sz-opt"><input type="checkbox" id="${sid}-ss"> S <span class="sz-px">(small)</span></label>
+          <label class="sz-opt"><input type="checkbox" id="${sid}-sm"> M <span class="sz-px">(medium)</span></label>
+          <label class="sz-opt"><input type="checkbox" id="${sid}-sl"> L <span class="sz-px">(large)</span></label>
+          <div class="cust-row">
+            <input type="checkbox" id="${sid}-scx" onchange="toggleCust('${sid}')">
+            <label for="${sid}-scx" class="lbl" style="cursor:pointer">Custom</label>
+            <input type="number" id="${sid}-scv" value="60" min="5" max="500" class="w56" disabled>
+            <span class="lbl">px</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="dl" style="margin-bottom:5px">Color</div>
+        <div class="color-pick-row"><input type="color" id="${sid}-col" value="#ffffff" oninput="ncol2('${sid}')"><span class="cname" id="${sid}-cname">White</span></div>
+        <div class="chex" id="${sid}-chex">#ffffff</div>
+        <div style="margin-top:12px">
+          <div class="dl" style="margin-bottom:5px">Display Duration</div>
+          <div class="irow"><input type="number" id="${sid}-dur" value="1000" min="-1" class="w90"><span class="lbl">ms</span></div>
+          <div class="dur-hint">−1 = stay until response</div>
+        </div>
+      </div>
+      <div>${posBlock(sid)}</div>
+    </div>`;
+            } else if (type === 'image') {
+                body = `<div class="stim-card-hdr">
+      <span class="stim-tag img">Image</span>
+      <span class="stim-card-title" id="${sid}-title">—</span>
+      <button class="stim-del" onclick="removeStim('${sid}')">Remove</button>
+    </div>
+    <div class="stim-card-body" style="grid-template-columns:1fr 1fr 1fr">
+      <div>
+        <div class="dl" style="margin-bottom:5px">Image URL or Path</div>
+        <input type="text" id="${sid}-url" class="wfull" placeholder="https://… or relative path" oninput="updateStimTitle('${sid}')">
+        <div style="margin-top:10px">
+          <div class="dl" style="margin-bottom:5px">Display Name (for log)</div>
+          <input type="text" id="${sid}-name" class="wfull" placeholder="e.g. face_neutral">
+        </div>
+      </div>
+      <div>
+        <div class="dl" style="margin-bottom:5px">Display Width</div>
+        <div class="irow"><input type="number" id="${sid}-w" value="200" min="10" max="2000" class="w90"><span class="lbl">px (height auto)</span></div>
+        <div style="margin-top:12px">
+          <div class="dl" style="margin-bottom:5px">Display Duration</div>
+          <div class="irow"><input type="number" id="${sid}-dur" value="1000" min="-1" class="w90"><span class="lbl">ms</span></div>
+          <div class="dur-hint">−1 = stay until response</div>
+        </div>
+      </div>
+      <div>${posBlock(sid)}</div>
+    </div>`;
+            } else if (type === 'word') {
+                body = `<div class="stim-card-hdr">
+      <span class="stim-tag wd">Word / Phrase</span>
+      <span class="stim-card-title" id="${sid}-title">—</span>
+      <button class="stim-del" onclick="removeStim('${sid}')">Remove</button>
+    </div>
+    <div class="stim-card-body" style="grid-template-columns:1fr 1fr 1fr">
+      <div>
+        <div class="dl" style="margin-bottom:5px">Text</div>
+        <input type="text" id="${sid}-text" class="wfull" placeholder="Word or phrase" oninput="updateStimTitle('${sid}')">
+        <div style="margin-top:10px">
+          <div class="dl" style="margin-bottom:5px">Font Size</div>
+          <div class="irow"><input type="number" id="${sid}-fs" value="48" min="8" max="400" class="w72"><span class="lbl">px</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="dl" style="margin-bottom:5px">Color</div>
+        <div class="color-pick-row"><input type="color" id="${sid}-col" value="#ffffff" oninput="ncol2('${sid}')"><span class="cname" id="${sid}-cname">White</span></div>
+        <div class="chex" id="${sid}-chex">#ffffff</div>
+        <div style="margin-top:12px">
+          <div class="dl" style="margin-bottom:5px">Display Duration</div>
+          <div class="irow"><input type="number" id="${sid}-dur" value="1000" min="-1" class="w90"><span class="lbl">ms</span></div>
+          <div class="dur-hint">−1 = stay until response</div>
+        </div>
+      </div>
+      <div>${posBlock(sid)}</div>
+    </div>`;
+            }
+
+            el.innerHTML = body;
+            el.dataset.type = type;
+            document.getElementById('stim-list').appendChild(el);
+            updateStimTitle(sid);
+        }
+
+        function removeStim(sid) { document.getElementById(sid)?.remove(); }
+        function toggleCust(sid) { document.getElementById(sid + '-scv').disabled = !document.getElementById(sid + '-scx').checked; }
+        function ncol2(sid) {
+            const el = document.getElementById(sid + '-col'); if (!el) return;
+            const hex = el.value;
+            const cn = document.getElementById(sid + '-cname'); const cx = document.getElementById(sid + '-chex');
+            if (cn) cn.textContent = nearestColor(hex); if (cx) cx.textContent = hex;
+        }
+        function updateStimTitle(sid) {
+            const el = document.getElementById(sid); if (!el) return;
+            const type = el.dataset.type;
+            const title = document.getElementById(sid + '-title'); if (!title) return;
+            if (type === 'shape') { const s = document.getElementById(sid + '-shape'); title.textContent = s ? s.value : '—'; }
+            else if (type === 'image') { const u = document.getElementById(sid + '-url'); const n = document.getElementById(sid + '-name'); title.textContent = (n && n.value) || (u && u.value.split('/').pop().slice(0, 30)) || '—'; }
+            else if (type === 'word') { const t = document.getElementById(sid + '-text'); title.textContent = t ? `"${t.value.slice(0, 24)}"` : '"—"'; }
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  OTHER SETTINGS UI
+        // ══════════════════════════════════════════════════════
+        function showPage(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        function toggleSP(id, chk) { document.getElementById(id).classList.toggle('vis', chk.checked); }
+        function ncol(pfx) {
+            const el = document.getElementById(pfx + '-col'); if (!el) return;
+            const hex = el.value;
+            const cn = document.getElementById(pfx + '-cname'); const cx = document.getElementById(pfx + '-chex');
+            if (cn) cn.textContent = nearestColor(hex); if (cx) cx.textContent = hex;
+        }
+        function onFixChange() {
+            const on = document.getElementById('chk-fix').checked;
+            document.getElementById('fix-sp').classList.toggle('vis', on);
+            document.getElementById('text-lock-overlay').classList.toggle('vis', on);
+            const tc = document.getElementById('chk-text'); const tl = document.getElementById('text-chk-lbl');
+            if (on) { tc.disabled = true; tc.checked = false; document.getElementById('text-sp').classList.remove('vis'); tl.style.opacity = '.4'; }
+            else { tc.disabled = false; tl.style.opacity = '1'; }
+        }
+        function setTextMode(mode) {
+            ['word', 'sub'].forEach(m => document.getElementById('ttab-' + m).classList.toggle('on', m === mode));
+            document.getElementById('wp-wtime').style.display = mode === 'word' ? 'block' : 'none';
+            document.getElementById('wp-wgap').style.display = mode === 'word' ? 'block' : 'none';
+            document.getElementById('wp-speed').style.display = mode === 'sub' ? 'block' : 'none';
+            document.getElementById('wp-winw').style.display = mode === 'sub' ? 'block' : 'none';
+        }
+        function setType(t) {
+            document.querySelectorAll('.r-opt').forEach(o => o.classList.remove('on'));
+            document.getElementById('ropt-' + t).classList.add('on');
+            document.querySelector(`input[name="etype"][value="${t}"]`).checked = true;
+            const tc = document.getElementById('chk-time'), ec = document.getElementById('chk-err'), ei = document.getElementById('inp-err');
+            if (t === 'a') {
+                tc.checked = true; tc.disabled = true; ec.checked = false; ec.disabled = true; ei.disabled = true;
+                document.getElementById('badge-auto').style.display = ''; document.getElementById('badge-lock').style.display = 'none';
+                document.getElementById('badge-eroff').style.display = '';
+                document.getElementById('stop-note').textContent = 'In type A, time-based stopping is automatic.';
+            } else {
+                tc.checked = true; tc.disabled = false; ec.disabled = false;
+                document.getElementById('badge-auto').style.display = 'none'; document.getElementById('badge-lock').style.display = '';
+                document.getElementById('badge-eroff').style.display = 'none';
+                document.getElementById('stop-note').innerHTML = '<b>Priority:</b> time takes precedence over error count if both active.';
+                updateStopUI();
+            }
+        }
+        function updateStopUI() {
+            document.getElementById('inp-dur').disabled = !document.getElementById('chk-time').checked;
+            document.getElementById('inp-err').disabled = !document.getElementById('chk-err').checked;
+        }
+        function resetAll() {
+            document.getElementById('subj-id').value = ''; document.getElementById('subj-age').value = '';
+            document.querySelector('input[name="subj-gender"][value="Male"]').checked = true;
+            document.querySelector('input[name="subj-hand"][value="Right"]').checked = true;
+            document.getElementById('cf-list').innerHTML = ''; cfCount = 0;
+            document.getElementById('stim-list').innerHTML = ''; stimIdCnt = 0;
+            setType('a');
+            document.getElementById('inp-dur').value = 60000; document.getElementById('inp-err').value = 5;
+            document.getElementById('isi-min').value = 800; document.getElementById('isi-max').value = 1400;
+            document.getElementById('chk-fix').checked = true; onFixChange();
+            document.getElementById('fix-dur').value = 500; document.getElementById('fix-size').value = 12;
+            document.getElementById('fix-col').value = '#2a4a2a'; ncol('fix');
+            document.querySelector('input[name="fixmode"][value="hide"]').checked = true;
+            document.getElementById('chk-text').checked = false; document.getElementById('text-sp').classList.remove('vis');
+            document.getElementById('text-content').value = ''; document.getElementById('text-size').value = 28;
+            document.getElementById('text-col').value = '#ffffff'; ncol('text');
+            document.getElementById('text-wtime').value = 600; document.getElementById('text-wgap').value = 200;
+            document.getElementById('text-speed').value = 80; document.getElementById('text-winw').value = 600;
+            setTextMode('word');
+            document.getElementById('bg-col').value = '#000000'; ncol('bg');
+            document.querySelector('input[name="fbmode"][value="show"]').checked = true;
+            document.querySelector('input[name="startmode"][value="overlay"]').checked = true;
+            document.getElementById('chk-fs').checked = true; document.getElementById('chk-hud').checked = true;
+            document.getElementById('val-msg').textContent = '';
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  READ STIMULUS CARDS → CONFIG OBJECTS
+        // ══════════════════════════════════════════════════════
+        function readStimuli() {
+            const list = [];
+            document.querySelectorAll('#stim-list .stim-card').forEach(card => {
+                const sid = card.id; const type = card.dataset.type;
+                const rnd = document.getElementById(sid + '-rnd').checked;
+                const fx = parseInt(document.getElementById(sid + '-fx').value) || 0;
+                const fy = parseInt(document.getElementById(sid + '-fy').value) || 0;
+                const dur = parseInt(document.getElementById(sid + '-dur').value);
+                const pos = { random: rnd, x: fx, y: fy };
+
+                if (type === 'shape') {
+                    const shape = document.getElementById(sid + '-shape').value;
+                    const color = document.getElementById(sid + '-col').value;
+                    const colorName = nearestColor(color);
+                    const szM = SZ[shape];
+                    const sizes = [];
+                    if (document.getElementById(sid + '-ss').checked) sizes.push(szM.s);
+                    if (document.getElementById(sid + '-sm').checked) sizes.push(szM.m);
+                    if (document.getElementById(sid + '-sl').checked) sizes.push(szM.l);
+                    if (document.getElementById(sid + '-scx').checked) { const cv = parseInt(document.getElementById(sid + '-scv').value); if (cv >= 5) sizes.push(cv); }
+                    for (const size of sizes) list.push({ type: 'shape', shape, size, color, colorName, duration: dur, pos });
+                } else if (type === 'image') {
+                    const url = document.getElementById(sid + '-url').value.trim();
+                    const name = document.getElementById(sid + '-name').value.trim() || url.split('/').pop().split('?')[0];
+                    const w = parseInt(document.getElementById(sid + '-w').value) || 200;
+                    list.push({ type: 'image', url, name, width: w, duration: dur, pos });
+                } else if (type === 'word') {
+                    const text = document.getElementById(sid + '-text').value.trim();
+                    const fs = parseInt(document.getElementById(sid + '-fs').value) || 48;
+                    const color = document.getElementById(sid + '-col').value;
+                    const colorName = nearestColor(color);
+                    list.push({ type: 'word', text, fontSize: fs, color, colorName, duration: dur, pos });
+                }
+            });
+            return list;
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  VALIDATION
+        // ══════════════════════════════════════════════════════
+        function verr(m) { document.getElementById('val-msg').textContent = '✖ ' + m; return false; }
+        function validateAndStart() {
+            document.getElementById('val-msg').textContent = '';
+            const cards = document.querySelectorAll('#stim-list .stim-card');
+            if (!cards.length) return verr('Add at least one stimulus (shape, image, or word).');
+            for (const card of cards) {
+                const sid = card.id; const type = card.dataset.type;
+                const dur = parseInt(document.getElementById(sid + '-dur').value);
+                if (isNaN(dur) || (dur !== -1 && dur < 50)) return verr(`A stimulus has invalid duration (must be ≥ 50 ms or −1).`);
+                if (type === 'shape') {
+                    const hasSz = ['ss', 'sm', 'sl', 'scx'].some(k => document.getElementById(sid + '-' + k).checked);
+                    if (!hasSz) return verr(`A Shape stimulus has no size selected.`);
+                } else if (type === 'image') {
+                    if (!document.getElementById(sid + '-url').value.trim()) return verr(`An Image stimulus has no URL.`);
+                } else if (type === 'word') {
+                    if (!document.getElementById(sid + '-text').value.trim()) return verr(`A Word stimulus has no text.`);
+                }
+            }
+            const type = document.querySelector('input[name="etype"]:checked').value;
+            const tCk = document.getElementById('chk-time').checked, eCk = document.getElementById('chk-err').checked;
+            if (type !== 'a' && !tCk && !eCk) return verr('Select at least one stop condition.');
+            if (tCk) { const d = parseFloat(document.getElementById('inp-dur').value); if (!d || d <= 0) return verr('Enter a valid duration (ms).'); }
+            if (eCk) { const e = parseInt(document.getElementById('inp-err').value); if (!e || e <= 0) return verr('Enter a valid error count.'); }
+            const iMin = parseInt(document.getElementById('isi-min').value), iMax = parseInt(document.getElementById('isi-max').value);
+            if (iMin < 100 || iMax < iMin) return verr('ISI: min ≥ 100 ms and max ≥ min.');
+            if (document.getElementById('chk-text').checked && !document.getElementById('text-content').value.trim())
+                return verr('Text overlay enabled but no text entered.');
+            buildAndRun();
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  BUILD CONFIG + PRELOAD
+        // ══════════════════════════════════════════════════════
+        let EC = {};
+        let trials = [], errorCount = 0, trialNum = 0, expPhase = 'idle';
+        let expStartMs = 0, trialStartMs = 0;
+        let tStim = null, tIsi = null, tFb = null, tDur = null, tHud = null;
+        let kListener = null;
+        let canvas, ctx, CW = 0, CH = 0;
+        let curTrial = null;
+        let subAF = null, subX = 0, subLastT = 0, wordTimers = [];
+
+        function buildAndRun() {
+            const textIsWord = document.getElementById('ttab-word').classList.contains('on');
+            EC = {
+                subject: getSubject(),
+                stimuli: readStimuli(),
+                type: document.querySelector('input[name="etype"]:checked').value,
+                stopTime: document.getElementById('chk-time').checked,
+                stopErr: document.getElementById('chk-err').checked,
+                durMs: parseFloat(document.getElementById('inp-dur').value),
+                maxErr: parseInt(document.getElementById('inp-err').value) || 9999,
+                isiMin: parseInt(document.getElementById('isi-min').value),
+                isiMax: parseInt(document.getElementById('isi-max').value),
+                fixOn: document.getElementById('chk-fix').checked,
+                fixMode: document.querySelector('input[name="fixmode"]:checked').value,
+                fixDur: parseInt(document.getElementById('fix-dur').value),
+                fixSize: parseInt(document.getElementById('fix-size').value) || 12,
+                fixColor: document.getElementById('fix-col').value,
+                textOn: document.getElementById('chk-text').checked,
+                textMode: textIsWord ? 'word' : 'sub',
+                textContent: document.getElementById('text-content').value.trim(),
+                textSize: parseInt(document.getElementById('text-size').value) || 28,
+                textColor: document.getElementById('text-col').value,
+                textWTime: parseInt(document.getElementById('text-wtime').value) || 600,
+                textWGap: parseInt(document.getElementById('text-wgap').value) || 200,
+                textSpeed: parseInt(document.getElementById('text-speed').value) || 80,
+                textWinW: parseInt(document.getElementById('text-winw').value) || 600,
+                bgColor: document.getElementById('bg-col').value,
+                showFB: document.querySelector('input[name="fbmode"]:checked').value === 'show',
+                blankStart: document.querySelector('input[name="startmode"]:checked').value === 'blank',
+                fullscreen: document.getElementById('chk-fs').checked,
+                showHUD: document.getElementById('chk-hud').checked,
+            };
+            // ── Preload all images (and any other future async assets) ──
+            const imgs = EC.stimuli.filter(s => s.type === 'image');
+            if (imgs.length) {
+                showPreloadModal(imgs.length);
+                let loaded = 0;
+                const errors = [];
+                for (const s of imgs) {
+                    const img = new Image();
+                    img.onload = () => {
+                        s._img = img; s._iw = img.naturalWidth; s._ih = img.naturalHeight;
+                        loaded++; updatePreloadModal(loaded, imgs.length, errors);
+                        if (loaded === imgs.length) readyPreloadModal(errors);
+                    };
+                    img.onerror = () => {
+                        s._loadErr = true;
+                        loaded++; errors.push(s.name || s.url);
+                        updatePreloadModal(loaded, imgs.length, errors);
+                        if (loaded === imgs.length) readyPreloadModal(errors);
+                    };
+                    img.src = s.url;
+                }
+            } else {
+                // No images — show a brief "ready" modal so the user always
+                // has a deliberate confirmation step before the experiment starts
+                showReadyModal([]);
+            }
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  EXPERIMENT ENGINE
+        // ══════════════════════════════════════════════════════
+        function initExperiment() {
+            trials = []; errorCount = 0; trialNum = 0; curTrial = null; expPhase = 'idle';
+            clearAllTimers(); stopSub(); clearWordT();
+            canvas = document.getElementById('exp-canvas'); ctx = canvas.getContext('2d');
+            resize(); window.addEventListener('resize', resize);
+            if (EC.fullscreen && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => { });
+            document.getElementById('exp-hud').style.display = EC.showHUD ? 'block' : 'none';
+            document.getElementById('exp-esc').style.display = EC.showHUD ? 'block' : 'none';
+            const we = document.getElementById('exp-text-word');
+            we.style.fontSize = EC.textSize + 'px'; we.style.color = EC.textColor; we.style.fontFamily = "'IBM Plex Mono',monospace"; we.style.display = 'none';
+            const se = document.getElementById('exp-text-sub');
+            se.style.fontSize = EC.textSize + 'px'; se.style.color = EC.textColor; se.style.fontFamily = "'IBM Plex Mono',monospace";
+            document.getElementById('exp-text-sub-wrap').style.display = 'none';
+            document.getElementById('hud-err').style.display = EC.stopErr ? 'block' : 'none';
+            updateHUD();
+            const ov = document.getElementById('exp-overlay');
+            const imap = { a: 'Press <b>SPACE</b> when the stimulus appears.', b: '<b>↑</b> above center · <b>↓</b> below center', c: '<b>←</b> left · <b>→</b> right of center', d: '↑ above · ↓ below · ← left · → right' };
+            if (EC.blankStart) {
+                ov.classList.add('gone');
+                addKey(e => { if (e.code === 'Space') { e.preventDefault(); removeKey(); beginExp(); } });
+            } else {
+                ov.classList.remove('gone');
+                document.getElementById('ov-lines').innerHTML = imap[EC.type];
+                document.getElementById('ov-title').textContent = 'EXPERIMENT READY';
+                document.getElementById('ov-key').textContent = 'PRESS SPACE TO BEGIN';
+                addKey(e => { if (e.code === 'Space') { e.preventDefault(); ov.classList.add('gone'); removeKey(); beginExp(); } });
+            }
+            showPage('pg-exp');
+        }
+
+        function beginExp() {
+            expStartMs = performance.now(); expPhase = 'running';
+            if (EC.stopTime) tDur = setTimeout(() => endExp('time'), EC.durMs);
+            tHud = setInterval(updateHUD, 200);
+            if (EC.textOn) { if (EC.textMode === 'sub') startSub(); else startWords(); }
+            addKey(handleKey); nextTrial();
+        }
+
+        function nextTrial() {
+            if (expPhase !== 'running') return;
+            bgLayer(); expPhase = 'isi';
+            const isi = EC.isiMin + Math.random() * (EC.isiMax - EC.isiMin);
+            if (EC.fixOn) {
+                tIsi = setTimeout(() => {
+                    if (expPhase !== 'isi') return;
+                    bgLayer(); drawFix(); expPhase = 'fixation';
+                    tIsi = setTimeout(() => { if (expPhase === 'fixation') showStim(); }, EC.fixDur);
+                }, isi * 0.5);
+            } else {
+                tIsi = setTimeout(() => { if (expPhase === 'isi') showStim(); }, isi);
+            }
+        }
+
+        function resolvePos(stim, sizeRef) {
+            // Returns canvas {x,y} from stim.pos config
+            // sizeRef = half-extent to keep stim on screen (radius/half-side/half-text)
+            if (!stim.pos.random) {
+                // user-specified center-relative: x right+, y up+
+                return { x: CW / 2 + stim.pos.x, y: CH / 2 - stim.pos.y };
+            }
+            // random placement based on experiment type
+            const pad = Math.max(sizeRef, 30) + 5;
+            let x, y;
+            switch (EC.type) {
+                case 'a': x = pad + Math.random() * (CW - 2 * pad); y = pad + Math.random() * (CH - 2 * pad); break;
+                case 'b': { x = CW * (0.1 + Math.random() * 0.8); const u = Math.random() > .5; y = u ? CH * (0.07 + Math.random() * 0.35) : CH * (0.58 + Math.random() * 0.35); break; }
+                case 'c': { y = CH * (0.1 + Math.random() * 0.8); const l = Math.random() > .5; x = l ? CW * (0.07 + Math.random() * 0.35) : CW * (0.58 + Math.random() * 0.35); break; }
+                case 'd': { const Z = [{ xr: [.25, .75], yr: [.06, .38] }, { xr: [.25, .75], yr: [.62, .94] }, { xr: [.06, .38], yr: [.25, .75] }, { xr: [.62, .94], yr: [.25, .75] }]; const z = Z[Math.floor(Math.random() * 4)]; x = CW * (z.xr[0] + Math.random() * (z.xr[1] - z.xr[0])); y = CH * (z.yr[0] + Math.random() * (z.yr[1] - z.yr[0])); break; }
+                default: x = CW / 2; y = CH / 2;
+            }
+            return { x, y };
+        }
+
+        function expectedKey(x, y) {
+            // derives expected key from canvas position for positional types
+            switch (EC.type) {
+                case 'a': return ' ';
+                case 'b': return y < CH / 2 ? 'ArrowUp' : 'ArrowDown';
+                case 'c': return x < CW / 2 ? 'ArrowLeft' : 'ArrowRight';
+                case 'd': {
+                    const aboveBelow = Math.abs(y - CH / 2), leftRight = Math.abs(x - CW / 2);
+                    if (aboveBelow > leftRight) return y < CH / 2 ? 'ArrowUp' : 'ArrowDown';
+                    return x < CW / 2 ? 'ArrowLeft' : 'ArrowRight';
+                }
+            }
+        }
+
+        function showStim() {
+            if (expPhase === 'done') return;
+            expPhase = 'stimulus'; trialNum++;
+            const st = EC.stimuli[Math.floor(Math.random() * EC.stimuli.length)];
+
+            let canvasX, canvasY, sizeRef = 40;
+            if (st.type === 'shape') sizeRef = st.size / 2;
+            else if (st.type === 'image') sizeRef = st.width / 2;
+            else if (st.type === 'word') sizeRef = st.fontSize;
+
+            const { x, y } = resolvePos(st, sizeRef);
+            canvasX = x; canvasY = y;
+            const ek = expectedKey(x, y);
+            const posMode = st.pos.random ? 'random' : 'fixed';
+
+            // Build trial record
+            curTrial = {
+                n: trialNum,
+                stimType: st.type,
+                stimLabel: st.type === 'shape' ? st.shape : st.type === 'image' ? st.name : st.text,
+                stimDetail: st.type === 'shape' ? `${st.size}px` : st.type === 'image' ? st.url : `${st.fontSize}px`,
+                size: st.type === 'shape' ? st.size : st.type === 'image' ? st.width : st.fontSize,
+                color: (st.color || 'N/A'),
+                colorName: (st.colorName || 'N/A'),
+                posMode,
+                cx: Math.round(x - CW / 2), cy: Math.round(-(y - CH / 2)),
+                expectedKey: ek, responseKey: null, rt: null, outcome: 'miss'
+            };
+
+            bgLayer();
+            if (EC.fixOn && EC.fixMode === 'always') drawFix();
+            drawStim(st, x, y);
+            trialStartMs = performance.now();
+            if (st.duration !== -1) tStim = setTimeout(() => { if (expPhase === 'stimulus') registerResp(null); }, st.duration);
+        }
+
+        function drawStim(st, x, y) {
+            if (st.type === 'shape') {
+                ctx.fillStyle = st.color;
+                if (st.shape === 'circle') { ctx.beginPath(); ctx.arc(x, y, st.size / 2, 0, Math.PI * 2); ctx.fill(); }
+                else if (st.shape === 'square') { ctx.fillRect(x - st.size / 2, y - st.size / 2, st.size, st.size); }
+                else if (st.shape === 'triangle') {
+                    const h = st.size * Math.sqrt(3) / 2;
+                    ctx.beginPath(); ctx.moveTo(x, y - h * 2 / 3); ctx.lineTo(x + st.size / 2, y + h / 3); ctx.lineTo(x - st.size / 2, y + h / 3); ctx.closePath(); ctx.fill();
+                }
+            } else if (st.type === 'image') {
+                if (st._loadErr) {
+                    ctx.strokeStyle = '#ff5252'; ctx.lineWidth = 1; ctx.strokeRect(x - st.width / 2, y - 40, st.width, 80);
+                    ctx.fillStyle = '#ff5252'; ctx.font = '12px monospace'; ctx.textAlign = 'center'; ctx.fillText('IMG ERR', x, y + 5); ctx.textAlign = 'left';
+                } else if (st._img) {
+                    const ratio = st._ih / st._iw; const dh = st.width * ratio;
+                    ctx.drawImage(st._img, x - st.width / 2, y - dh / 2, st.width, dh);
+                }
+            } else if (st.type === 'word') {
+                ctx.fillStyle = st.color;
+                ctx.font = `${st.fontSize}px 'IBM Plex Mono', monospace`;
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(st.text, x, y);
+                ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+            }
+        }
+
+        function handleKey(e) {
+            if (expPhase === 'stimulus') {
+                const valid = EC.type === 'a' ? [' '] : ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+                const k = e.code === 'Space' ? ' ' : e.key;
+                if (!valid.includes(k)) return;
+                e.preventDefault(); registerResp(k);
+            } else if ([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) || e.code === 'Space') {
+                e.preventDefault();
+            }
+        }
+
+        function registerResp(key) {
+            if (!curTrial) return;
+            clearTimeout(tStim); tStim = null; expPhase = 'feedback';
+            const rt = key !== null ? Math.round(performance.now() - trialStartMs) : null;
+            let outcome = key === null ? 'miss' : (EC.type === 'a' ? 'correct' : (key === curTrial.expectedKey ? 'correct' : 'error'));
+            curTrial.responseKey = key; curTrial.rt = rt; curTrial.outcome = outcome;
+            trials.push({ ...curTrial });
+            if (outcome !== 'correct') errorCount++;
+            updateHUD(); bgLayer();
+            if (EC.showFB) {
+                const fb = document.getElementById('exp-fb');
+                fb.textContent = outcome === 'correct' ? '✓ CORRECT' : outcome === 'error' ? '✗ ERROR' : '– MISSED';
+                fb.className = outcome === 'correct' ? 'ok' : 'er';
+            }
+            if (EC.stopErr && errorCount >= EC.maxErr) { tFb = setTimeout(() => endExp('errors'), 500); return; }
+            tFb = setTimeout(() => { document.getElementById('exp-fb').className = ''; expPhase = 'running'; nextTrial(); }, 280);
+        }
+
+        function endExp(reason) {
+            expPhase = 'done'; clearAllTimers(); stopSub(); clearWordT(); removeKey();
+            window.removeEventListener('resize', resize);
+            document.getElementById('exp-text-word').style.display = 'none';
+            document.getElementById('exp-text-sub-wrap').style.display = 'none';
+            document.getElementById('exp-fb').className = '';
+            if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => { });
+            bgLayer(); showResults(reason);
+        }
+
+        function clearAllTimers() {
+            [tStim, tIsi, tFb, tDur].forEach(t => { if (t) clearTimeout(t); });
+            if (tHud) clearInterval(tHud); tStim = tIsi = tFb = tDur = tHud = null;
+        }
+        function addKey(fn) { removeKey(); kListener = fn; document.addEventListener('keydown', fn); }
+        function removeKey() { if (kListener) { document.removeEventListener('keydown', kListener); kListener = null; } }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && expPhase !== 'idle' && expPhase !== 'done') { clearAllTimers(); endExp('aborted'); } });
+
+        function updateHUD() {
+            const elMs = expStartMs ? Math.floor(performance.now() - expStartMs) : 0;
+            const remMs = EC.stopTime ? Math.max(0, Math.floor(EC.durMs) - elMs) : null;
+            const remStr = remMs !== null ? (remMs >= 1000 ? (remMs / 1000).toFixed(1) + 's' : remMs + 'ms') : '∞';
+            document.getElementById('hud-trial').textContent = 'TRIAL ' + trialNum;
+            document.getElementById('hud-time').textContent = 'TIME ' + remStr;
+            if (EC.stopErr) document.getElementById('hud-err').textContent = 'ERR ' + errorCount + '/' + EC.maxErr;
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  CANVAS HELPERS
+        // ══════════════════════════════════════════════════════
+        function resize() { CW = canvas.width = window.innerWidth; CH = canvas.height = window.innerHeight; ctx.fillStyle = EC.bgColor || '#000'; ctx.fillRect(0, 0, CW, CH); }
+        function bgLayer() { ctx.fillStyle = EC.bgColor || '#000'; ctx.fillRect(0, 0, CW, CH); }
+        function drawFix() {
+            const cx = CW / 2, cy = CH / 2, s = EC.fixSize;
+            ctx.strokeStyle = EC.fixColor; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(cx - s, cy); ctx.lineTo(cx + s, cy); ctx.moveTo(cx, cy - s); ctx.lineTo(cx, cy + s); ctx.stroke();
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  TEXT OVERLAY
+        // ══════════════════════════════════════════════════════
+        function startSub() {
+            const wrap = document.getElementById('exp-text-sub-wrap'); const el = document.getElementById('exp-text-sub');
+            el.textContent = EC.textContent;
+            const lineH = Math.ceil(EC.textSize * 1.5); const winW = Math.min(EC.textWinW, CW - 40);
+            wrap.style.width = winW + 'px'; wrap.style.height = lineH + 'px'; wrap.style.display = 'block';
+            subX = winW; subLastT = performance.now();
+            (function tick(now) {
+                if (expPhase === 'done') return; const dt = (now - subLastT) / 1000; subLastT = now;
+                subX -= EC.textSpeed * dt; const tw = el.offsetWidth;
+                if (subX < -tw) subX = winW;
+                el.style.transform = 'translateX(' + subX + 'px)'; subAF = requestAnimationFrame(tick);
+            })(performance.now());
+        }
+        function stopSub() { if (subAF) { cancelAnimationFrame(subAF); subAF = null; } }
+        function startWords() {
+            const words = EC.textContent.split(/\s+/).filter(Boolean); if (!words.length) return;
+            const el = document.getElementById('exp-text-word'); el.style.display = 'block';
+            let idx = 0;
+            function cycle() {
+                if (expPhase === 'done') { el.style.display = 'none'; return; }
+                el.textContent = words[idx]; idx = (idx + 1) % words.length;
+                const t1 = setTimeout(() => {
+                    if (expPhase === 'done') { el.style.display = 'none'; return; }
+                    el.textContent = '';
+                    const t2 = EC.textWGap > 0 ? setTimeout(cycle, EC.textWGap) : (cycle(), null); if (t2) wordTimers.push(t2);
+                }, EC.textWTime); wordTimers.push(t1);
+            } cycle();
+        }
+        function clearWordT() { wordTimers.forEach(t => clearTimeout(t)); wordTimers = []; document.getElementById('exp-text-word').style.display = 'none'; }
+
+        // ══════════════════════════════════════════════════════
+        //  RESULTS
+        // ══════════════════════════════════════════════════════
+        function computeStats() {
+            const correct = trials.filter(t => t.outcome === 'correct');
+            const rts = correct.map(t => t.rt).filter(r => r !== null);
+            const mean = rts.length ? Math.round(rts.reduce((a, b) => a + b, 0) / rts.length) : null;
+            const sd = rts.length > 1 ? Math.round(Math.sqrt(rts.map(r => (r - mean) ** 2).reduce((a, b) => a + b, 0) / rts.length)) : null;
+            const minRT = rts.length ? Math.min(...rts) : null; const maxRT = rts.length ? Math.max(...rts) : null;
+            const acc = trials.length ? Math.round(correct.length / trials.length * 100) : 0;
+            return { correct, rts, mean, sd, minRT, maxRT, acc, total: trials.length, errors: trials.filter(t => t.outcome === 'error').length, misses: trials.filter(t => t.outcome === 'miss').length };
+        }
+
+        function showResults(reason) {
+            const labs = { time: 'Time limit reached', errors: 'Error limit reached', aborted: 'Manually aborted' };
+            document.getElementById('res-sub').textContent = (labs[reason] || 'Session complete') + ' · ' + trials.length + ' trials';
+            const subj = EC.subject;
+            let sh = `<div class="res-subj-box-title">Subject Data</div><div class="res-subj-grid">
+    <div class="res-subj-item"><span>ID</span><span>${subj.id}</span></div>
+    <div class="res-subj-item"><span>Gender</span><span>${subj.gender}</span></div>
+    <div class="res-subj-item"><span>Age</span><span>${subj.age}</span></div>
+    <div class="res-subj-item"><span>Hand</span><span>${subj.hand}</span></div>`;
+            for (const cf of subj.custom) sh += `<div class="res-subj-item"><span>${cf.label}</span><span>${cf.value}</span></div>`;
+            sh += '</div>'; document.getElementById('res-subj-box').innerHTML = sh;
+            const s = computeStats(); const f = v => v !== null ? v : '—';
+            document.getElementById('res-stats').innerHTML = `
+    <div class="stat-c"><div class="stat-l">Trials</div><div class="stat-v">${s.total}</div></div>
+    <div class="stat-c"><div class="stat-l">Mean RT</div><div class="stat-v">${f(s.mean)}<span class="stat-u">ms</span></div></div>
+    <div class="stat-c"><div class="stat-l">SD</div><div class="stat-v">${f(s.sd)}<span class="stat-u">ms</span></div></div>
+    <div class="stat-c"><div class="stat-l">Min / Max RT</div><div class="stat-v sm">${f(s.minRT)}<span class="stat-u">ms</span> / ${f(s.maxRT)}<span class="stat-u">ms</span></div></div>
+    <div class="stat-c"><div class="stat-l">Accuracy</div><div class="stat-v">${s.acc}<span class="stat-u">%</span></div></div>`;
+            const kL = k => k === null ? 'MISSED' : k === ' ' ? 'SPACE' : ({ 'ArrowUp': '↑', 'ArrowDown': '↓', 'ArrowLeft': '←', 'ArrowRight': '→' }[k] || k);
+            const zL = k => k === ' ' ? '(random)' : ({ 'ArrowUp': 'upper', 'ArrowDown': 'lower', 'ArrowLeft': 'left', 'ArrowRight': 'right' }[k] || k);
+            const tb = document.getElementById('res-tbody'); tb.innerHTML = '';
+            for (const t of trials) {
+                const tr = document.createElement('tr'); tr.className = 'rr-' + t.outcome;
+                tr.innerHTML = `<td>${t.n}</td><td>${t.stimType}</td><td>${t.stimLabel}</td><td>${t.stimDetail}</td>
+      <td>${t.size}px</td>
+      <td><span style="display:inline-block;width:8px;height:8px;background:${t.color};vertical-align:middle;margin-right:3px;border:1px solid #333;${t.color === 'N/A' ? 'display:none' : ''}"></span>${t.color}</td>
+      <td>${t.colorName}</td>
+      <td>${t.cx}</td><td>${t.cy}</td><td>${t.posMode}</td>
+      <td>${zL(t.expectedKey)}</td><td>${kL(t.expectedKey)}</td><td>${kL(t.responseKey)}</td>
+      <td>${t.rt !== null ? t.rt : '—'}</td><td>${t.outcome.toUpperCase()}</td>`;
+                tb.appendChild(tr);
+            }
+            showPage('pg-results');
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  SUBJECT COLUMNS (shared by CSV + Excel)
+        // ══════════════════════════════════════════════════════
+        function subjCols() {
+            const subj = EC.subject;
+            const hdrs = ['Subject_ID', 'Gender', 'Age', 'Dominant_Hand'];
+            const vals = [subj.id, subj.gender, subj.age, subj.hand];
+            for (const cf of subj.custom) { hdrs.push(cf.label.replace(/,/g, ';')); vals.push(String(cf.value).replace(/,/g, ';')); }
+            return { hdrs, vals };
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  EXPORT CSV
+        // ══════════════════════════════════════════════════════
+        function exportCSV() {
+            const kL = k => k === null ? 'NONE' : k === ' ' ? 'SPACE' : ({ 'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 'ArrowLeft': 'LEFT', 'ArrowRight': 'RIGHT' }[k] || k);
+            const zL = k => k === ' ' ? 'random' : ({ 'ArrowUp': 'upper', 'ArrowDown': 'lower', 'ArrowLeft': 'left', 'ArrowRight': 'right' }[k] || k);
+            const { hdrs, vals } = subjCols();
+            const trialHdr = ['Trial', 'Stim_Type', 'Stim_Label', 'Stim_Detail', 'Size_px', 'Color_Hex', 'Color_Name', 'X_from_center', 'Y_from_center', 'Pos_Mode', 'Zone', 'Expected_Key', 'Response_Key', 'RT_ms', 'Outcome'];
+            const hdr = [...hdrs, ...trialHdr];
+            const rows = trials.map(t => [...vals, t.n, t.stimType, t.stimLabel, t.stimDetail, t.size, t.color, t.colorName, t.cx, t.cy, t.posMode, zL(t.expectedKey), kL(t.expectedKey), kL(t.responseKey), t.rt !== null ? t.rt : 'NA', t.outcome]);
+            const csv = [hdr, ...rows].map(r => r.join(',')).join('\n');
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+            a.download = `reactionlab_${EC.subject.id || 'subj'}_${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  EXPORT EXCEL
+        // ══════════════════════════════════════════════════════
+        function xlCell(v, type = 'String') {
+            if (v === null || v === undefined || v === '—' || v === 'NA') return `<Cell><Data ss:Type="String">—</Data></Cell>`;
+            return `<Cell><Data ss:Type="${type}">${String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</Data></Cell>`;
+        }
+        function xlRow(...cells) { return `<Row>${cells.join('')}</Row>`; }
+        function xlHdr(l) { return `<Cell ss:StyleID="hdr"><Data ss:Type="String">${l}</Data></Cell>`; }
+        function xlN(v) { return xlCell(v !== null && v !== 'NA' && v !== '—' ? v : 'NA', (v !== null && v !== 'NA' && v !== '—' ? 'Number' : 'String')); }
+
+        function exportExcel() {
+            const s = computeStats(); const subj = EC.subject;
+            const kL = k => k === null ? 'NONE' : k === ' ' ? 'SPACE' : ({ 'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 'ArrowLeft': 'LEFT', 'ArrowRight': 'RIGHT' }[k] || k);
+            const zL = k => k === ' ' ? 'random' : ({ 'ArrowUp': 'upper', 'ArrowDown': 'lower', 'ArrowLeft': 'left', 'ArrowRight': 'right' }[k] || k);
+            const { hdrs, vals } = subjCols();
+
+            // Summary sheet
+            let summ = '';
+            summ += xlRow(xlHdr('SUBJECT DATA'), '');
+            summ += xlRow(xlCell('Subject ID'), xlCell(subj.id));
+            summ += xlRow(xlCell('Gender'), xlCell(subj.gender));
+            summ += xlRow(xlCell('Age'), xlCell(subj.age));
+            summ += xlRow(xlCell('Dominant Hand'), xlCell(subj.hand));
+            for (const cf of subj.custom) summ += xlRow(xlCell(cf.label), xlCell(cf.value));
+            summ += xlRow('', '');
+            summ += xlRow(xlHdr('EXPERIMENT'), '');
+            summ += xlRow(xlCell('Type'), xlCell({ a: 'A-Simple RT', b: 'B-Vertical', c: 'C-Horizontal', d: 'D-Four Direction' }[EC.type]));
+            summ += xlRow(xlCell('Total Trials'), xlN(s.total));
+            summ += xlRow(xlCell('Correct'), xlN(s.correct.length));
+            summ += xlRow(xlCell('Errors'), xlN(s.errors));
+            summ += xlRow(xlCell('Misses'), xlN(s.misses));
+            summ += xlRow(xlCell('Accuracy (%)'), xlN(s.acc));
+            summ += xlRow('', '');
+            summ += xlRow(xlHdr('RT STATISTICS'), '');
+            summ += xlRow(xlCell('Mean RT (ms)'), xlN(s.mean));
+            summ += xlRow(xlCell('SD (ms)'), xlN(s.sd));
+            summ += xlRow(xlCell('Min RT (ms)'), xlN(s.minRT));
+            summ += xlRow(xlCell('Max RT (ms)'), xlN(s.maxRT));
+            // per-type breakdown
+            for (const typ of ['shape', 'image', 'word']) {
+                const tRTs = trials.filter(t => t.stimType === typ && t.outcome === 'correct' && t.rt !== null).map(t => t.rt);
+                if (!tRTs.length) continue;
+                summ += xlRow('', ''); summ += xlRow(xlHdr('RT — ' + typ.toUpperCase()), '');
+                const tM = Math.round(tRTs.reduce((a, b) => a + b, 0) / tRTs.length);
+                summ += xlRow(xlCell('Mean'), xlN(tM));
+                summ += xlRow(xlCell('Min'), xlN(Math.min(...tRTs)));
+                summ += xlRow(xlCell('Max'), xlN(Math.max(...tRTs)));
+            }
+
+            // Trial log sheet — subject cols prepended
+            let log = '';
+            log += xlRow(...hdrs.map(h => xlHdr(h)),
+                xlHdr('#'), xlHdr('Stim Type'), xlHdr('Label / Name'), xlHdr('Detail'),
+                xlHdr('Size (px)'), xlHdr('Color Hex'), xlHdr('Color Name'),
+                xlHdr('X (0=center)'), xlHdr('Y (0=center)'), xlHdr('Pos Mode'),
+                xlHdr('Zone'), xlHdr('Expected Key'), xlHdr('Response Key'), xlHdr('RT (ms)'), xlHdr('Outcome')
+            );
+            for (const t of trials) {
+                log += xlRow(
+                    ...vals.map(v => xlCell(v)),
+                    xlN(t.n), xlCell(t.stimType), xlCell(t.stimLabel), xlCell(t.stimDetail),
+                    xlN(t.size), xlCell(t.color), xlCell(t.colorName),
+                    xlN(t.cx), xlN(t.cy), xlCell(t.posMode),
+                    xlCell(zL(t.expectedKey)), xlCell(kL(t.expectedKey)), xlCell(kL(t.responseKey)),
+                    xlN(t.rt), xlCell(t.outcome.toUpperCase())
+                );
+            }
+
+            const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+ <Styles>
+  <Style ss:ID="hdr"><Font ss:Bold="1" ss:Color="#007060"/></Style>
+ </Styles>
+ <Worksheet ss:Name="Summary">
+  <Table><Column ss:Width="200"/><Column ss:Width="200"/>${summ}</Table>
+ </Worksheet>
+ <Worksheet ss:Name="Trial Log">
+  <Table ss:DefaultColumnWidth="100">${log}</Table>
+ </Worksheet>
+</Workbook>`;
+
+            const blob = new Blob([xml], { type: 'application/vnd.ms-excel' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `reactionlab_${subj.id || 'subj'}_${new Date().toISOString().slice(0, 10)}.xls`;
+            a.click();
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  THEME TOGGLE
+        // ══════════════════════════════════════════════════════
+        function toggleTheme() {
+            const light = document.body.classList.toggle('light');
+            const icon = light ? '🌙' : '☀';
+            const lbl = light ? 'Dark' : 'Light';
+            ['tog-icon', 'tog-lbl', 'tog-icon-r', 'tog-lbl-r'].forEach(id => {
+                const el = document.getElementById(id); if (el) { if (id.includes('icon')) el.textContent = icon; else el.textContent = lbl; }
+            });
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  SAVE / LOAD CONFIG
+        // ══════════════════════════════════════════════════════
+        function toggleCfgPanel() {
+            const p = document.getElementById('cfg-panel');
+            const btn = document.getElementById('cfg-panel-btn');
+            const open = p.style.display === 'none';
+            p.style.display = open ? 'block' : 'none';
+            btn.textContent = open ? '▾ Hide' : '▸ Show';
+        }
+
+        function cfgMsg(txt, ok = true) {
+            const el = document.getElementById('cfg-msg');
+            el.textContent = txt; el.style.color = ok ? 'var(--ok)' : 'var(--err)';
+            setTimeout(() => { el.textContent = ''; }, 3000);
+        }
+
+        function exportConfig() {
+            // Read all current card states into a plain object
+            const cards = [];
+            document.querySelectorAll('#stim-list .stim-card').forEach(card => {
+                const sid = card.id; const type = card.dataset.type;
+                const c = {
+                    type, dur: parseInt(document.getElementById(sid + '-dur').value),
+                    pos: {
+                        random: document.getElementById(sid + '-rnd').checked,
+                        x: parseInt(document.getElementById(sid + '-fx').value) || 0,
+                        y: parseInt(document.getElementById(sid + '-fy').value) || 0
+                    }
+                };
+                if (type === 'shape') {
+                    c.shape = document.getElementById(sid + '-shape').value;
+                    c.color = document.getElementById(sid + '-col').value;
+                    c.ss = document.getElementById(sid + '-ss').checked;
+                    c.sm = document.getElementById(sid + '-sm').checked;
+                    c.sl = document.getElementById(sid + '-sl').checked;
+                    c.scx = document.getElementById(sid + '-scx').checked;
+                    c.scv = parseInt(document.getElementById(sid + '-scv').value) || 60;
+                } else if (type === 'image') {
+                    c.url = document.getElementById(sid + '-url').value;
+                    c.name = document.getElementById(sid + '-name').value;
+                    c.w = parseInt(document.getElementById(sid + '-w').value) || 200;
+                } else if (type === 'word') {
+                    c.text = document.getElementById(sid + '-text').value;
+                    c.fs = parseInt(document.getElementById(sid + '-fs').value) || 48;
+                    c.color = document.getElementById(sid + '-col').value;
+                }
+                cards.push(c);
+            });
+
+            // Custom subject fields
+            const customFields = [];
+            document.querySelectorAll('#cf-list .cf-row').forEach(r => {
+                customFields.push({ label: r.querySelector('.cf-label').value, value: r.querySelector('.cf-value').value });
+            });
+
+            const cfg = {
+                _v: 1,
+                subject: {
+                    id: document.getElementById('subj-id').value,
+                    gender: document.querySelector('input[name="subj-gender"]:checked')?.value || 'Male',
+                    age: document.getElementById('subj-age').value,
+                    hand: document.querySelector('input[name="subj-hand"]:checked')?.value || 'Right',
+                    customFields
+                },
+                stimCards: cards,
+                expType: document.querySelector('input[name="etype"]:checked').value,
+                stopTime: document.getElementById('chk-time').checked,
+                stopErr: document.getElementById('chk-err').checked,
+                dur: document.getElementById('inp-dur').value,
+                maxErr: document.getElementById('inp-err').value,
+                isiMin: document.getElementById('isi-min').value,
+                isiMax: document.getElementById('isi-max').value,
+                fixOn: document.getElementById('chk-fix').checked,
+                fixMode: document.querySelector('input[name="fixmode"]:checked').value,
+                fixDur: document.getElementById('fix-dur').value,
+                fixSize: document.getElementById('fix-size').value,
+                fixColor: document.getElementById('fix-col').value,
+                textOn: document.getElementById('chk-text').checked,
+                textMode: document.getElementById('ttab-word').classList.contains('on') ? 'word' : 'sub',
+                textContent: document.getElementById('text-content').value,
+                textSize: document.getElementById('text-size').value,
+                textColor: document.getElementById('text-col').value,
+                textWTime: document.getElementById('text-wtime').value,
+                textWGap: document.getElementById('text-wgap').value,
+                textSpeed: document.getElementById('text-speed').value,
+                textWinW: document.getElementById('text-winw').value,
+                bgColor: document.getElementById('bg-col').value,
+                fbMode: document.querySelector('input[name="fbmode"]:checked').value,
+                startMode: document.querySelector('input[name="startmode"]:checked').value,
+                fs: document.getElementById('chk-fs').checked,
+                hud: document.getElementById('chk-hud').checked,
+            };
+
+            document.getElementById('cfg-textarea').value = JSON.stringify(cfg, null, 2);
+            cfgMsg('✓ Config exported — copy the text above to save it.');
+        }
+
+        function importConfig() {
+            const raw = document.getElementById('cfg-textarea').value.trim();
+            if (!raw) { cfgMsg('Paste a config first.', false); return; }
+            let cfg;
+            try { cfg = JSON.parse(raw); } catch (e) { cfgMsg('Invalid config text — could not parse JSON.', false); return; }
+            if (!cfg._v) { cfgMsg('Unrecognised config format.', false); return; }
+
+            // ── Subject ──
+            if (cfg.subject) {
+                document.getElementById('subj-id').value = cfg.subject.id || '';
+                document.getElementById('subj-age').value = cfg.subject.age || '';
+                const gEl = document.querySelector(`input[name="subj-gender"][value="${cfg.subject.gender}"]`);
+                if (gEl) gEl.checked = true;
+                const hEl = document.querySelector(`input[name="subj-hand"][value="${cfg.subject.hand}"]`);
+                if (hEl) hEl.checked = true;
+                document.getElementById('cf-list').innerHTML = ''; cfCount = 0;
+                for (const cf of (cfg.subject.customFields || [])) addCustomField(cf.label, cf.value);
+            }
+
+            // ── Stimulus cards ──
+            document.getElementById('stim-list').innerHTML = ''; stimIdCnt = 0;
+            for (const c of (cfg.stimCards || [])) {
+                addStim(c.type);
+                const sid = 'st' + stimIdCnt;
+                document.getElementById(sid + '-dur').value = c.dur;
+                document.getElementById(sid + '-rnd').checked = c.pos.random;
+                document.getElementById(sid + '-fx').value = c.pos.x;
+                document.getElementById(sid + '-fy').value = c.pos.y;
+                togglePos(sid);
+                if (c.type === 'shape') {
+                    document.getElementById(sid + '-shape').value = c.shape;
+                    document.getElementById(sid + '-col').value = c.color; ncol2(sid);
+                    document.getElementById(sid + '-ss').checked = c.ss;
+                    document.getElementById(sid + '-sm').checked = c.sm;
+                    document.getElementById(sid + '-sl').checked = c.sl;
+                    document.getElementById(sid + '-scx').checked = c.scx;
+                    document.getElementById(sid + '-scv').value = c.scv;
+                    toggleCust(sid); updateStimTitle(sid);
+                } else if (c.type === 'image') {
+                    document.getElementById(sid + '-url').value = c.url;
+                    document.getElementById(sid + '-name').value = c.name;
+                    document.getElementById(sid + '-w').value = c.w;
+                    updateStimTitle(sid);
+                } else if (c.type === 'word') {
+                    document.getElementById(sid + '-text').value = c.text;
+                    document.getElementById(sid + '-fs').value = c.fs;
+                    document.getElementById(sid + '-col').value = c.color; ncol2(sid);
+                    updateStimTitle(sid);
+                }
+            }
+
+            // ── Experiment type ──
+            if (cfg.expType) setType(cfg.expType);
+
+            // ── Stop conditions ──
+            const tc = document.getElementById('chk-time');
+            const ec = document.getElementById('chk-err');
+            if (!tc.disabled) tc.checked = !!cfg.stopTime;
+            if (!ec.disabled) ec.checked = !!cfg.stopErr;
+            document.getElementById('inp-dur').value = cfg.dur || 60000;
+            document.getElementById('inp-err').value = cfg.maxErr || 5;
+            updateStopUI();
+
+            // ── Trial settings ──
+            document.getElementById('isi-min').value = cfg.isiMin || 800;
+            document.getElementById('isi-max').value = cfg.isiMax || 1400;
+            document.getElementById('chk-fix').checked = !!cfg.fixOn; onFixChange();
+            const fm = document.querySelector(`input[name="fixmode"][value="${cfg.fixMode}"]`);
+            if (fm) fm.checked = true;
+            document.getElementById('fix-dur').value = cfg.fixDur || 500;
+            document.getElementById('fix-size').value = cfg.fixSize || 12;
+            document.getElementById('fix-col').value = cfg.fixColor || '#2a4a2a'; ncol('fix');
+            document.getElementById('chk-text').checked = !!cfg.textOn;
+            document.getElementById('text-sp').classList.toggle('vis', !!cfg.textOn);
+            document.getElementById('text-content').value = cfg.textContent || '';
+            document.getElementById('text-size').value = cfg.textSize || 28;
+            document.getElementById('text-col').value = cfg.textColor || '#ffffff'; ncol('text');
+            document.getElementById('text-wtime').value = cfg.textWTime || 600;
+            document.getElementById('text-wgap').value = cfg.textWGap || 200;
+            document.getElementById('text-speed').value = cfg.textSpeed || 80;
+            document.getElementById('text-winw').value = cfg.textWinW || 600;
+            setTextMode(cfg.textMode || 'word');
+
+            // ── Display ──
+            document.getElementById('bg-col').value = cfg.bgColor || '#000000'; ncol('bg');
+            const fb = document.querySelector(`input[name="fbmode"][value="${cfg.fbMode}"]`);
+            if (fb) fb.checked = true;
+            const sm = document.querySelector(`input[name="startmode"][value="${cfg.startMode}"]`);
+            if (sm) sm.checked = true;
+            document.getElementById('chk-fs').checked = cfg.fs !== false;
+            document.getElementById('chk-hud').checked = cfg.hud !== false;
+
+            cfgMsg('✓ Config loaded — all settings restored.');
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  PRELOAD MODAL
+        // ══════════════════════════════════════════════════════
+        function showPreloadModal(total) {
+            const m = document.getElementById('preload-modal');
+            m.style.display = 'flex';
+            document.getElementById('pre-loading').style.display = 'block';
+            document.getElementById('pre-ready').style.display = 'none';
+            document.getElementById('pre-bar').style.width = '0%';
+            document.getElementById('pre-count').textContent = '0 / ' + total;
+            document.getElementById('pre-status').textContent = 'Loading images…';
+        }
+
+        function updatePreloadModal(loaded, total, errors) {
+            const pct = Math.round(loaded / total * 100);
+            document.getElementById('pre-bar').style.width = pct + '%';
+            document.getElementById('pre-count').textContent = loaded + ' / ' + total;
+            document.getElementById('pre-status').textContent =
+                errors.length
+                    ? loaded + ' processed (' + errors.length + ' failed)…'
+                    : 'Loaded ' + loaded + ' of ' + total + '…';
+        }
+
+        function readyPreloadModal(errors) {
+            document.getElementById('pre-loading').style.display = 'none';
+            document.getElementById('pre-ready').style.display = 'block';
+            if (errors.length) {
+                const eb = document.getElementById('pre-errors-box');
+                eb.style.display = 'block';
+                eb.innerHTML = '⚠ ' + errors.length + ' image' + (errors.length > 1 ? 's' : '') + ' failed to load:<br>'
+                    + errors.map(e => '· ' + e).join('<br>');
+                document.getElementById('pre-ready-msg').textContent =
+                    'Experiment is ready. Failed images will show an error placeholder on screen.';
+            } else {
+                document.getElementById('pre-errors-box').style.display = 'none';
+                document.getElementById('pre-ready-msg').textContent =
+                    'All ' + document.getElementById('pre-count').textContent.split('/')[1].trim()
+                    + ' images loaded successfully. The experiment is ready to start.';
+            }
+        }
+
+        function showReadyModal(errors) {
+            // Called when there are no images — still show a ready confirmation
+            const m = document.getElementById('preload-modal');
+            m.style.display = 'flex';
+            document.getElementById('pre-loading').style.display = 'none';
+            document.getElementById('pre-ready').style.display = 'block';
+            document.getElementById('pre-errors-box').style.display = 'none';
+            document.getElementById('pre-ready-msg').textContent =
+                'All settings are prepared. The experiment is ready to start.';
+        }
+
+        function dismissPreloadModal() {
+            document.getElementById('preload-modal').style.display = 'none';
+            initExperiment();
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  INIT
+        // ══════════════════════════════════════════════════════
+        ['fix', 'text', 'bg'].forEach(ncol);
+        onFixChange();
+        // Add one default shape to get started
+        addStim('shape');
+    </script>
+</body>
+
+</html>

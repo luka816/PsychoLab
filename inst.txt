@@ -1,0 +1,56 @@
+I want to create a reaction time study webpage with HTML CSS JS. The first page will have settings (properties), that is, what will appear on the experiment screen.
+I want to be able to choose the shape that will appear on the screen: the options should be:
+1. Triangle, square, circle.
+Each shape will have 3 default sizes: small, medium, and large, and also a size selector, where I enter a number and this number will be the size of one side (equilateral) for a triangle, the size of the side for a square, and the diameter for a circle. Also, for each I should be able to choose the color of what color the shape will be during the experiment. So, the first page should have a list like this:
+Checkbox - shape name - 3 types of default sizes of the shape (each with a checkbox next to it) - a place to enter the size (numerical) and a checkbox. And a place to mark the color where, if possible, when I mark the color, the name of this color should appear (if possible). So with these functions I can mark several variants in each figure, for example (in the square - small, large and the size I want as well as a triangle along with it. That is, I mean the multi-marking function.
+a) Also, for each figure type, I should be able to write how long this figure will appear (for example, a triangle will appear for 150 milliseconds)
+b) But I should also be able to write -1 in this field. Which means that until the subject acts (answers) or the experiment is completed, the figure will be on the screen.
+
+When I select the figures, the following settings will be available:
+1. The type of experiment will be (4 versions and one to choose from - each one will count the reaction time)
+a) The experiment will simply count the reaction time, so you will only need to press a button (when the figure appears) to record the reaction time;
+
+b) The experiment will depend on the vertical position of the figure - (i.e. if the figure is above the center, the subject should press the up arrow or down arrow.
+
+c) The experiment will depend on the horizontal position of the figure - (i.e. if the figure is to the left of the center, the subject should press the left arrow or right arrow.
+
+d) This version will be a combination of versions b and c, with support for all four directions.
+
+All of the above settings should measure reaction time
+
+2. The second setting will be related to the end of the experiment, i.e. when the experiment should be stopped, i.e. one of two options will be selected (this setting will be active if the position-based option from the first setting is selected. If the experiment is simply measuring reaction time, then it automatically means that in this setting the time-dependent stop should be checked and the second option (number of errors) should be inactive, if it is also based on position, then I should be able to select the second option as well. That is, either one or both should be checked in this option.
+
+a) Time-dependent - i.e. when a certain time has passed, the experiment will be stopped
+
+b) Error-based (i.e. when the subject makes a specific number of errors, the experiment will be stopped)
+
+3. Duration of the experiment -
+-- If the second If only time-based stopping is selected in the setting, then I should be able to enter the seconds after which the experiment should stop (for example 125 milliseconds)
+-- If only position-based stopping is selected in the second setting. In this case, this field should be inactive.
+-- If both time and position based stops are checked (both together), then this option should be active and I can enter how long the experiment should stop (regardless of the number of errors (because the subject may not make errors for a long time).
+
+I also need a delay option in the time setting, how many milliseconds after the figure disappears will the figure reappear.
+add alos random delay cheskbox
+4. Number of errors -
+-- If only time based stops are selected in the second setting, then this field should be inactive.
+
+-- If only position based stops are selected in the second setting, then this field should be active then I can enter in seconds how many errors the experiment should stop (but if the time field is entered as a stop time, then the experiment will stop regardless of the number of errors. But if only error based stops are selected, then the experiment will stop immediately when the subject makes the specified number of errors.
+
+-- If only time based stops are selected in the second setting, then this field should be inactive. If stops are checked (both together), then this option should be active and I can enter how many errors the experiment should stop on, but time will be the priority here too.
+
+
+Also in the settings I need to specify what will be in the center of the screen during the experiment (options)
+
+a) A checkbox that indicates that something will be there (if it is not checked, the other options will be inactive (i.e. there will be nothing in the center).
+
+b) It will be just a single symbol or text (options)
+
+c) If it is a simple symbol, I should be able to enter a symbol, for example +, =, a, #, whatever, (in this case I should be able to choose the size and color of this symbol)
+
+d) If it is text, I should be able to enter text that will start appearing in the center one word at a time, (in this case I should be able to choose whether this text will appear one word at a time or go from right to left like a moving subtitle, (i.e. it will move). Also in both cases I should be able to specify the time (from the appearance of the word Duration) - Duration and also delay, that is, how long it takes for a word to appear. And in the case of a moving subtitle, the speed of the text. (In the case of text, I should be able to specify the font size and color of the text.
+
+It's up to you how you do it, with checkboxes or a selectable list, whichever is more convenient and practical.
+
+Also, give me some tips on what other features I can add to my page to make it perfect.
+
+When I press start, the experiment will begin, and a screen will appear on the main screen where figures will appear according to the selected settings. This screen should be divided into four parts, the center will be the origin of the coordinates, (0), the x axis is horizontal, the x axis is vertical, etc. Accordingly, according to the selected settings, figures will appear on the screen in a randomly selected position. We need to split the screen so that when the experiment is finished, an Excel file should be created that contains the following information: subject ID, gender, age, etc. (subject information (which I will enter in the settings), the type of experiment, i.e. whether the stop was based on time, position, or both. Also, the type, size, color, duration, and position (ខ, ខ), and two columns - depending on the position, whether the figure was left or right, up or down (the next column)
