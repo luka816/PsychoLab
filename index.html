@@ -1,0 +1,3829 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiment Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ========================================
+           CSS CUSTOM PROPERTIES (COLOR PALETTE)
+           ======================================== */
+        :root {
+            /* Dark Theme Colors */
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1a2234;
+            --bg-card: #0d1321;
+            --bg-hover: #162032;
+
+            --text-primary: #e8ecf4;
+            --text-secondary: #8b98b0;
+            --text-muted: #5a6578;
+
+            --accent-primary: #00d4ff;
+            --accent-secondary: #0099cc;
+            --accent-tertiary: #006688;
+            --accent-glow: rgba(0, 212, 255, 0.3);
+
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --error: #ff4466;
+
+            --border-primary: #1e2a3a;
+            --border-secondary: #2a3a4a;
+            --border-focus: #00d4ff;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-hover: #e2e8f0;
+
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+
+            --accent-primary: #0088cc;
+            --accent-secondary: #0066aa;
+            --accent-tertiary: #004488;
+            --accent-glow: rgba(0, 136, 204, 0.2);
+
+            --border-primary: #e2e8f0;
+            --border-secondary: #cbd5e1;
+            --border-focus: #0088cc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-secondary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-tertiary);
+        }
+
+        .sidebar {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-primary);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+            width: 0;
+            overflow: hidden;
+        }
+
+        .sidebar-toggle {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-toggle:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .settings-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border-bottom: 1px solid var(--border-primary);
+            cursor: pointer;
+            user-select: none;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-content.expanded {
+            max-height: 5000px;
+        }
+
+        .form-input {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-select {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .form-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #00cc66 100%);
+            color: #000;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error) 0%, #cc3355 100%);
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 24px;
+            background: #000;
+        }
+
+        .stimulus-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .stimulus-card-header {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .stimulus-card-content {
+            padding: 16px;
+        }
+
+        .list-card {
+            border: 1px solid var(--accent-tertiary);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .experiment-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 2000;
+            display: none;
+        }
+
+        .experiment-screen.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .experiment-canvas {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .experiment-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-primary);
+            z-index: 10;
+        }
+
+        .stimulus-element {
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+
+        .results-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 2000;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-primary);
+            position: sticky;
+            top: 0;
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                z-index: 100;
+                width: 280px;
+            }
+
+            .main-content {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full w-72 z-50 overflow-y-auto">
+        <div class="p-4">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold" style="color: var(--accent-primary);">Experiment Builder</h2>
+                <button id="themeToggle" class="sidebar-toggle p-2 rounded-lg" title="Toggle Theme">
+                    <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="12" r="5" />
+                        <path
+                            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                    </svg>
+                </button>
+            </div>
+            <div class="mb-6">
+                <h3 class="form-label text-sm uppercase tracking-wider mb-3">Tools</h3>
+                <a href="angle_calculator.html" target="_blank"
+                    class="w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-all hover:opacity-80 text-sm"
+                    style="background: var(--bg-tertiary); color: var(--text-secondary); text-decoration: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="16" />
+                        <line x1="8" y1="12" x2="16" y2="12" />
+                    </svg>
+                    Visual Angle Calculator
+                </a>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="form-label text-sm uppercase tracking-wider mb-3">Default Experiments</h3>
+                <div id="defaultExperimentsList" class="space-y-2"></div>
+            </div>
+        </div>
+    </aside>
+
+    <button id="sidebarToggle" class="fixed top-4 left-4 z-40 sidebar-toggle p-3 rounded-lg">
+        <svg id="sidebarToggleIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M3 12h18M3 6h18M3 18h18" />
+        </svg>
+    </button>
+
+    <!-- Main Content -->
+    <main id="mainContent" class="transition-all duration-300" style="margin-left: 288px; padding: 24px;">
+        <div class="max-w-5xl mx-auto">
+            <header class="mb-8 mt-8">
+                <h1 class="text-3xl font-bold mb-2">Experiment Configuration</h1>
+                <p class="text-base" style="color: var(--text-secondary);">Configure your psychological experiment with
+                    stimuli, timing, and response settings.</p>
+            </header>
+
+            <!-- Section 1: Subject Information -->
+            <section id="subjectInfo" class="settings-section animate-fade-in">
+                <div class="section-header" onclick="toggleSection('subjectInfoContent')">
+                    <div class="flex items-center gap-3">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="color: var(--accent-primary);">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        <span class="font-semibold">Subject Information</span>
+                    </div>
+                    <svg class="section-arrow transition-transform" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </div>
+                <div id="subjectInfoContent" class="section-content">
+                    <div class="p-5">
+                        <p class="text-sm mb-4" style="color: var(--text-muted);">Enter subject details and add custom
+                            fields. All data will be exported.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="form-label">Subject ID</label>
+                                <input type="text" class="form-input" id="subjectId" placeholder="e.g., S001">
+                            </div>
+                            <div>
+                                <label class="form-label">Gender</label>
+                                <select class="form-select" id="subjectGender">
+                                    <option value="">Select...</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Age</label>
+                                <input type="number" class="form-input" id="subjectAge" placeholder="e.g., 25" min="0"
+                                    max="150">
+                            </div>
+                        </div>
+                        <div id="customFieldsContainer" class="space-y-3 mb-4"></div>
+                        <button class="btn btn-secondary btn-sm" onclick="addCustomField()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Add Custom Field
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Experiment Type -->
+            <section id="experimentType" class="settings-section animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="section-header" onclick="toggleSection('experimentTypeContent')">
+                    <div class="flex items-center gap-3">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="color: var(--accent-primary);">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        <span class="font-semibold">Experiment Type</span>
+                    </div>
+                    <svg class="section-arrow transition-transform" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </div>
+                <div id="experimentTypeContent" class="section-content">
+                    <div class="p-5">
+                        <p class="text-sm mb-4" style="color: var(--text-muted);">Select how the experiment will end.
+                            Main types are mutually exclusive.</p>
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="radio" name="experimentType" value="stimuli-based" class="w-5 h-5"
+                                        checked onchange="updateExperimentTypeUI()">
+                                    <div>
+                                        <span class="font-medium">Stimuli-Based</span>
+                                        <p class="text-sm mt-1" style="color: var(--text-muted);">Ends after all stimuli
+                                            presented.</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="radio" name="experimentType" value="time-based" class="w-5 h-5"
+                                        onchange="updateExperimentTypeUI()">
+                                    <div>
+                                        <span class="font-medium">Time-Based</span>
+                                        <p class="text-sm mt-1" style="color: var(--text-muted);">Ends after specified
+                                            duration. Stimuli loop.</p>
+                                    </div>
+                                </label>
+                                <div id="timeBasedOptions" class="mt-4 pl-8 hidden">
+                                    <label class="form-label">Duration (ms)</label>
+                                    <input type="number" class="form-input" id="experimentDuration" placeholder="60000"
+                                        min="1000">
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                <label class="flex items-center gap-3 cursor-pointer">
+                                    <input type="checkbox" id="reactionTimeEnabled" class="w-5 h-5"
+                                        onchange="updateReactionTimeUI()">
+                                    <div>
+                                        <span class="font-medium">Reaction Time Measurement</span>
+                                        <p class="text-sm mt-1" style="color: var(--text-muted);">Record response time.
+                                            Can combine with time-based.</p>
+                                    </div>
+                                </label>
+                                <div id="reactionTimeOptions" class="mt-4 pl-8 hidden space-y-2">
+                                    <label class="form-label">Response Mode</label>
+                                    <label class="flex items-center gap-2 p-2 rounded cursor-pointer"
+                                        style="background: var(--bg-secondary);">
+                                        <input type="radio" name="reactionMode" value="button-only" class="w-4 h-4"
+                                            onchange="updateReactionModeUI()">
+                                        <span class="text-sm">Button Only (press to continue)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded cursor-pointer"
+                                        style="background: var(--bg-secondary);">
+                                        <input type="radio" name="reactionMode" value="vertical" class="w-4 h-4"
+                                            onchange="updateReactionModeUI()">
+                                        <span class="text-sm">Vertical Position (Up/Down arrows)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded cursor-pointer"
+                                        style="background: var(--bg-secondary);">
+                                        <input type="radio" name="reactionMode" value="horizontal" class="w-4 h-4"
+                                            onchange="updateReactionModeUI()">
+                                        <span class="text-sm">Horizontal Position (Left/Right arrows)</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 rounded cursor-pointer"
+                                        style="background: var(--bg-secondary);">
+                                        <input type="radio" name="reactionMode" value="combined" class="w-4 h-4"
+                                            onchange="updateReactionModeUI()">
+                                        <span class="text-sm">Combined (All arrows)</span>
+                                    </label>
+                                    <div class="mt-3">
+                                        <label class="form-label">Pre-answer Behavior</label>
+                                        <select class="form-select" id="preAnswerMode">
+                                            <option value="skip">Skip Trial (move to next stimulus)</option>
+                                            <option value="continue">Continue (show stimulus anyway, record as info)
+                                            </option>
+                                        </select>
+                                        <p class="text-xs mt-1" style="color: var(--text-muted);">What happens if
+                                            subject presses a key during the delay before stimulus appears.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: General Settings -->
+            <section id="generalSettings" class="settings-section animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="section-header" onclick="toggleSection('generalSettingsContent')">
+                    <div class="flex items-center gap-3">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="color: var(--accent-primary);">
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
+                        <span class="font-semibold">General Settings</span>
+                    </div>
+                    <svg class="section-arrow transition-transform" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </div>
+                <div id="generalSettingsContent" class="section-content">
+                    <div class="p-5 space-y-4">
+                        <div class="flex items-center justify-between p-4 rounded-lg"
+                            style="background: var(--bg-tertiary);">
+                            <div>
+                                <span class="font-medium">Show Progress Info</span>
+                                <p class="text-sm mt-1" style="color: var(--text-muted);">Display elapsed time during
+                                    experiment.</p>
+                            </div>
+                            <div id="showProgressToggle" class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-lg"
+                            style="background: var(--bg-tertiary);">
+                            <div>
+                                <span class="font-medium">Fullscreen Mode</span>
+                                <p class="text-sm mt-1" style="color: var(--text-muted);">Run in fullscreen for
+                                    immersive experience.</p>
+                            </div>
+                            <div id="fullscreenToggle" class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                        </div>
+                        <div class="p-4 rounded-lg"
+                            style="background: var(--bg-tertiary); border: 1px solid var(--border-primary);">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <span class="font-medium">Fixation Stimulus</span>
+                                    <p class="text-sm mt-1" style="color: var(--text-muted);">Static element visible
+                                        throughout experiment.</p>
+                                </div>
+                                <div id="fixationEnabledToggle" class="toggle-switch"
+                                    onclick="toggleSwitch(this); updateFixationUI();"></div>
+                            </div>
+                            <div id="fixationOptions" class="hidden space-y-4">
+                                <div>
+                                    <label class="form-label">Fixation Type</label>
+                                    <select class="form-select" id="fixationType" onchange="updateFixationTypeUI()">
+                                        <option value="">Select...</option>
+                                        <option value="static">Static (Shape, Text, or Image)</option>
+                                        <option value="text-word">Text (Word-by-Word)</option>
+                                        <option value="text-scroll">Text (Scrolling Subtitle)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Static Options -->
+                                <div id="fixationStaticOptions" class="hidden space-y-3">
+                                    <div>
+                                        <label class="form-label">Static Stimulus Type</label>
+                                        <select class="form-select" id="fixationStaticType"
+                                            onchange="updateFixationStaticTypeUI()">
+                                            <option value="shape">Shape</option>
+                                            <option value="text">Static Text</option>
+                                            <option value="image">Image</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Static Shape -->
+                                    <div id="fixationStaticShapeFields" class="space-y-3">
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="form-label">Shape</label>
+                                                <select class="form-select" id="fixationShape">
+                                                    <option value="circle">Circle</option>
+                                                    <option value="rectangle">Rectangle</option>
+                                                    <option value="triangle">Triangle</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Size</label>
+                                                <select class="form-select" id="fixationShapeSize"
+                                                    onchange="toggleFixationCustomSize()">
+                                                    <option value="small">Small</option>
+                                                    <option value="medium">Medium</option>
+                                                    <option value="large">Large</option>
+                                                    <option value="custom">Custom</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div id="fixationCustomSize" class="hidden grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="form-label">Width (px)</label>
+                                                <input type="text" class="form-input" id="fixationShapeWidth"
+                                                    value="50">
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Height (px)</label>
+                                                <input type="text" class="form-input" id="fixationShapeHeight"
+                                                    value="50">
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="form-label">Color</label>
+                                                <input type="color" class="form-input h-10" id="fixationShapeColor"
+                                                    value="#0000FF">
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Style</label>
+                                                <select class="form-select" id="fixationShapeStyle"
+                                                    onchange="toggleFixationStroke()">
+                                                    <option value="fill">Filled</option>
+                                                    <option value="stroke">Outline</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div id="fixationStrokeWidth" class="hidden">
+                                            <label class="form-label">Border Width (px)</label>
+                                            <input type="number" class="form-input" id="fixationShapeStrokeWidth"
+                                                value="2">
+                                        </div>
+                                    </div>
+
+                                    <!-- Static Text -->
+                                    <div id="fixationStaticTextFields" class="hidden space-y-3">
+                                        <div>
+                                            <label class="form-label">Text Content</label>
+                                            <input type="text" class="form-input" id="fixationStaticText"
+                                                placeholder="e.g., +">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="form-label">Font Size (px)</label>
+                                                <input type="text" class="form-input" id="fixationStaticFontSize"
+                                                    value="32">
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Color</label>
+                                                <input type="color" class="form-input h-10" id="fixationStaticTextColor"
+                                                    value="#000000">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Static Image -->
+                                    <div id="fixationStaticImageFields" class="hidden space-y-3">
+                                        <div>
+                                            <label class="form-label">Image URL</label>
+                                            <input type="text" class="form-input" id="fixationImageUrl"
+                                                placeholder="https://...">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="form-label">Width (px)</label>
+                                                <input type="text" class="form-input" id="fixationImageWidth"
+                                                    value="100">
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Height (px)</label>
+                                                <input type="text" class="form-input" id="fixationImageHeight"
+                                                    value="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Text Word-by-Word Options -->
+                                <div id="fixationWordOptions" class="hidden space-y-3">
+                                    <div>
+                                        <label class="form-label">Text Phrase</label>
+                                        <textarea class="form-input" id="fixationText" rows="2"
+                                            placeholder="Enter words separated by spaces..."></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="form-label">Font Size (px)</label>
+                                            <input type="number" class="form-input" id="fixationTextFontSize"
+                                                value="24">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Color</label>
+                                            <input type="color" class="form-input h-10" id="fixationTextColor"
+                                                value="#ffffff">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="form-label">Word Duration (ms)</label>
+                                            <input type="number" class="form-input" id="fixationWordDuration"
+                                                value="500">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Word Delay (ms)</label>
+                                            <input type="number" class="form-input" id="fixationWordDelay" value="100">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Text Scrolling Options -->
+                                <div id="fixationScrollOptions" class="hidden space-y-3">
+                                    <div>
+                                        <label class="form-label">Scrolling Text</label>
+                                        <textarea class="form-input" id="fixationScrollText" rows="2"
+                                            placeholder="Enter text to scroll..."></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="form-label">Font Size (px)</label>
+                                            <input type="number" class="form-input" id="fixationScrollFontSize"
+                                                value="24">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Color</label>
+                                            <input type="color" class="form-input h-10" id="fixationScrollColor"
+                                                value="#ffffff">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Scroll Speed (pixels per frame)</label>
+                                        <input type="number" class="form-input" id="fixationScrollSpeedValue" value="2">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Display Area Width (px)</label>
+                                        <input type="number" class="form-input" id="fixationScrollWidth" value="300">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Stimuli Generator -->
+            <section id="stimuliGenerator" class="settings-section animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="section-header" onclick="toggleSection('stimuliGeneratorContent')">
+                    <div class="flex items-center gap-3">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="color: var(--accent-primary);">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <polyline points="21 15 16 10 5 21" />
+                        </svg>
+                        <span class="font-semibold">Stimuli Generator</span>
+                    </div>
+                    <svg class="section-arrow transition-transform" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </div>
+                <div id="stimuliGeneratorContent" class="section-content expanded">
+                    <div class="p-5">
+                        <p class="text-sm mb-4" style="color: var(--text-muted);">Create individual stimuli or group
+                            them into lists. Stimuli are presented in order.</p>
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <button class="btn btn-primary" onclick="createStimulus()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                                Add Stimulus
+                            </button>
+                            <button class="btn btn-secondary" onclick="createList()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="8" y1="6" x2="21" y2="6" />
+                                    <line x1="8" y1="12" x2="21" y2="12" />
+                                    <line x1="8" y1="18" x2="21" y2="18" />
+                                </svg>
+                                Add List
+                            </button>
+                            <!-- NEW BUTTON -->
+                            <button class="btn btn-secondary" onclick="createGroupedList()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7" />
+                                    <rect x="14" y="3" width="7" height="7" />
+                                    <rect x="14" y="14" width="7" height="7" />
+                                    <rect x="3" y="14" width="7" height="7" />
+                                </svg>
+                                Add Grouped List
+                            </button>
+                        </div>
+                        <div id="stimuliContainer" class="space-y-3"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: JSON Import/Export -->
+            <!-- Section 5: JSON Import/Export -->
+            <section id="jsonSection" class="settings-section animate-fade-in" style="animation-delay: 0.4s;">
+                <div class="section-header" onclick="toggleSection('jsonSectionContent')">
+                    <div class="flex items-center gap-3">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="color: var(--accent-primary);">
+                            <polyline points="16 18 22 12 16 6" />
+                            <polyline points="8 6 2 12 8 18" />
+                        </svg>
+                        <span class="font-semibold">Import/Export Configuration</span>
+                    </div>
+                    <svg class="section-arrow transition-transform" width="18" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </div>
+                <div id="jsonSectionContent" class="section-content">
+                    <div class="p-5 space-y-6">
+
+                        <!-- JSON Section (Original) -->
+                        <div class="space-y-3">
+                            <h4 class="font-medium" style="color: var(--text-secondary);">JSON Data</h4>
+                            <p class="text-xs" style="color: var(--text-muted);">Standard JSON format. Useful for backup
+                                or sharing.
+                            </p>
+                            <textarea class="form-input font-mono text-sm" id="jsonTextarea" rows="4"
+                                placeholder="JSON will appear here..."></textarea>
+                            <div class="flex flex-wrap gap-3">
+                                <button class="btn btn-primary btn-sm" onclick="exportToJSON()">Export JSON</button>
+                                <button class="btn btn-success btn-sm" onclick="importFromJSON()">Import JSON</button>
+                                <label class="btn btn-secondary btn-sm cursor-pointer">
+                                    Upload File
+                                    <input type="file" class="hidden" accept=".json" onchange="loadJSONFromFile(event)">
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr style="border-color: var(--border-primary);">
+
+                        <!-- Column Selection -->
+                        <div class="space-y-3">
+                            <h4 class="font-medium" style="color: var(--text-secondary);">CSV Output Columns</h4>
+                            <p class="text-xs" style="color: var(--text-muted);">Choose which data columns to include in
+                                the CSV export and preview table.</p>
+                            <button class="btn btn-secondary btn-sm" onclick="openColumnSelector()">Configure
+                                Columns</button>
+                        </div>
+                        <hr style="border-color: var(--border-primary);">
+                        <!-- JS Section (New) -->
+                        <div class="space-y-3">
+                            <h4 class="font-medium" style="color: var(--text-secondary);">JavaScript Data (For Default
+                                Experiments)
+                            </h4>
+                            <p class="text-xs" style="color: var(--text-muted);">Export as JS code to save in separate
+                                .js files.
+                                Import by pasting JS code.</p>
+                            <textarea class="form-input font-mono text-sm" id="jsTextarea" rows="6"
+                                placeholder="JavaScript code will appear here..."></textarea>
+                            <div class="flex flex-wrap gap-3">
+                                <button class="btn btn-primary btn-sm" onclick="exportToJS()">Export JS Code</button>
+                                <button class="btn btn-success btn-sm" onclick="importFromJS()">Import JS Code</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- Start Button -->
+            <div class="flex justify-center mt-8 mb-12">
+                <button class="btn btn-success text-lg px-8 py-4" onclick="startExperiment()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                    Start Experiment
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Experiment Screen -->
+    <div id="experimentScreen" class="experiment-screen">
+        <div id="experimentInfo" class="experiment-info">
+            <div>Time: <span id="elapsedTime">0</span>ms</div>
+            <div>Stimulus: <span id="currentStimulusNum">0</span>/<span id="totalStimuliNum">0</span></div>
+        </div>
+        <div id="experimentCanvas" class="experiment-canvas"></div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="resultsScreen" class="results-screen">
+        <div class="p-8 max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold" style="color: var(--accent-primary);">Experiment Results</h1>
+                <div class="flex gap-3">
+                    <button class="btn btn-secondary" onclick="openColumnSelector(true)">Select Columns</button>
+                    <button class="btn btn-primary" onclick="downloadCSV()">Download CSV</button>
+                    <button class="btn btn-secondary" onclick="closeResults()">Close</button>
+                </div>
+            </div>
+            <div id="resultsSummary" class="mb-8 p-6 rounded-lg" style="background: var(--bg-secondary);"></div>
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm" style="color: var(--text-muted);">Click and drag to select cells, then Ctrl+C to
+                    copy.</span>
+                <button class="btn btn-secondary btn-sm" onclick="selectTableContent()">Select All Table</button>
+            </div>
+            <div class="rounded-lg overflow-hidden" style="background: var(--bg-secondary); user-select: text;">
+                <div class="overflow-x-auto" style="max-height: 70vh;">
+                    <table id="resultsTable" class="data-table">
+                        <thead id="resultsTableHead"></thead>
+                        <tbody id="resultsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-4" style="color: var(--accent-primary);">Start Experiment</h3>
+            <div id="preloadStatus" class="mb-4">
+                <p class="mb-2" style="color: var(--text-secondary);">Preparing stimuli...</p>
+                <div class="w-full h-2 rounded-full overflow-hidden" style="background: var(--bg-tertiary);">
+                    <div id="preloadProgress" class="h-full transition-all duration-300"
+                        style="background: var(--accent-primary); width: 0%;"></div>
+                </div>
+            </div>
+            <p id="confirmMessage" class="mb-6" style="color: var(--text-secondary);">Ready to begin?</p>
+            <div class="flex justify-end gap-3">
+                <button class="btn btn-secondary" onclick="closeModal('confirmModal')">Cancel</button>
+                <button id="confirmStartBtn" class="btn btn-success" onclick="confirmStartExperiment()">Start</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stimulus Editor Modal -->
+    <div id="stimulusModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 650px;">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold" style="color: var(--accent-primary);">Edit Stimulus</h3>
+                <button class="btn btn-secondary btn-sm" onclick="closeModal('stimulusModal')">X</button>
+            </div>
+            <div id="stimulusModalContent"></div>
+        </div>
+    </div>
+
+    <!-- List Editor Modal -->
+    <div id="listModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="text-xl font-semibold mb-4" style="color: var(--accent-primary);">Edit List</h3>
+            <div id="listModalContent"></div>
+        </div>
+    </div>
+    <!-- Column Selection Modal -->
+    <div id="columnModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-semibold" style="color: var(--accent-primary);">Select CSV Columns</h3>
+                <button class="btn btn-secondary btn-sm" onclick="closeModal('columnModal')">X</button>
+            </div>
+            <div id="columnModalContent" class="space-y-2 max-h-96 overflow-y-auto pr-2">
+                <!-- Checkboxes will be injected here -->
+            </div>
+            <div class="flex justify-end gap-3 pt-4 border-t mt-4" style="border-color: var(--border-primary);">
+                <button class="btn btn-secondary" onclick="selectAllColumns(true)">Select All</button>
+                <button class="btn btn-secondary" onclick="selectAllColumns(false)">Deselect All</button>
+                <button class="btn btn-primary" onclick="applyColumnSelection()">Apply</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // ========================================
+        // GLOBAL STATE & CONFIGURATION
+        // ========================================
+        // --- 1. DEFINE COLUMNS ---
+        // We define how to get the value for each column.
+        // 'static': values that don't change per trial (Subject ID, Settings).
+        // 'trial': values from the experiment result object.
+        const CSV_COLUMN_DEFINITIONS = [
+            // --- SUBJECT INFO ---
+            { key: 'subjectId', label: 'Subject ID', type: 'static', accessor: () => document.getElementById('subjectId').value },
+            { key: 'gender', label: 'Gender', type: 'static', accessor: () => document.getElementById('subjectGender').value },
+            { key: 'age', label: 'Age', type: 'static', accessor: () => document.getElementById('subjectAge').value },
+
+            // --- EXPERIMENT CONFIG ---
+            { key: 'expType', label: 'Exp Type', type: 'static', accessor: () => state.experimentType },
+            { key: 'expDur', label: 'Exp Dur (ms)', type: 'static', accessor: () => document.getElementById('experimentDuration')?.value || '' },
+            { key: 'rtEnabled', label: 'RT Enabled', type: 'static', accessor: () => state.reactionTimeEnabled ? 'true' : 'false' },
+            { key: 'rtMode', label: 'RT Mode', type: 'static', accessor: () => state.reactionMode || '' },
+            { key: 'preAnswerMode', label: 'Pre-answer Mode', type: 'static', accessor: () => state.preAnswerMode || '' },
+            { key: 'showProgress', label: 'Show Progress', type: 'static', accessor: () => document.getElementById('showProgressToggle').classList.contains('active') ? 'true' : 'false' },
+            { key: 'fullscreenMode', label: 'Fullscreen', type: 'static', accessor: () => document.getElementById('fullscreenToggle').classList.contains('active') ? 'true' : 'false' },
+
+            // --- FIXATION SETTINGS ---
+            { key: 'fixEnabled', label: 'Fixation Enabled', type: 'static', accessor: () => state.fixationEnabled ? 'true' : 'false' },
+            { key: 'fixType', label: 'Fixation Type', type: 'static', accessor: () => document.getElementById('fixationType')?.value || '' },
+            { key: 'fixStaticType', label: 'Fix Static Type', type: 'static', accessor: () => document.getElementById('fixationStaticType')?.value || '' },
+            { key: 'fixShape', label: 'Fix Shape', type: 'static', accessor: () => document.getElementById('fixationShape')?.value || '' },
+            { key: 'fixShapeSize', label: 'Fix Shape Size', type: 'static', accessor: () => document.getElementById('fixationShapeSize')?.value || '' },
+            { key: 'fixShapeColor', label: 'Fix Shape Color', type: 'static', accessor: () => document.getElementById('fixationShapeColor')?.value || '' },
+            { key: 'fixShapeStyle', label: 'Fix Shape Style', type: 'static', accessor: () => document.getElementById('fixationShapeStyle')?.value || '' },
+            { key: 'fixShapeSW', label: 'Fix Shape StrokeW', type: 'static', accessor: () => document.getElementById('fixationShapeStrokeWidth')?.value || '' },
+            { key: 'fixShapeW', label: 'Fix Shape W', type: 'static', accessor: () => document.getElementById('fixationShapeWidth')?.value || '' },
+            { key: 'fixShapeH', label: 'Fix Shape H', type: 'static', accessor: () => document.getElementById('fixationShapeHeight')?.value || '' },
+            { key: 'fixStaticText', label: 'Fix Static Text', type: 'static', accessor: () => document.getElementById('fixationStaticText')?.value || '' },
+            { key: 'fixStaticFS', label: 'Fix Static FS', type: 'static', accessor: () => document.getElementById('fixationStaticFontSize')?.value || '' },
+            { key: 'fixStaticCol', label: 'Fix Static Color', type: 'static', accessor: () => document.getElementById('fixationStaticTextColor')?.value || '' },
+            { key: 'fixImgUrl', label: 'Fix Img URL', type: 'static', accessor: () => document.getElementById('fixationImageUrl')?.value || '' },
+            { key: 'fixImgW', label: 'Fix Img W', type: 'static', accessor: () => document.getElementById('fixationImageWidth')?.value || '' },
+            { key: 'fixImgH', label: 'Fix Img H', type: 'static', accessor: () => document.getElementById('fixationImageHeight')?.value || '' },
+            { key: 'fixText', label: 'Fix Text', type: 'static', accessor: () => document.getElementById('fixationText')?.value || '' },
+            { key: 'fixTextFS', label: 'Fix Text FS', type: 'static', accessor: () => document.getElementById('fixationTextFontSize')?.value || '' },
+            { key: 'fixTextCol', label: 'Fix Text Col', type: 'static', accessor: () => document.getElementById('fixationTextColor')?.value || '' },
+            { key: 'fixWordDur', label: 'Fix Word Dur', type: 'static', accessor: () => document.getElementById('fixationWordDuration')?.value || '' },
+            { key: 'fixWordDelay', label: 'Fix Word Delay', type: 'static', accessor: () => document.getElementById('fixationWordDelay')?.value || '' },
+            { key: 'fixScrollText', label: 'Fix Scroll Text', type: 'static', accessor: () => document.getElementById('fixationScrollText')?.value || '' },
+            { key: 'fixScrollFS', label: 'Fix Scroll FS', type: 'static', accessor: () => document.getElementById('fixationScrollFontSize')?.value || '' },
+            { key: 'fixScrollCol', label: 'Fix Scroll Col', type: 'static', accessor: () => document.getElementById('fixationScrollColor')?.value || '' },
+            { key: 'fixScrollSpd', label: 'Fix Scroll Spd', type: 'static', accessor: () => document.getElementById('fixationScrollSpeedValue')?.value || '' },
+            { key: 'fixScrollW', label: 'Fix Scroll W', type: 'static', accessor: () => document.getElementById('fixationScrollWidth')?.value || '' },
+
+            // --- TRIAL DATA (Runtime) ---
+            { key: 'trialIndex', label: 'Trial', type: 'trial', accessor: (r) => r.trialIndex },
+            { key: 'timestamp', label: 'Timestamp (ms)', type: 'trial', accessor: (r) => r.timestamp },
+            { key: 'name', label: 'Stimulus Name', type: 'trial', accessor: (r) => r.name },
+            { key: 'type', label: 'Type', type: 'trial', accessor: (r) => r.type },
+            { key: 'listName', label: 'List Name', type: 'trial', accessor: (r) => r.listName },
+
+            // --- Stimulus Settings (Per Trial) ---
+            { key: 'text', label: 'Text Content', type: 'trial', accessor: (r) => r.textContent || '' },
+            { key: 'fontSize', label: 'Font Size', type: 'trial', accessor: (r) => r.fontSize || '' },
+            { key: 'fontColor', label: 'Font Color', type: 'trial', accessor: (r) => r.fontColor || '' },
+            { key: 'fontFamily', label: 'Font Family', type: 'trial', accessor: (r) => r.fontFamily || '' },
+
+            { key: 'shapeType', label: 'Shape Type', type: 'trial', accessor: (r) => r.shapeType || '' },
+            { key: 'shapeSize', label: 'Shape Size', type: 'trial', accessor: (r) => r.shapeSize || '' },
+            { key: 'shapeWidth', label: 'Shape Width', type: 'trial', accessor: (r) => r.shapeWidth || '' },
+            { key: 'shapeHeight', label: 'Shape Height', type: 'trial', accessor: (r) => r.shapeHeight || '' },
+            { key: 'shapeColor', label: 'Shape Color', type: 'trial', accessor: (r) => r.shapeColor || '' },
+            { key: 'shapeStyle', label: 'Shape Style', type: 'trial', accessor: (r) => r.shapeStyle || '' },
+            { key: 'shapeStrokeW', label: 'Shape StrokeW', type: 'trial', accessor: (r) => r.shapeStrokeWidth || '' },
+
+            { key: 'imageUrl', label: 'Image URL', type: 'trial', accessor: (r) => r.imageUrl || '' },
+            { key: 'imageWidth', label: 'Image W', type: 'trial', accessor: (r) => r.imageWidth || '' },
+            { key: 'imageHeight', label: 'Image H', type: 'trial', accessor: (r) => r.imageHeight || '' },
+
+            { key: 'audioUrl', label: 'Audio URL', type: 'trial', accessor: (r) => r.audioUrl || '' },
+            { key: 'audioVol', label: 'Audio Vol', type: 'trial', accessor: (r) => r.audioVolume || '' },
+            { key: 'audioRep', label: 'Audio Rep', type: 'trial', accessor: (r) => r.audioRepeat || '' },
+
+            { key: 'positionMode', label: 'Pos Mode', type: 'trial', accessor: (r) => r.positionMode || '' },
+            { key: 'customX', label: 'Custom X', type: 'trial', accessor: (r) => r.customX || '' },
+            { key: 'customY', label: 'Custom Y', type: 'trial', accessor: (r) => r.customY || '' },
+            { key: 'bgColor', label: 'BG Color', type: 'trial', accessor: (r) => r.backgroundColor || '' },
+
+            { key: 'delayType', label: 'Delay Type', type: 'trial', accessor: (r) => r.delayType || '' },
+            { key: 'delaySetting', label: 'Delay (ms)', type: 'trial', accessor: (r) => r.delaySetting },
+            { key: 'durationSetting', label: 'Duration (ms)', type: 'trial', accessor: (r) => r.durationSetting },
+            { key: 'respKeySetting', label: 'Resp Key Set', type: 'trial', accessor: (r) => r.responseKeySetting || '' },
+            { key: 'allowAnyKey', label: 'Allow Any Key', type: 'trial', accessor: (r) => r.allowAnyKeySetting ? 'true' : 'false' },
+
+            // --- RESPONSE DATA ---
+            { key: 'actualX', label: 'Actual X', type: 'trial', accessor: (r) => r.actualX },
+            { key: 'actualY', label: 'Actual Y', type: 'trial', accessor: (r) => r.actualY },
+            { key: 'reactionTime', label: 'RT (ms)', type: 'trial', accessor: (r) => r.reactionTime },
+            { key: 'preAnswerMs', label: 'Pre-answer (ms)', type: 'trial', accessor: (r) => r.preAnswerMs || '' },
+            { key: 'correct', label: 'Correct', type: 'trial', accessor: (r) => r.correct },
+            { key: 'pressedKey', label: 'Pressed Key', type: 'trial', accessor: (r) => r.pressedKey || '' }
+        ];
+        const state = {
+            theme: 'dark',
+            sidebarCollapsed: false,
+            items: [],
+            currentExperimentSequence: [], // <--- ADD THIS LINE
+            customFields: [],
+            selectedColumns: CSV_COLUMN_DEFINITIONS.map(c => c.key), // Default: all selected
+            experimentType: 'stimuli-based',
+            experimentDuration: 0,
+            reactionTimeEnabled: false,
+            reactionMode: null,
+            showProgress: false,
+            fullscreenMode: true,
+            fixationEnabled: false,
+            isRunning: false,
+            experimentStartTime: 0,
+            currentStimulusIndex: 0,
+            experimentResults: [],
+            loadedImages: {},
+            loadedAudio: {},
+            timeline: [],
+            completedTimelineEvents: 0,
+            visibleTimelineEntries: [],
+            timelineScheduledTimeouts: [],
+            timelineStartTime: 0
+        };
+
+        function formatSize(value) {
+            if (!value) return value;
+            const strVal = String(value).trim();
+            // If it's a pure number (e.g., "100"), append "px"
+            if (!isNaN(strVal) && strVal !== '') {
+                return strVal + 'px';
+            }
+            // Otherwise (e.g., "100%", "5rem"), return as is
+            return strVal;
+        }
+
+        // Registry for default experiments loaded from JS files
+        window.DEFAULT_EXPERIMENTS_REGISTRY = [];
+
+        let stimulusIdCounter = 0;
+        let listIdCounter = 0;
+        let experimentInterval = null;
+        let currentTimeout = null;
+        let stimulusStartTime = 0;
+        let pendingResponse = false;
+        let currentStimulus = null;
+        let fixationElement = null;
+        let audioElement = null;
+
+        let currentStimulusPos = { x: 50, y: 50 };
+
+        let waitingForStimulus = false;
+        let preAnswerDelayStart = 0;
+
+        let fixationInterval = null;
+        let fixationAnimationId = null;
+
+        // Call this function from external JS files to add items to the sidebar
+        function registerDefaultExperiment(name, configData) {
+            window.DEFAULT_EXPERIMENTS_REGISTRY.push({ name: name, config: configData });
+            // Re-render the list immediately if the page is loaded
+            if (document.readyState === 'complete') {
+                renderDefaultExperiments();
+            }
+        }
+
+        const defaultExperiments = [
+            { name: 'Simple Reaction Time', url: 'https://drive.google.com/uc?export=download&id=1oSDe836H3JpyFRuwG3xsPB0_1GHKdPbS' },
+            { name: 'Visual Search Task', url: '' }
+        ];
+
+        // ========================================
+        // INITIALIZATION
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            renderDefaultExperiments();
+            expandAllSections();
+        });
+
+        function initTheme() {
+            const saved = localStorage.getItem('expTheme') || 'dark';
+            state.theme = saved;
+            document.documentElement.setAttribute('data-theme', saved);
+            updateThemeIcon();
+        }
+
+        function expandAllSections() {
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.add('expanded');
+            });
+            document.querySelectorAll('.section-arrow').forEach(el => {
+                el.style.transform = 'rotate(180deg)';
+            });
+        }
+
+        function renderDefaultExperiments() {
+            const container = document.getElementById('defaultExperimentsList');
+
+            // Render the global registry
+            if (window.DEFAULT_EXPERIMENTS_REGISTRY.length === 0) {
+                container.innerHTML = '<div class="text-xs p-2" style="color: var(--text-muted);">No default experiments loaded.</div>';
+                return;
+            }
+
+            container.innerHTML = window.DEFAULT_EXPERIMENTS_REGISTRY.map((exp, i) => `
+                <button class="w-full text-left px-3 py-2 rounded-lg transition-all hover:opacity-80 text-sm" 
+                        style="background: var(--bg-tertiary); color: var(--text-secondary);"
+                        onclick="loadDefaultExperiment(${i})">
+                    ${exp.name}
+                </button>
+            `).join('');
+        }
+        function loadDefaultExperiment(index) {
+            const exp = window.DEFAULT_EXPERIMENTS_REGISTRY[index];
+            if (!exp) return;
+
+            // 1. Convert to JSON string for the JSON field (optional feedback)
+            document.getElementById('jsonTextarea').value = JSON.stringify(exp.config, null, 2);
+
+            // 2. Apply the settings
+            applyConfig(exp.config);
+        }
+        // ========================================
+        // UI HELPERS
+        // ========================================
+        function toggleSection(id) {
+            const content = document.getElementById(id);
+            const arrow = content.previousElementSibling.querySelector('.section-arrow');
+            content.classList.toggle('expanded');
+            arrow.style.transform = content.classList.contains('expanded') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        function toggleSwitch(el) {
+            el.classList.toggle('active');
+            return el.classList.contains('active');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        function openColumnSelector(fromResults = false) {
+            // Flag to know if we need to refresh the results table immediately
+            window._columnSelectorContext = fromResults;
+
+            const container = document.getElementById('columnModalContent');
+            let html = '';
+
+            // 1. Standard Columns
+            html += '<h4 class="text-sm font-semibold mb-2" style="color:var(--text-muted);">Standard Columns</h4>';
+            CSV_COLUMN_DEFINITIONS.forEach(col => {
+                const checked = state.selectedColumns.includes(col.key) ? 'checked' : '';
+                html += `
+                    <label class="flex items-center gap-2 p-2 rounded cursor-pointer" style="background: var(--bg-tertiary);">
+                        <input type="checkbox" class="w-4 h-4" value="${col.key}" ${checked} onchange="toggleColumnSelection('${col.key}')">
+                        <span class="text-sm">${col.label}</span>
+                    </label>
+                `;
+            });
+
+            // 2. Custom Subject Fields (Dynamic)
+            const customHeaders = [];
+            document.querySelectorAll('#customFieldsContainer > div').forEach(div => {
+                const nameInput = div.querySelectorAll('input')[0];
+                if (nameInput && nameInput.value) customHeaders.push(nameInput.value);
+            });
+
+            if (customHeaders.length > 0) {
+                html += '<h4 class="text-sm font-semibold mb-2 mt-4" style="color:var(--text-muted);">Custom Subject Fields</h4>';
+                customHeaders.forEach(name => {
+                    // We use a special key prefix for custom fields
+                    const key = 'custom_' + name;
+                    const checked = state.selectedColumns.includes(key) ? 'checked' : '';
+                    html += `
+                        <label class="flex items-center gap-2 p-2 rounded cursor-pointer" style="background: var(--bg-tertiary);">
+                            <input type="checkbox" class="w-4 h-4" value="${key}" ${checked} onchange="toggleColumnSelection('${key}')">
+                            <span class="text-sm">${name} (Custom)</span>
+                        </label>
+                    `;
+                });
+            }
+
+            container.innerHTML = html;
+            openModal('columnModal');
+        }
+
+        function toggleColumnSelection(key) {
+            if (state.selectedColumns.includes(key)) {
+                state.selectedColumns = state.selectedColumns.filter(k => k !== key);
+            } else {
+                state.selectedColumns.push(key);
+            }
+        }
+
+        function selectAllColumns(select) {
+            state.selectedColumns = [];
+            if (select) {
+                // Add all standard keys
+                CSV_COLUMN_DEFINITIONS.forEach(c => state.selectedColumns.push(c.key));
+                // Add all custom keys
+                document.querySelectorAll('#customFieldsContainer > div').forEach(div => {
+                    const nameInput = div.querySelectorAll('input')[0];
+                    if (nameInput && nameInput.value) state.selectedColumns.push('custom_' + nameInput.value);
+                });
+            }
+            // Refresh UI
+            openColumnSelector(window._columnSelectorContext);
+        }
+
+        function applyColumnSelection() {
+            closeModal('columnModal');
+            // If we are in results screen, refresh the table
+            if (window._columnSelectorContext) {
+                showResults();
+            }
+        }
+
+        function toggleTheme() {
+            state.theme = state.theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', state.theme);
+            localStorage.setItem('expTheme', state.theme);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            icon.innerHTML = state.theme === 'dark'
+                ? '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>'
+                : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const main = document.getElementById('mainContent');
+            state.sidebarCollapsed = !state.sidebarCollapsed;
+            sidebar.classList.toggle('collapsed', state.sidebarCollapsed);
+            main.style.marginLeft = state.sidebarCollapsed ? '0' : '288px';
+        }
+
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+
+        // ========================================
+        // EXPERIMENT TYPE UI
+        // ========================================
+        function updateExperimentTypeUI() {
+            const selected = document.querySelector('input[name="experimentType"]:checked');
+            if (!selected) return;
+            state.experimentType = selected.value;
+            document.getElementById('timeBasedOptions').classList.toggle('hidden', selected.value !== 'time-based');
+        }
+
+        function updateReactionTimeUI() {
+            const checkbox = document.getElementById('reactionTimeEnabled');
+            state.reactionTimeEnabled = checkbox.checked;
+            document.getElementById('reactionTimeOptions').classList.toggle('hidden', !checkbox.checked);
+            if (!checkbox.checked) {
+                document.querySelectorAll('input[name="reactionMode"]').forEach(r => r.checked = false);
+                state.reactionMode = null;
+            }
+        }
+
+        function updateReactionModeUI() {
+            const selected = document.querySelector('input[name="reactionMode"]:checked');
+            state.reactionMode = selected ? selected.value : null;
+        }
+
+        // ========================================
+        // FIXATION UI
+        // ========================================
+        function updateFixationUI() {
+            const toggle = document.getElementById('fixationEnabledToggle');
+            state.fixationEnabled = toggle.classList.contains('active');
+            document.getElementById('fixationOptions').classList.toggle('hidden', !state.fixationEnabled);
+        }
+
+        function updateFixationUI() {
+            const toggle = document.getElementById('fixationEnabledToggle');
+            state.fixationEnabled = toggle.classList.contains('active');
+            document.getElementById('fixationOptions').classList.toggle('hidden', !state.fixationEnabled);
+            updateFixationTypeUI();
+        }
+
+        function updateFixationTypeUI() {
+            const type = document.getElementById('fixationType').value;
+
+            // Hide all option groups first
+            document.getElementById('fixationStaticOptions').classList.add('hidden');
+            document.getElementById('fixationWordOptions').classList.add('hidden');
+            document.getElementById('fixationScrollOptions').classList.add('hidden');
+
+            // Show relevant group
+            if (type === 'static') {
+                document.getElementById('fixationStaticOptions').classList.remove('hidden');
+                updateFixationStaticTypeUI();
+            } else if (type === 'text-word') {
+                document.getElementById('fixationWordOptions').classList.remove('hidden');
+            } else if (type === 'text-scroll') {
+                document.getElementById('fixationScrollOptions').classList.remove('hidden');
+            }
+        }
+
+        function updateFixationStaticTypeUI() {
+            const type = document.getElementById('fixationStaticType').value;
+            document.getElementById('fixationStaticShapeFields').classList.toggle('hidden', type !== 'shape');
+            document.getElementById('fixationStaticTextFields').classList.toggle('hidden', type !== 'text');
+            document.getElementById('fixationStaticImageFields').classList.toggle('hidden', type !== 'image');
+        }
+
+        function toggleFixationCustomSize() {
+            const size = document.getElementById('fixationShapeSize').value;
+            document.getElementById('fixationCustomSize').classList.toggle('hidden', size !== 'custom');
+        }
+
+        function toggleFixationStroke() {
+            const style = document.getElementById('fixationShapeStyle').value;
+            document.getElementById('fixationStrokeWidth').classList.toggle('hidden', style !== 'stroke');
+        }
+
+        // ========================================
+        // CUSTOM FIELDS
+        // ========================================
+        function addCustomField() {
+            const container = document.getElementById('customFieldsContainer');
+            const id = Date.now();
+            state.customFields.push(id);
+            container.insertAdjacentHTML('beforeend', `
+                <div class="flex gap-3 items-end animate-slide-in" id="customField_${id}">
+                    <div class="flex-1">
+                        <label class="form-label">Column Name</label>
+                        <input type="text" class="form-input" placeholder="e.g., Handedness">
+                    </div>
+                    <div class="flex-1">
+                        <label class="form-label">Value</label>
+                        <input type="text" class="form-input" placeholder="e.g., Right">
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="removeCustomField(${id})">X</button>
+                </div>
+            `);
+        }
+
+        function removeCustomField(id) {
+            document.getElementById(`customField_${id}`)?.remove();
+            state.customFields = state.customFields.filter(f => f !== id);
+        }
+
+        // ========================================
+        // STIMULI MANAGEMENT
+        // ========================================
+        function createStimulus(listId = null) {
+            const id = ++stimulusIdCounter;
+            const stimulus = {
+                id,
+                itemType: 'stimulus', // Added identifier
+                type: 'text',
+                name: `Stimulus ${id}`,
+                listId,
+                position: 'center',
+                customX: 0,
+                customY: 0,
+                delay: 0,
+                delayType: 'fixed',
+                delayMin: 0,
+                delayMax: 1000,
+                duration: -1,
+                responseKey: 'Space',
+                allowAnyKey: false,
+                backgroundColor: '#FFFFFF',
+                randomPosition: false,
+                randomSectors: [],
+                gridPositions: [],
+                text: 'text stimul',
+                fontSize: 32,
+                fontColor: '#000000',
+                fontFamily: 'Arial',
+                lines: 1,
+                lineSpacing: 1.5,
+                shape: 'circle',
+                shapeSize: 'medium',
+                shapeWidth: 50,
+                shapeHeight: 50,
+                shapeColor: '#0000FF',
+                shapeStyle: 'fill',
+                shapeStrokeWidth: 2,
+                imageUrl: 'https://lh3.googleusercontent.com/pw/AP1GczMQWOanSrbnT2iF4H23Tdn-mBImHLRasTMRz8i-C2kzAmRym6Kp6gaupoHwpdEkEGhXES23HJVpboTvb_WjY5MsKmcFh3GhqP-B2qZFyl7tYkaa0QEckYnBnOnrt1Vxuu0YsNLUaCHDA0c3wNGPdnUw=w855-h641-s-no-gm?authuser=0',
+                imageWidth: 200,
+                imageHeight: 200,
+                audioUrl: '',
+                audioRepeat: 1,
+                audioVolume: 100
+            };
+
+            if (listId !== null) {
+                // Find list in the unified items array
+                const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+                if (list) list.stimuli.push(stimulus);
+                renderList(listId);
+            } else {
+                state.items.push(stimulus);
+                renderStimuli();
+            }
+            return stimulus;
+        }
+
+        function createList() {
+            const id = ++listIdCounter;
+            const list = {
+                id,
+                itemType: 'list',
+                name: `List ${id}`,
+                stimuli: [],
+                repeatCount: 1,
+                randomOrder: false,
+                isGrouped: false,
+                simultaneousMode: false,
+                groupSize: 1
+            };
+            state.items.push(list);
+            renderStimuli();
+        }
+
+        function createGroupedList() {
+            const id = ++listIdCounter;
+            const list = {
+                id,
+                itemType: 'list',
+                name: `Grouped List ${id}`,
+                stimuli: [],
+                repeatCount: 1,
+                randomOrder: false,
+                isGrouped: true,
+                simultaneousMode: true,
+                groupSize: 2 // Default group size
+
+            };
+            state.items.push(list);
+            renderStimuli();
+        }
+
+        function renderStimuli() {
+            const container = document.getElementById('stimuliContainer');
+            let html = '';
+
+            state.items.forEach((item, index) => {
+                if (item.itemType === 'list') {
+                    html += renderListCard(item, index);
+                } else {
+                    html += renderStimulusCard(item, index);
+                }
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderStimulusCard(s, index) {
+            return `
+                <div class="stimulus-card animate-fade-in" id="stimulusCard_${s.id}">
+                    <div class="stimulus-card-header">
+                        <div class="flex items-center gap-3">
+                            <span class="font-medium">${s.name}</span>
+                            <span class="text-xs px-2 py-1 rounded" style="background: var(--bg-tertiary); color: var(--text-muted);">${s.type}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn btn-secondary btn-sm" onclick="editStimulus(${s.id})">Edit</button>
+                            <button class="btn btn-secondary btn-sm" onclick="copyItem(${index})">Copy</button>
+                            <button class="btn btn-secondary btn-sm" onclick="moveItemUp(${index})">Up</button>
+                            <button class="btn btn-secondary btn-sm" onclick="moveItemDown(${index})">Down</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteItem(${index})">X</button>
+                        </div>
+                    </div>
+                    <div class="stimulus-card-content">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                            <div><span style="color: var(--text-muted);">Position:</span> ${s.position}</div>
+                            <div><span style="color: var(--text-muted);">Delay:</span> ${s.delay}ms</div>
+                            <div><span style="color: var(--text-muted);">Duration:</span> ${s.duration === -1 ? 'Key' : s.duration + 'ms'}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderListCard(list, index) {
+            return `
+                <div class="stimulus-card list-card animate-fade-in" id="listCard_${list.id}">
+                    <div class="stimulus-card-header">
+                        <div class="flex items-center gap-3">
+                            <span class="font-medium">${list.name}</span>
+                            <span class="text-xs px-2 py-1 rounded" style="background: var(--accent-tertiary);">${list.stimuli.length} stimuli</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn btn-secondary btn-sm" onclick="editList(${list.id})">Settings</button>
+                            <button class="btn btn-secondary btn-sm" onclick="copyItem(${index})">Copy</button>
+                            <button class="btn btn-secondary btn-sm" onclick="moveItemUp(${index})">Up</button>
+                            <button class="btn btn-secondary btn-sm" onclick="moveItemDown(${index})">Down</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteItem(${index})">X</button>
+                        </div>
+                    </div>
+                    <div class="stimulus-card-content">
+                        <div class="grid grid-cols-2 gap-2 text-sm mb-3">
+                            <div><span style="color: var(--text-muted);">Repeat:</span> ${list.repeatCount}x</div>
+                            <div><span style="color: var(--text-muted);">Order:</span> ${list.randomOrder ? 'Random' : 'Sequential'}</div>
+                            ${list.groupSize > 1 ? `<div class="col-span-2"><span style="color: var(--text-muted);">Group Size:</span> ${list.groupSize}</div>` : ''}
+                            ${list.simultaneousMode ? `<div><span style="color: var(--text-muted);">Mode:</span> Simultaneous</div>` : ''}
+                        </div>
+                        <button class="btn btn-primary btn-sm mb-3" onclick="createStimulus(${list.id})">+ Add Stimulus</button>
+                        <div class="space-y-2">
+                            ${list.stimuli.map((s, sIndex) => `
+                                <div class="flex items-center justify-between p-2 rounded" style="background: var(--bg-secondary);">
+                                    <span class="text-sm">${s.name} (${s.type})</span>
+                                    <div class="flex gap-1">
+                                        <button class="btn btn-secondary btn-sm" onclick="editListStimulus(${s.id}, ${list.id})">Edit</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="moveListStimulusUp(${s.id}, ${list.id})">Up</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="moveListStimulusDown(${s.id}, ${list.id})">Down</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="copyListStimulus(${s.id}, ${list.id})">Copy</button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteListStimulus(${s.id}, ${list.id})">X</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderList(listId) {
+            const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+            if (!list) return;
+            const mainIndex = state.items.findIndex(i => i.id === listId);
+            const card = document.getElementById(`listCard_${listId}`);
+            if (card) {
+                card.outerHTML = renderListCard(list, mainIndex);
+            }
+        }
+
+        function editStimulus(id) {
+            const s = state.items.find(x => x.id === id);
+            if (!s) return;
+            openStimulusEditor(s, null);
+        }
+
+        function editListStimulus(stimulusId, listId) {
+            const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+            if (!list) return;
+            const s = list.stimuli.find(x => x.id === stimulusId);
+            if (!s) return;
+            openStimulusEditor(s, listId);
+        }
+
+        function openStimulusEditor(s, listId) {
+            const isLocationBased = ['vertical', 'horizontal', 'combined'].includes(state.reactionMode);
+
+            document.getElementById('stimulusModalContent').innerHTML = `
+                <div class="space-y-4 max-h-96 overflow-y-auto pr-2">
+                    <div>
+                        <label class="form-label">Type</label>
+                        <select class="form-select" id="editType" onchange="updateEditorFields()">
+                            <option value="text" ${s.type === 'text' ? 'selected' : ''}>Text</option>
+                            <option value="shape" ${s.type === 'shape' ? 'selected' : ''}>Shape</option>
+                            <option value="image" ${s.type === 'image' ? 'selected' : ''}>Image</option>
+                            <option value="audio" ${s.type === 'audio' ? 'selected' : ''}>Audio</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Name (for Excel)</label>
+                        <input type="text" class="form-input" id="editName" value="${s.name}">
+                    </div>
+                    
+                    <!-- Text Fields -->
+                    <div id="textFields" class="${s.type !== 'text' ? 'hidden' : ''} space-y-3">
+                        <div>
+                            <label class="form-label">Text Content</label>
+                            <textarea class="form-input" id="editText" rows="2">${s.text}</textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="form-label">Font Size (px)</label>
+                                <input type="text" class="form-input" id="editFontSize" value="${s.fontSize}">
+                            </div>
+                            <div>
+                                <label class="form-label">Color</label>
+                                <input type="color" class="form-input h-10" id="editFontColor" value="${s.fontColor}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Shape Fields -->
+                    <div id="shapeFields" class="${s.type !== 'shape' ? 'hidden' : ''} space-y-3">
+                        <div>
+                            <label class="form-label">Shape</label>
+                            <select class="form-select" id="editShape">
+                                <option value="circle" ${s.shape === 'circle' ? 'selected' : ''}>Circle</option>
+                                <option value="rectangle" ${s.shape === 'rectangle' ? 'selected' : ''}>Rectangle</option>
+                                <option value="triangle" ${s.shape === 'triangle' ? 'selected' : ''}>Triangle</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Size</label>
+                            <select class="form-select" id="editShapeSize" onchange="toggleEditorCustomSize()">
+                                <option value="small" ${s.shapeSize === 'small' ? 'selected' : ''}>Small</option>
+                                <option value="medium" ${s.shapeSize === 'medium' ? 'selected' : ''}>Medium</option>
+                                <option value="large" ${s.shapeSize === 'large' ? 'selected' : ''}>Large</option>
+                                <option value="custom" ${s.shapeSize === 'custom' ? 'selected' : ''}>Custom</option>
+                            </select>
+                        </div>
+                        <div id="editorCustomSize" class="${s.shapeSize !== 'custom' ? 'hidden' : ''} grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="form-label">Width</label>
+                                <input type="text" class="form-input" id="editShapeWidth" value="${s.shapeWidth}">
+                            </div>
+                            <div>
+                                <label class="form-label">Height</label>
+                                <input type="text" class="form-input" id="editShapeHeight" value="${s.shapeHeight}">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="form-label">Color</label>
+                                <input type="color" class="form-input h-10" id="editShapeColor" value="${s.shapeColor}">
+                            </div>
+                            <div>
+                                <label class="form-label">Style</label>
+                                <select class="form-select" id="editShapeStyle" onchange="toggleEditorStroke()">
+                                    <option value="fill" ${s.shapeStyle === 'fill' ? 'selected' : ''}>Filled</option>
+                                    <option value="stroke" ${s.shapeStyle === 'stroke' ? 'selected' : ''}>Outline</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="editorStrokeWidth" class="${s.shapeStyle !== 'stroke' ? 'hidden' : ''}">
+                            <label class="form-label">Border Width</label>
+                            <input type="number" class="form-input" id="editShapeStrokeWidth" value="${s.shapeStrokeWidth}">
+                        </div>
+                    </div>
+                    
+                    <!-- Image Fields -->
+                    <div id="imageFields" class="${s.type !== 'image' ? 'hidden' : ''} space-y-3">
+                        <div>
+                            <label class="form-label">Image URL</label>
+                            <input type="text" class="form-input" id="editImageUrl" value="${s.imageUrl}">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="form-label">Width</label>
+                                <input type="text" class="form-input" id="editImageWidth" value="${s.imageWidth}">
+                            </div>
+                            <div>
+                                <label class="form-label">Height</label>
+                                <input type="text" class="form-input" id="editImageHeight" value="${s.imageHeight}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Audio Fields -->
+                    <div id="audioFields" class="${s.type !== 'audio' ? 'hidden' : ''} space-y-3">
+                        <div>
+                            <label class="form-label">Audio URL</label>
+                            <input type="text" class="form-input" id="editAudioUrl" value="${s.audioUrl}">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="form-label">Repeat</label>
+                                <input type="number" class="form-input" id="editAudioRepeat" value="${s.audioRepeat}">
+                            </div>
+                            <div>
+                                <label class="form-label">Volume (%)</label>
+                                <input type="number" class="form-input" id="editAudioVolume" value="${s.audioVolume}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Position -->
+                    <div>
+                        <label class="form-label">Position</label>
+                        <select class="form-select" id="editPosition" onchange="toggleEditorPosition()">
+                            <option value="center" ${s.position === 'center' ? 'selected' : ''} ${isLocationBased ? 'disabled' : ''}>Center</option>
+                            <option value="top-left" ${s.position === 'top-left' ? 'selected' : ''}>Top Left</option>
+                            <option value="top" ${s.position === 'top' ? 'selected' : ''}>Top</option>
+                            <option value="top-right" ${s.position === 'top-right' ? 'selected' : ''}>Top Right</option>
+                            <option value="left" ${s.position === 'left' ? 'selected' : ''}>Left</option>
+                            <option value="right" ${s.position === 'right' ? 'selected' : ''}>Right</option>
+                            <option value="bottom-left" ${s.position === 'bottom-left' ? 'selected' : ''}>Bottom Left</option>
+                            <option value="bottom" ${s.position === 'bottom' ? 'selected' : ''}>Bottom</option>
+                            <option value="bottom-right" ${s.position === 'bottom-right' ? 'selected' : ''}>Bottom Right</option>
+                            <option value="custom" ${s.position === 'custom' ? 'selected' : ''}>Custom Coordinates</option>
+                            <option value="random-sector" ${s.position === 'random-sector' || s.position === 'random' ? 'selected' : ''}>Random (Sector Based)</option>
+                            <option value="random-full" ${s.position === 'random-full' ? 'selected' : ''}>Random (Full Screen)</option>
+                            <option value="grid-select" ${s.position === 'grid-select' ? 'selected' : ''}>Grid Select (Visual)</option>
+                        </select>
+                    </div>
+                    <div id="editorCustomPos" class="${s.position !== 'custom' ? 'hidden' : ''} grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">X</label>
+                            <input type="number" class="form-input" id="editCustomX" value="${s.customX}">
+                        </div>
+                        <div>
+                            <label class="form-label">Y</label>
+                            <input type="number" class="form-input" id="editCustomY" value="${s.customY}">
+                        </div>
+                    </div>
+                    <div id="editorGridPos" class="${s.position !== 'grid-select' ? 'hidden' : ''}">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="form-label mb-0">Selected Grid Cells</label>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="openGridPicker(${s.id}, ${listId !== null ? listId : 'null'})">Open Grid Picker</button>
+                        </div>
+                        <div id="gridSelectionPreview" class="text-xs p-2 rounded" style="background: var(--bg-secondary); color: var(--text-muted); min-height: 32px;">
+                            ${(s.gridPositions || []).length > 0 ? s.gridPositions.map(p => `(${p.x.toFixed(1)}%, ${p.y.toFixed(1)}%)`).join(', ') : 'No cells selected'}
+                        </div>
+                    </div>
+                    
+                    <!-- Timing -->
+                    <div class="space-y-3">
+                        <div>
+                            <label class="form-label">Delay Type</label>
+                            <select class="form-select" id="editDelayType" onchange="toggleDelayFields()">
+                                <option value="fixed" ${s.delayType === 'fixed' ? 'selected' : ''}>Fixed</option>
+                                <option value="interval" ${s.delayType === 'interval' ? 'selected' : ''}>Random Interval</option>
+                            </select>
+                        </div>
+                        <div id="fixedDelayField" class="${s.delayType !== 'fixed' ? 'hidden' : ''}">
+                            <label class="form-label">Delay (ms)</label>
+                            <input type="number" class="form-input" id="editDelay" value="${s.delay}">
+                        </div>
+                        <div id="intervalDelayFields" class="${s.delayType !== 'interval' ? 'hidden' : ''} grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="form-label">Min Delay (ms)</label>
+                                <input type="number" class="form-input" id="editDelayMin" value="${s.delayMin || 0}">
+                            </div>
+                            <div>
+                                <label class="form-label">Max Delay (ms)</label>
+                                <input type="number" class="form-input" id="editDelayMax" value="${s.delayMax || 1000}">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Duration (ms, -1 for key)</label>
+                            <input type="number" class="form-input" id="editDuration" value="${s.duration}" onchange="toggleEditorResponseKey()">
+                        </div>
+                    </div>
+                    <div id="editorResponseKey" class="${s.duration !== -1 || isLocationBased ? 'hidden' : ''} space-y-3">
+                        <div>
+                            <label class="form-label">Response Key</label>
+                            <select class="form-select" id="editResponseKey">
+                                <option value="Space" ${s.responseKey === 'Space' ? 'selected' : ''}>Space</option>
+                                <option value="Enter" ${s.responseKey === 'Enter' ? 'selected' : ''}>Enter</option>
+                                <option value="ArrowUp" ${s.responseKey === 'ArrowUp' ? 'selected' : ''}>Arrow Up</option>
+                                <option value="ArrowDown" ${s.responseKey === 'ArrowDown' ? 'selected' : ''}>Arrow Down</option>
+                                <option value="ArrowLeft" ${s.responseKey === 'ArrowLeft' ? 'selected' : ''}>Arrow Left</option>
+                                <option value="ArrowRight" ${s.responseKey === 'ArrowRight' ? 'selected' : ''}>Arrow Right</option>
+                                <option value="KeyA" ${s.responseKey === 'KeyA' ? 'selected' : ''}>A</option>
+                                <option value="KeyB" ${s.responseKey === 'KeyB' ? 'selected' : ''}>B</option>
+                                <option value="KeyC" ${s.responseKey === 'KeyC' ? 'selected' : ''}>C</option>
+                                <option value="KeyD" ${s.responseKey === 'KeyD' ? 'selected' : ''}>D</option>
+                                <option value="KeyJ" ${s.responseKey === 'KeyJ' ? 'selected' : ''}>J</option>
+                                <option value="KeyK" ${s.responseKey === 'KeyK' ? 'selected' : ''}>K</option>
+                                <option value="KeyL" ${s.responseKey === 'KeyL' ? 'selected' : ''}>L</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="editAllowAnyKey" class="w-4 h-4" ${s.allowAnyKey ? 'checked' : ''}>
+                            <label class="text-sm" style="color: var(--text-secondary);">Allow Any Key to Continue</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Background -->
+                    <div>
+                        <label class="form-label">Background Color</label>
+                        <input type="color" class="form-input h-10" id="editBackgroundColor" value="${s.backgroundColor}">
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 pt-4 border-t" style="border-color: var(--border-primary);">
+                    <button class="btn btn-secondary" onclick="closeModal('stimulusModal')">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveStimulus(${s.id}, ${listId !== null ? listId : 'null'})">Save</button>
+                </div>
+            `;
+            openModal('stimulusModal');
+        }
+
+        function updateEditorFields() {
+            const type = document.getElementById('editType').value;
+            document.getElementById('textFields').classList.toggle('hidden', type !== 'text');
+            document.getElementById('shapeFields').classList.toggle('hidden', type !== 'shape');
+            document.getElementById('imageFields').classList.toggle('hidden', type !== 'image');
+            document.getElementById('audioFields').classList.toggle('hidden', type !== 'audio');
+        }
+
+        function toggleDelayFields() {
+            const type = document.getElementById('editDelayType').value;
+            document.getElementById('fixedDelayField').classList.toggle('hidden', type !== 'fixed');
+            document.getElementById('intervalDelayFields').classList.toggle('hidden', type !== 'interval');
+        }
+
+        function toggleEditorCustomSize() {
+            const size = document.getElementById('editShapeSize').value;
+            document.getElementById('editorCustomSize').classList.toggle('hidden', size !== 'custom');
+        }
+
+        function toggleEditorStroke() {
+            const style = document.getElementById('editShapeStyle').value;
+            document.getElementById('editorStrokeWidth').classList.toggle('hidden', style !== 'stroke');
+        }
+
+        function toggleEditorPosition() {
+            const pos = document.getElementById('editPosition').value;
+            document.getElementById('editorCustomPos').classList.toggle('hidden', pos !== 'custom');
+            document.getElementById('editorGridPos').classList.toggle('hidden', pos !== 'grid-select');
+        }
+
+        function openGridPicker(stimulusId, listId) {
+            let s;
+            if (listId && listId !== 'null') {
+                const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+                s = list?.stimuli.find(x => x.id === stimulusId);
+            } else {
+                s = state.items.find(x => x.id === stimulusId);
+            }
+            const existing = s?.gridPositions || [];
+
+            const cols = 20;
+            const rows = 12;
+
+            let cellsHtml = '';
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const x = parseFloat(((c + 0.5) / cols * 100).toFixed(2));
+                    const y = parseFloat(((r + 0.5) / rows * 100).toFixed(2));
+                    const isSelected = existing.some(p => Math.abs(p.x - x) < 0.5 && Math.abs(p.y - y) < 0.5);
+                    cellsHtml += `<div class="gp-cell" data-x="${x}" data-y="${y}" data-selected="${isSelected ? '1' : '0'}" 
+                        style="background:${isSelected ? 'var(--accent-primary)' : 'var(--bg-tertiary)'}; cursor:pointer; aspect-ratio:1; transition:background 0.1s;"
+                        onclick="toggleGridCell(this)"></div>`;
+                }
+            }
+
+            document.getElementById('stimulusModalContent').innerHTML = `
+                <h3 style="color:var(--accent-primary); margin-bottom:8px;">Grid Position Picker</h3>
+                <p style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">Click cells to select/deselect. A random selected cell will be used each trial. ${cols}x${rows} = ${cols * rows} positions.</p>
+                <div style="display:grid; grid-template-columns:repeat(${cols},1fr); gap:1px; background:var(--border-primary); border:1px solid var(--border-primary); border-radius:8px; overflow:hidden; aspect-ratio:16/9;">
+                    ${cellsHtml}
+                </div>
+                <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <span id="gpCount" style="color:var(--text-muted); font-size:13px;">${existing.length} cell(s) selected</span>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-secondary btn-sm" onclick="openStimulusEditor(${stimulusId}, ${listId !== null ? listId : 'null'})">Back</button>
+                        <button class="btn btn-primary btn-sm" onclick="confirmGridSelection(${stimulusId}, ${listId !== null ? listId : 'null'})">Confirm</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleGridCell(el) {
+            const isSelected = el.getAttribute('data-selected') === '1';
+            if (isSelected) {
+                el.setAttribute('data-selected', '0');
+                el.style.background = 'var(--bg-tertiary)';
+            } else {
+                el.setAttribute('data-selected', '1');
+                el.style.background = 'var(--accent-primary)';
+            }
+            const count = document.querySelectorAll('.gp-cell[data-selected="1"]').length;
+            document.getElementById('gpCount').textContent = count + ' cell(s) selected';
+        }
+
+        function confirmGridSelection(stimulusId, listId) {
+            const cells = document.querySelectorAll('.gp-cell[data-selected="1"]');
+            const positions = [];
+            cells.forEach(cell => {
+                positions.push({ x: parseFloat(cell.dataset.x), y: parseFloat(cell.dataset.y) });
+            });
+
+            let s;
+            if (listId && listId !== 'null') {
+                const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+                s = list?.stimuli.find(x => x.id === stimulusId);
+            } else {
+                s = state.items.find(x => x.id === stimulusId);
+            }
+            if (s) {
+                s.gridPositions = positions;
+                s.position = 'grid-select';
+            }
+
+            openStimulusEditor(s, listId);
+        }
+
+        function toggleEditorResponseKey() {
+            const dur = parseInt(document.getElementById('editDuration').value);
+            const isLocationBased = ['vertical', 'horizontal', 'combined'].includes(state.reactionMode);
+            document.getElementById('editorResponseKey').classList.toggle('hidden', dur !== -1 || isLocationBased);
+        }
+
+        function saveStimulus(id, listId) {
+            let s;
+            if (listId && listId !== 'null') {
+                const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+                s = list?.stimuli.find(x => x.id === id);
+            } else {
+                s = state.items.find(x => x.id === id);
+            }
+            if (!s) return;
+
+            s.type = document.getElementById('editType').value;
+            s.name = document.getElementById('editName').value;
+            s.position = document.getElementById('editPosition').value;
+            // gridPositions is already saved by confirmGridSelection(), no extra action needed here
+            // Save Delay settings
+            s.delayType = document.getElementById('editDelayType').value;
+            if (s.delayType === 'interval') {
+                s.delay = 0; // Not used, but reset
+                s.delayMin = parseInt(document.getElementById('editDelayMin').value) || 0;
+                s.delayMax = parseInt(document.getElementById('editDelayMax').value) || 1000;
+            } else {
+                s.delay = parseInt(document.getElementById('editDelay').value) || 0;
+                s.delayMin = 0;
+                s.delayMax = 0;
+            }
+            s.duration = parseInt(document.getElementById('editDuration').value);
+            s.backgroundColor = document.getElementById('editBackgroundColor').value;
+
+            if (s.position === 'custom') {
+                s.customX = parseInt(document.getElementById('editCustomX').value) || 0;
+                s.customY = parseInt(document.getElementById('editCustomY').value) || 0;
+            }
+
+            if (s.duration === -1) {
+                s.responseKey = document.getElementById('editResponseKey').value;
+                s.allowAnyKey = document.getElementById('editAllowAnyKey').checked;
+            }
+
+            if (s.type === 'text') {
+                s.text = document.getElementById('editText').value;
+                s.fontSize = document.getElementById('editFontSize').value || '32px';
+                s.fontColor = document.getElementById('editFontColor').value;
+            } else if (s.type === 'shape') {
+                s.shape = document.getElementById('editShape').value;
+                s.shapeSize = document.getElementById('editShapeSize').value;
+                s.shapeWidth = document.getElementById('editShapeWidth').value || '50px';
+                s.shapeHeight = document.getElementById('editShapeHeight').value || '50px';
+                s.shapeColor = document.getElementById('editShapeColor').value;
+                s.shapeStyle = document.getElementById('editShapeStyle').value;
+                s.shapeStrokeWidth = parseInt(document.getElementById('editShapeStrokeWidth').value) || 2;
+            } else if (s.type === 'image') {
+                s.imageUrl = document.getElementById('editImageUrl').value;
+                s.imageWidth = document.getElementById('editImageWidth').value || '200px';
+                s.imageHeight = document.getElementById('editImageHeight').value || '200px';
+            } else if (s.type === 'audio') {
+                s.audioUrl = document.getElementById('editAudioUrl').value;
+                s.audioRepeat = parseInt(document.getElementById('editAudioRepeat').value) || 1;
+                s.audioVolume = parseInt(document.getElementById('editAudioVolume').value) || 100;
+            }
+
+            closeModal('stimulusModal');
+            if (listId && listId !== 'null') {
+                renderList(listId);
+            } else {
+                renderStimuli();
+            }
+        }
+
+        function copyItem(index) {
+            const item = state.items[index];
+            if (!item) return;
+
+            const copy = JSON.parse(JSON.stringify(item));
+            if (item.itemType === 'list') {
+                copy.id = ++listIdCounter;
+                copy.stimuli.forEach(s => s.id = ++stimulusIdCounter);
+            } else {
+                copy.id = ++stimulusIdCounter;
+            }
+            copy.name += ' (copy)';
+
+            state.items.splice(index + 1, 0, copy);
+            renderStimuli();
+        }
+
+        function moveItemUp(index) {
+            if (index > 0) {
+                [state.items[index], state.items[index - 1]] = [state.items[index - 1], state.items[index]];
+                renderStimuli();
+            }
+        }
+
+        function moveItemDown(index) {
+            if (index < state.items.length - 1) {
+                [state.items[index], state.items[index + 1]] = [state.items[index + 1], state.items[index]];
+                renderStimuli();
+            }
+        }
+
+        function deleteItem(index) {
+            state.items.splice(index, 1);
+            renderStimuli();
+        }
+
+        function moveListStimulusUp(stimulusId, listId) {
+            const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+            if (!list) return;
+            const index = list.stimuli.findIndex(s => s.id === stimulusId);
+            if (index > 0) {
+                [list.stimuli[index], list.stimuli[index - 1]] = [list.stimuli[index - 1], list.stimuli[index]];
+                renderList(listId);
+            }
+        }
+
+        function moveListStimulusDown(stimulusId, listId) {
+            const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+            if (!list) return;
+            const index = list.stimuli.findIndex(s => s.id === stimulusId);
+            if (index < list.stimuli.length - 1) {
+                [list.stimuli[index], list.stimuli[index + 1]] = [list.stimuli[index + 1], list.stimuli[index]];
+                renderList(listId);
+            }
+        }
+
+        function copyListStimulus(stimulusId, listId) {
+            const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+            if (!list) return;
+            const s = list.stimuli.find(x => x.id === stimulusId);
+            if (!s) return;
+            const copy = JSON.parse(JSON.stringify(s));
+            copy.id = ++stimulusIdCounter;
+            copy.name = `${s.name} (copy)`;
+            const idx = list.stimuli.findIndex(x => x.id === stimulusId);
+            list.stimuli.splice(idx + 1, 0, copy);
+            renderList(listId);
+        }
+
+
+        function deleteListStimulus(stimulusId, listId) {
+            const list = state.items.find(i => i.itemType === 'list' && i.id === listId);
+            if (!list) return;
+            list.stimuli = list.stimuli.filter(x => x.id !== stimulusId);
+            renderList(listId);
+        }
+
+        function editList(id) {
+            const list = state.items.find(i => i.itemType === 'list' && i.id === id);
+            if (!list) return;
+
+            // Determine if it's a grouped list
+            const isGrouped = list.isGrouped === true;
+
+            document.getElementById('listModalContent').innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <label class="form-label">List Name</label>
+                        <input type="text" class="form-input" id="editListName" value="${list.name}">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Repeat Count</label>
+                            <input type="number" class="form-input" id="editListRepeat" value="${list.repeatCount}" min="1">
+                        </div>
+                        <div>
+                            <label class="form-label">Order</label>
+                            <select class="form-select" id="editListRandom">
+                                <option value="false" ${!list.randomOrder ? 'selected' : ''}>Sequential</option>
+                                <option value="true" ${list.randomOrder ? 'selected' : ''}>Random</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    ${isGrouped ? `
+                        <div>
+                            <label class="form-label">Group Size (Stimuli per group)</label>
+                            <input type="number" class="form-input" id="editListGroupSize" value="${list.groupSize || 2}" min="1">
+                            <p class="text-xs mt-1" style="color: var(--text-muted);">If > 1 and Random is on, groups are shuffled but items inside remain sequential.</p>
+                        </div>
+                    ` : ''}
+
+                     ${`
+                        <div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                            <div>
+                                <span class="font-medium">Simultaneous Display</span>
+                                <p class="text-sm mt-1" style="color: var(--text-muted);">Stimuli overlap on screen based on their individual delays and durations.</p>
+                            </div>
+                            <div id="editListSimultaneous" class="toggle-switch ${list.simultaneousMode ? 'active' : ''}" 
+                                onclick="this.classList.toggle('active')"></div>
+                        </div>
+                        `}
+                    
+                    <div class="flex justify-end gap-3 pt-4">
+                        <button class="btn btn-secondary" onclick="closeModal('listModal')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveList(${id})">Save</button>
+                    </div>
+                </div>
+            `;
+            openModal('listModal');
+        }
+
+        function saveList(id) {
+            const list = state.items.find(i => i.itemType === 'list' && i.id === id);
+            if (!list) return;
+            list.name = document.getElementById('editListName').value;
+            list.repeatCount = parseInt(document.getElementById('editListRepeat').value) || 1;
+            list.randomOrder = document.getElementById('editListRandom').value === 'true';
+
+            // Only update groupSize if the input exists (i.e. it is a grouped list)
+            const groupSizeInput = document.getElementById('editListGroupSize');
+            if (groupSizeInput) {
+                list.groupSize = parseInt(groupSizeInput.value) || 1;
+            } else {
+                // Ensure regular lists don't accidentally get groupSize > 1
+                list.groupSize = 1;
+            }
+            const simToggle = document.getElementById('editListSimultaneous');
+            if (simToggle) {
+                list.simultaneousMode = simToggle.classList.contains('active');
+            } else {
+                list.simultaneousMode = false;
+            }
+
+            closeModal('listModal');
+            renderStimuli();
+        }
+
+        // function deleteList(id) {
+        //    state.lists = state.lists.filter(l => l.id !== id);
+        //   renderStimuli();
+        // }
+
+        // ========================================
+        // JSON IMPORT/EXPORT
+        // ========================================
+        function gatherExperimentConfig() {
+            return {
+                subjectInfo: {
+                    subjectId: document.getElementById('subjectId').value,
+                    gender: document.getElementById('subjectGender').value,
+                    age: document.getElementById('subjectAge').value,
+                    customFields: Array.from(document.querySelectorAll('#customFieldsContainer > div')).map(div => ({
+                        name: div.querySelectorAll('input')[0]?.value,
+                        value: div.querySelectorAll('input')[1]?.value
+                    }))
+                },
+                experimentType: state.experimentType,
+                experimentDuration: document.getElementById('experimentDuration')?.value || 0,
+                reactionTime: { enabled: state.reactionTimeEnabled, mode: state.reactionMode, preAnswerMode: state.preAnswerMode },
+                generalSettings: {
+                    showProgress: document.getElementById('showProgressToggle').classList.contains('active'),
+                    fullscreenMode: document.getElementById('fullscreenToggle').classList.contains('active'),
+                    fixation: {
+                        enabled: state.fixationEnabled,
+                        type: document.getElementById('fixationType')?.value,
+                        // Static General
+                        staticType: document.getElementById('fixationStaticType')?.value,
+                        // Shape
+                        shape: document.getElementById('fixationShape')?.value,
+                        shapeSize: document.getElementById('fixationShapeSize')?.value,
+                        shapeColor: document.getElementById('fixationShapeColor')?.value,
+                        shapeStyle: document.getElementById('fixationShapeStyle')?.value,
+                        shapeStrokeWidth: document.getElementById('fixationShapeStrokeWidth')?.value,
+                        shapeWidth: document.getElementById('fixationShapeWidth')?.value,
+                        shapeHeight: document.getElementById('fixationShapeHeight')?.value,
+                        // Static Text
+                        staticText: document.getElementById('fixationStaticText')?.value,
+                        staticFontSize: document.getElementById('fixationStaticFontSize')?.value,
+                        staticTextColor: document.getElementById('fixationStaticTextColor')?.value,
+                        // Image
+                        imageUrl: document.getElementById('fixationImageUrl')?.value,
+                        imageWidth: document.getElementById('fixationImageWidth')?.value,
+                        imageHeight: document.getElementById('fixationImageHeight')?.value,
+                        // Text Word
+                        text: document.getElementById('fixationText')?.value,
+                        textFontSize: document.getElementById('fixationTextFontSize')?.value,
+                        textColor: document.getElementById('fixationTextColor')?.value,
+                        wordDuration: document.getElementById('fixationWordDuration')?.value,
+                        wordDelay: document.getElementById('fixationWordDelay')?.value,
+                        // Text Scroll
+                        scrollText: document.getElementById('fixationScrollText')?.value,
+                        scrollFontSize: document.getElementById('fixationScrollFontSize')?.value,
+                        scrollColor: document.getElementById('fixationScrollColor')?.value,
+                        scrollSpeed: document.getElementById('fixationScrollSpeedValue')?.value,
+                        scrollWidth: document.getElementById('fixationScrollWidth')?.value
+                    }
+                },
+                items: state.items,
+                selectedColumns: state.selectedColumns
+            };
+        }
+        function exportToJSON() {
+            const config = gatherExperimentConfig();
+            document.getElementById('jsonTextarea').value = JSON.stringify(config, null, 2);
+        }
+
+        function importFromJSON() {
+            try {
+                const config = JSON.parse(document.getElementById('jsonTextarea').value);
+                applyConfig(config);
+            } catch (e) {
+                alert('Invalid JSON: ' + e.message);
+            }
+        }
+
+        function exportToJS() {
+            const config = gatherExperimentConfig();
+            // Create a JS variable declaration instead of pure JSON
+            const jsonString = JSON.stringify(config, null, 2);
+            const jsCode = `// Experiment Configuration
+// Save this as a .js file and link it in your HTML to add to the Default Experiments list.
+
+registerDefaultExperiment(
+    "${document.getElementById('subjectId').value || 'New Experiment'}", 
+    ${jsonString}
+);`;
+
+            document.getElementById('jsTextarea').value = jsCode;
+        }
+
+        function importFromJS() {
+            const jsCode = document.getElementById('jsTextarea').value;
+
+            try {
+                // Strategy: Extract the JSON object from the JS code.
+                // We look for the first '{' and the last '}' to find the config object.
+                const firstBrace = jsCode.indexOf('{');
+                const lastBrace = jsCode.lastIndexOf('}');
+
+                if (firstBrace === -1 || lastBrace === -1) {
+                    throw new Error('No configuration object found in the code.');
+                }
+
+                const jsonString = jsCode.substring(firstBrace, lastBrace + 1);
+
+                // Parse the extracted JSON
+                const config = JSON.parse(jsonString);
+
+                // Apply to builder
+                applyConfig(config);
+
+                alert('Experiment imported successfully!');
+            } catch (e) {
+                alert('Error importing JS data: ' + e.message);
+            }
+        }
+
+        function applyConfig(config) {
+            if (config.subjectInfo) {
+                document.getElementById('subjectId').value = config.subjectInfo.subjectId || '';
+                document.getElementById('subjectGender').value = config.subjectInfo.gender || '';
+                document.getElementById('subjectAge').value = config.subjectInfo.age || '';
+            }
+            if (config.experimentType) {
+                document.querySelector(`input[name="experimentType"][value="${config.experimentType}"]`).checked = true;
+                updateExperimentTypeUI();
+            }
+            if (config.reactionTime) {
+                document.getElementById('reactionTimeEnabled').checked = config.reactionTime.enabled;
+                updateReactionTimeUI();
+                if (config.reactionTime.mode) {
+                    document.querySelector(`input[name="reactionMode"][value="${config.reactionTime.mode}"]`).checked = true;
+                    updateReactionModeUI();
+                }
+                if (config.reactionTime.preAnswerMode) {
+                    state.preAnswerMode = config.reactionTime.preAnswerMode;
+                    const paEl = document.getElementById('preAnswerMode');
+                    if (paEl) paEl.value = config.reactionTime.preAnswerMode;
+                }
+            }
+
+            if (config.generalSettings) {
+                // Existing progress/fullscreen logic
+                if (config.generalSettings.showProgress) document.getElementById('showProgressToggle').classList.add('active');
+                if (config.generalSettings.fullscreenMode) document.getElementById('fullscreenToggle').classList.add('active');
+
+                // --- ADD THIS FIXATION RESTORATION BLOCK ---
+                if (config.generalSettings.fixation) {
+                    const fix = config.generalSettings.fixation;
+
+                    // Set Enabled State
+                    if (fix.enabled) {
+                        document.getElementById('fixationEnabledToggle').classList.add('active');
+                        state.fixationEnabled = true;
+                    }
+
+                    // Update UI visibility
+                    updateFixationUI();
+
+                    // Set values safely
+                    const setVal = (id, val) => { if (val && document.getElementById(id)) document.getElementById(id).value = val; };
+
+                    setVal('fixationType', fix.type);
+                    updateFixationTypeUI(); // Show correct sub-panel
+
+                    if (fix.type === 'static') {
+                        setVal('fixationStaticType', fix.staticType);
+                        updateFixationStaticTypeUI(); // Show correct static sub-panel
+
+                        // Shape
+                        setVal('fixationShape', fix.shape);
+                        setVal('fixationShapeSize', fix.shapeSize);
+                        setVal('fixationShapeColor', fix.shapeColor);
+                        setVal('fixationShapeStyle', fix.shapeStyle);
+                        setVal('fixationShapeStrokeWidth', fix.shapeStrokeWidth);
+                        if (fix.shapeSize === 'custom') {
+                            toggleFixationCustomSize();
+                            setVal('fixationShapeWidth', fix.shapeWidth);
+                            setVal('fixationShapeHeight', fix.shapeHeight);
+                        }
+
+                        // Static Text
+                        setVal('fixationStaticText', fix.staticText);
+                        setVal('fixationStaticFontSize', fix.staticFontSize);
+                        setVal('fixationStaticTextColor', fix.staticTextColor);
+
+                        // Image
+                        setVal('fixationImageUrl', fix.imageUrl);
+                        setVal('fixationImageWidth', fix.imageWidth);
+                        setVal('fixationImageHeight', fix.imageHeight);
+                    } else if (fix.type === 'text-word') {
+                        setVal('fixationText', fix.text);
+                        setVal('fixationTextFontSize', fix.textFontSize);
+                        setVal('fixationTextColor', fix.textColor);
+                        setVal('fixationWordDuration', fix.wordDuration);
+                        setVal('fixationWordDelay', fix.wordDelay);
+                    } else if (fix.type === 'text-scroll') {
+                        setVal('fixationScrollText', fix.scrollText);
+                        setVal('fixationScrollFontSize', fix.scrollFontSize);
+                        setVal('fixationScrollColor', fix.scrollColor);
+                        setVal('fixationScrollSpeedValue', fix.scrollSpeed);
+                        setVal('fixationScrollWidth', fix.scrollWidth);
+                    }
+                }
+                // --- END OF FIXATION BLOCK ---
+            }
+
+            // Handle unified items or legacy separate arrays
+            if (config.items) {
+                state.items = config.items;
+                // Update counters
+                let maxStimId = 0, maxListId = 0;
+                config.items.forEach(item => {
+                    if (item.itemType === 'list') {
+                        maxListId = Math.max(maxListId, item.id);
+                        if (item.stimuli) item.stimuli.forEach(s => maxStimId = Math.max(maxStimId, s.id));
+                    } else {
+                        maxStimId = Math.max(maxStimId, item.id);
+                    }
+                });
+                stimulusIdCounter = maxStimId;
+                listIdCounter = maxListId;
+            } else {
+                // Legacy support
+                state.items = [];
+                if (config.stimuli) {
+                    config.stimuli.forEach(s => state.items.push({ ...s, itemType: 'stimulus' }));
+                    stimulusIdCounter = Math.max(...config.stimuli.map(s => s.id), 0);
+                }
+                if (config.lists) {
+                    config.lists.forEach(l => state.items.push({ ...l, itemType: 'list' }));
+                    listIdCounter = Math.max(...config.lists.map(l => l.id), 0);
+                }
+            }
+            if (config.selectedColumns && Array.isArray(config.selectedColumns)) {
+                state.selectedColumns = config.selectedColumns;
+            } else {
+                // Default to all if not found
+                state.selectedColumns = CSV_COLUMN_DEFINITIONS.map(c => c.key);
+            }
+            renderStimuli();
+        }
+
+        function loadJSONFromFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('jsonTextarea').value = ev.target.result;
+                importFromJSON();
+            };
+            reader.readAsText(file);
+        }
+
+        // ========================================
+        // EXPERIMENT EXECUTION
+        // ========================================
+        function startExperiment() {
+            if (state.items.length === 0) {
+                alert('Create at least one stimulus or list first.');
+                return;
+            }
+
+            document.getElementById('confirmModal').classList.add('active');
+            document.getElementById('preloadStatus').classList.remove('hidden');
+            document.getElementById('confirmStartBtn').disabled = true;
+            document.getElementById('preloadProgress').style.width = '0%';
+
+            preloadResources().then(() => {
+                document.getElementById('preloadProgress').style.width = '100%';
+                setTimeout(() => {
+                    document.getElementById('preloadStatus').classList.add('hidden');
+                    document.getElementById('confirmMessage').textContent = 'Ready to begin?';
+                    document.getElementById('confirmStartBtn').disabled = false;
+                }, 300);
+            });
+        }
+
+        async function preloadResources() {
+            const all = getAllStimuli();
+            const images = all.filter(s => s.type === 'image' && s.imageUrl);
+            const audios = all.filter(s => s.type === 'audio' && s.audioUrl);
+            const total = images.length + audios.length;
+
+            if (total === 0) {
+                document.getElementById('preloadProgress').style.width = '100%';
+                return;
+            }
+
+            let loaded = 0;
+            const updateProgress = () => {
+                loaded++;
+                document.getElementById('preloadProgress').style.width = `${(loaded / total) * 100}%`;
+            };
+
+            await Promise.all([
+                ...images.map(s => new Promise(resolve => {
+                    const img = new Image();
+                    img.onload = () => { state.loadedImages[s.imageUrl] = img; updateProgress(); resolve(); };
+                    img.onerror = () => { updateProgress(); resolve(); };
+                    img.src = s.imageUrl;
+                })),
+                ...audios.map(s => new Promise(resolve => {
+                    const aud = new Audio();
+                    aud.oncanplaythrough = () => { state.loadedAudio[s.audioUrl] = aud; updateProgress(); resolve(); };
+                    aud.onerror = () => { updateProgress(); resolve(); };
+                    aud.src = s.audioUrl;
+                }))
+            ]);
+        }
+
+        function getAllStimuli() {
+            const all = [];
+            state.items.forEach(item => {
+                if (item.itemType === 'list') {
+                    for (let i = 0; i < item.repeatCount; i++) {
+                        let itemsToPlay = [...item.stimuli];
+
+                        // STRICT CHECK: Only group if explicitly marked isGrouped
+                        const shouldGroup = item.isGrouped === true && (item.groupSize || 1) > 1;
+
+                        if (shouldGroup) {
+                            // --- GROUPED LOGIC ---
+                            const gSize = item.groupSize;
+                            const groups = [];
+
+                            // 1. Split into groups
+                            for (let k = 0; k < itemsToPlay.length; k += gSize) {
+                                groups.push(itemsToPlay.slice(k, k + gSize));
+                            }
+
+                            // 2. Shuffle Groups if Random is ON
+                            if (item.randomOrder) {
+                                for (let j = groups.length - 1; j > 0; j--) {
+                                    const randIdx = Math.floor(Math.random() * (j + 1));
+                                    [groups[j], groups[randIdx]] = [groups[randIdx], groups[j]];
+                                }
+                            }
+
+                            // 3. Flatten
+                            itemsToPlay = groups.flat();
+
+                        } else {
+                            // --- STANDARD LIST LOGIC ---
+                            if (item.randomOrder) {
+                                itemsToPlay = shuffleArray(itemsToPlay);
+                            }
+                        }
+
+                        all.push(...itemsToPlay.map(s => ({ ...s, listName: item.name, _simultaneousMode: item.simultaneousMode === true })));
+                    }
+                } else {
+                    all.push({ ...item, _simultaneousMode: false });
+                }
+            });
+            return all;
+        }
+
+        function buildTimeline(sequence) {
+            const timeline = [];
+            let timeCursor = 0;
+
+            sequence.forEach((s, index) => {
+                const delay = s.delayType === 'interval'
+                    ? Math.floor(Math.random() * (s.delayMax - s.delayMin + 1)) + s.delayMin
+                    : (s.delay || 0);
+
+                timeCursor += delay;
+
+                timeline.push({
+                    stimulus: s,
+                    index: index,
+                    showAt: timeCursor,
+                    hideAt: s.duration > 0 ? timeCursor + s.duration : -1, // -1 = wait for key
+                    actualPos: null,
+                    shown: false,
+                    recorded: false,
+                    pendingResponse: false,
+                    timeoutShow: null,
+                    timeoutHide: null,
+                    preAnswerMs: 0,
+                });
+            });
+
+            return timeline;
+        }
+
+        function recordResultWithPos(s, rt, correct, pressedKey, pos, preAnswerMs = 0) {
+            state.experimentResults.push({
+                trialIndex: state.completedTimelineEvents + 1,
+                timestamp: Date.now() - state.experimentStartTime,
+                reactionTime: rt,
+                correct: correct,
+                pressedKey: pressedKey || '',
+                preAnswerMs: preAnswerMs,
+                actualX: pos.x,
+                actualY: pos.y,
+                name: s.name,
+                type: s.type,
+                listName: s.listName || '',
+                textContent: s.text || '',
+                fontSize: s.fontSize || '',
+                fontColor: s.fontColor || '',
+                fontFamily: s.fontFamily || '',
+                shapeType: s.shape || '',
+                shapeSize: s.shapeSize || '',
+                shapeWidth: s.shapeWidth || '',
+                shapeHeight: s.shapeHeight || '',
+                shapeColor: s.shapeColor || '',
+                shapeStyle: s.shapeStyle || '',
+                shapeStrokeWidth: s.shapeStrokeWidth || '',
+                imageUrl: s.imageUrl || '',
+                imageWidth: s.imageWidth || '',
+                imageHeight: s.imageHeight || '',
+                audioUrl: s.audioUrl || '',
+                audioVolume: s.audioVolume || '',
+                audioRepeat: s.audioRepeat || '',
+                positionMode: s.position,
+                customX: s.customX || '',
+                customY: s.customY || '',
+                backgroundColor: s.backgroundColor,
+                delaySetting: s.delay,
+                delayType: s.delayType || '',
+                durationSetting: s.duration,
+                responseKeySetting: s.responseKey,
+                allowAnyKeySetting: s.allowAnyKey || false
+            });
+        }
+
+        function scheduleTimelineEvents() {
+            state.timelineScheduledTimeouts = [];
+
+            state.timeline.forEach(entry => {
+                const tShow = setTimeout(() => {
+                    if (!state.isRunning) return;
+                    showStimulusInTimeline(entry);
+                }, entry.showAt);
+                state.timelineScheduledTimeouts.push(tShow);
+
+                if (entry.hideAt > 0) {
+                    const tHide = setTimeout(() => {
+                        if (!state.isRunning) return;
+                        hideStimulusInTimeline(entry);
+                    }, entry.hideAt);
+                    state.timelineScheduledTimeouts.push(tHide);
+                }
+            });
+        }
+
+        function showStimulusInTimeline(entry) {
+            if (entry.shown) return;
+            entry.shown = true;
+
+            const s = entry.stimulus;
+            const canvas = document.getElementById('experimentCanvas');
+            canvas.style.background = s.backgroundColor;
+
+            if (s.position === 'center' && state.fixationEnabled) {
+                hideFixation();
+                void canvas.offsetHeight;
+            }
+
+            const positions = getStimulusPosition(s);
+            const posArray = Array.isArray(positions) ? positions : [positions];
+            entry.actualPos = posArray[0];
+
+            posArray.forEach((pos, pi) => {
+                const el = document.createElement('div');
+                el.className = 'stimulus-element';
+                el.id = `stimulusEl_${entry.index}${posArray.length > 1 ? '_' + pi : ''}`;
+                el.style.left = pos.x + '%';
+                el.style.top = pos.y + '%';
+
+                if (s.type === 'text') {
+                    el.innerHTML = `<div style="font-size:${formatSize(s.fontSize)}; color:${s.fontColor}; font-family:${s.fontFamily}; text-align:center; white-space:pre-wrap; line-height:${s.lineSpacing};">${s.text}</div>`;
+                } else if (s.type === 'shape') {
+                    let w = s.shapeWidth, h = s.shapeHeight;
+                    if (s.shapeSize === 'small') { w = 40; h = 40; }
+                    else if (s.shapeSize === 'medium') { w = 80; h = 80; }
+                    else if (s.shapeSize === 'large') { w = 120; h = 120; }
+                    if (s.shape === 'circle') {
+                        el.style.width = formatSize(w); el.style.height = formatSize(h);
+                        el.style.borderRadius = '50%';
+                        el.style[s.shapeStyle === 'fill' ? 'background' : 'border'] = s.shapeColor;
+                        if (s.shapeStyle === 'stroke') el.style.borderWidth = s.shapeStrokeWidth + 'px';
+                    } else if (s.shape === 'rectangle') {
+                        el.style.width = formatSize(w); el.style.height = formatSize(h);
+                        el.style[s.shapeStyle === 'fill' ? 'background' : 'border'] = s.shapeColor;
+                        if (s.shapeStyle === 'stroke') el.style.borderWidth = s.shapeStrokeWidth + 'px';
+                    } else if (s.shape === 'triangle') {
+                        el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polygon points="${w / 2},0 ${w},${h} 0,${h}" fill="${s.shapeStyle === 'fill' ? s.shapeColor : 'none'}" stroke="${s.shapeStyle === 'stroke' ? s.shapeColor : 'none'}" stroke-width="${s.shapeStrokeWidth}"/></svg>`;
+                    }
+                } else if (s.type === 'image') {
+                    const img = new Image();
+                    img.style.width = formatSize(s.imageWidth);
+                    img.style.height = formatSize(s.imageHeight);
+                    img.style.maxWidth = 'none';
+                    img.style.objectFit = 'fill';
+                    img.src = s.imageUrl;
+                    el.appendChild(img);
+                } else if (s.type === 'audio') {
+                    if (pi === 0) {
+                        const aud = state.loadedAudio[s.audioUrl] || new Audio(s.audioUrl);
+                        aud.volume = s.audioVolume / 100;
+                        aud.loop = s.audioRepeat > 1;
+                        aud.play();
+                    }
+                }
+
+                canvas.appendChild(el);
+            });
+
+            state.visibleTimelineEntries.push(entry);
+
+            const shownCount = state.timeline.filter(e => e.shown).length;
+            document.getElementById('currentStimulusNum').textContent = shownCount;
+
+            if (s.duration === -1) {
+                entry.pendingResponse = true;
+                entry.stimulusStartTime = Date.now();
+            }
+        }
+
+        function hideStimulusInTimeline(entry) {
+            document.querySelectorAll(`[id^="stimulusEl_${entry.index}"]`).forEach(el => el.remove());
+
+            state.visibleTimelineEntries = state.visibleTimelineEntries.filter(e => e.index !== entry.index);
+
+            if (state.fixationEnabled && !state.visibleTimelineEntries.some(e => e.stimulus.position === 'center')) {
+                showFixation();
+            }
+
+            if (!entry.recorded) {
+                entry.recorded = true;
+                const pos = entry.actualPos || { x: 50, y: 50 };
+                recordResultWithPos(entry.stimulus, null, null, null, pos, entry.preAnswerMs || 0);
+            }
+
+            state.completedTimelineEvents++;
+            checkExperimentCompletion();
+        }
+
+        function checkExperimentCompletion() {
+            if (state.experimentType === 'stimuli-based' && state.completedTimelineEvents >= state.timeline.length) {
+                endExperiment();
+            }
+        }
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function confirmStartExperiment() {
+            closeModal('confirmModal');
+
+            // Gather subject info
+            state.experimentResults = [];
+            state.currentStimulusIndex = 0;
+            state.experimentStartTime = Date.now();
+            state.isRunning = true;
+
+            state.showProgress = document.getElementById('showProgressToggle').classList.contains('active');
+            state.fullscreenMode = document.getElementById('fullscreenToggle').classList.contains('active');
+            state.experimentDuration = parseInt(document.getElementById('experimentDuration')?.value) || 0;
+            state.preAnswerMode = document.getElementById('preAnswerMode')?.value || 'skip';
+
+            // --- FIX: GENERATE SEQUENCE ONCE ---
+            const allStimuli = getAllStimuli();
+            state.currentExperimentSequence = allStimuli; // Save to state
+
+            document.getElementById('totalStimuliNum').textContent = allStimuli.length;
+
+            // Show experiment screen
+            const screen = document.getElementById('experimentScreen');
+            screen.classList.add('active');
+
+            if (state.fullscreenMode) {
+                document.documentElement.requestFullscreen?.().catch(() => { });
+            }
+
+            document.getElementById('experimentInfo').style.display = state.showProgress ? 'block' : 'none';
+
+            // Start time tracking
+            experimentInterval = setInterval(updateExperimentTime, 100);
+
+            // Add keyboard listener
+            document.addEventListener('keydown', handleExperimentKeydown);
+
+            // Show fixation if enabled
+            // Show fixation if enabled
+            if (state.fixationEnabled) {
+                showFixation();
+            }
+
+            // Decide: use timeline (simultaneous) or sequential (legacy)
+            const hasSimultaneous = state.currentExperimentSequence.some(s => s._simultaneousMode);
+
+            if (hasSimultaneous) {
+                // --- SIMULTANEOUS MODE ---
+                state.timeline = buildTimeline(state.currentExperimentSequence);
+                state.completedTimelineEvents = 0;
+                state.visibleTimelineEntries = [];
+                scheduleTimelineEvents();
+                state.timelineStartTime = Date.now();
+            } else {
+                // --- SEQUENTIAL MODE (original behavior, unchanged) ---
+                presentNextStimulus();
+            }
+        }
+
+        function updateExperimentTime() {
+            const elapsed = Date.now() - state.experimentStartTime;
+            document.getElementById('elapsedTime').textContent = elapsed;
+
+            if (state.experimentType === 'time-based' && elapsed >= state.experimentDuration) {
+                endExperiment();
+            }
+        }
+
+        function showFixation() {
+            // If already created, just make visible
+            if (fixationElement) {
+                fixationElement.style.display = 'block'; // Use display instead of visibility
+                return;
+            }
+
+            const canvas = document.getElementById('experimentCanvas');
+            const type = document.getElementById('fixationType')?.value;
+
+            // Create wrapper element
+            const el = document.createElement('div');
+            el.className = 'stimulus-element';
+            el.style.left = '50%';
+            el.style.top = '50%';
+            el.style.zIndex = '5';
+
+            if (type === 'static') {
+                const subType = document.getElementById('fixationStaticType')?.value || 'shape';
+
+                if (subType === 'shape') {
+                    const shape = document.getElementById('fixationShape')?.value || 'circle';
+                    const sizeVal = document.getElementById('fixationShapeSize')?.value || 'medium';
+                    let w, h;
+                    if (sizeVal === 'small') { w = 20; h = 20; }
+                    else if (sizeVal === 'medium') { w = 40; h = 40; }
+                    else if (sizeVal === 'large') { w = 60; h = 60; }
+                    else {
+                        /* w = parseInt(document.getElementById('fixationShapeWidth')?.value) || 50;
+                        h = parseInt(document.getElementById('fixationShapeHeight')?.value) || 50; */
+                        w = document.getElementById('fixationShapeWidth')?.value || "50px";
+                        h = document.getElementById('fixationShapeHeight')?.value || "50px";
+                    }
+                    const color = document.getElementById('fixationShapeColor')?.value || '#0000FF';
+                    const style = document.getElementById('fixationShapeStyle')?.value || 'fill';
+                    const strokeW = parseInt(document.getElementById('fixationShapeStrokeWidth')?.value) || 2;
+
+                    if (shape === 'circle') {
+                        //el.style.width = w + 'px'; el.style.height = h + 'px';
+                        el.style.width = formatSize(w); el.style.height = formatSize(h);
+                        el.style.borderRadius = '50%';
+                        el.style[style === 'fill' ? 'background' : 'border'] = color;
+                        if (style === 'stroke') el.style.borderWidth = strokeW + 'px';
+                    } else if (shape === 'rectangle') {
+                        el.style.width = formatSize(w); el.style.height = formatSize(h);
+                        el.style[style === 'fill' ? 'background' : 'border'] = color;
+                        if (style === 'stroke') el.style.borderWidth = strokeW + 'px';
+                    } else if (shape === 'triangle') {
+                        el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polygon points="${w / 2},0 ${w},${h} 0,${h}" fill="${style === 'fill' ? color : 'none'}" stroke="${style === 'stroke' ? color : 'none'}" stroke-width="${strokeW}"/></svg>`;
+                    }
+                } else if (subType === 'text') {
+                    const text = document.getElementById('fixationStaticText')?.value || '+';
+                    const size = document.getElementById('fixationStaticFontSize')?.value || '32px';
+                    const color = document.getElementById('fixationStaticTextColor')?.value || '#ffffff';
+                    el.innerHTML = `<div style="font-size: ${formatSize(size)}; color: ${color}; font-family: Arial;">${text}</div>`;
+                } else if (subType === 'image') {
+                    const url = document.getElementById('fixationImageUrl')?.value;
+                    //const w = document.getElementById('fixationImageWidth')?.value || 100;
+                    //const h = document.getElementById('fixationImageHeight')?.value || 100;
+                    const w = document.getElementById('fixationImageWidth')?.value || "100px";
+                    const h = document.getElementById('fixationImageHeight')?.value || "100px";
+                    if (url) {
+                        el.innerHTML = `<img src="${url}" style="width: ${formatSize(w)}; height: ${formatSize(h)}; object-fit: fill;">`;
+                    }
+                }
+
+                fixationElement = el;
+                canvas.appendChild(el);
+
+            } else if (type === 'text-word') {
+                const text = document.getElementById('fixationText')?.value || '';
+                const words = text.split(' ').filter(w => w.length > 0);
+                const duration = parseInt(document.getElementById('fixationWordDuration')?.value) || 500;
+                const delay = parseInt(document.getElementById('fixationWordDelay')?.value) || 100;
+                const fontSize = document.getElementById('fixationTextFontSize')?.value || '24';
+                const color = document.getElementById('fixationTextColor')?.value || '#ffffff';
+
+                el.innerHTML = `<div id="fixationWordDisplay" style="font-size: ${fontSize}px; color: ${color}; font-family: Arial; text-align: center;"></div>`;
+                fixationElement = el;
+                canvas.appendChild(el);
+
+                let wordIndex = 0;
+                const displayEl = document.getElementById('fixationWordDisplay');
+
+                const showWord = () => {
+                    if (!state.isRunning) return;
+                    displayEl.textContent = words[wordIndex];
+                    wordIndex = (wordIndex + 1) % words.length;
+                };
+
+                showWord();
+                fixationInterval = setInterval(showWord, duration + delay);
+
+            } else if (type === 'text-scroll') {
+                const text = document.getElementById('fixationScrollText')?.value || '';
+                const fontSize = document.getElementById('fixationScrollFontSize')?.value || '24';
+                const color = document.getElementById('fixationScrollColor')?.value || '#ffffff';
+                const speed = parseInt(document.getElementById('fixationScrollSpeedValue')?.value) || 2;
+                const boxWidth = parseInt(document.getElementById('fixationScrollWidth')?.value) || 300;
+
+                el.style.width = boxWidth + 'px';
+                el.style.height = (parseInt(fontSize) + 10) + 'px';
+                el.style.overflow = 'hidden';
+                el.style.transform = 'translate(-50%, -50%)';
+
+                const textEl = document.createElement('div');
+                textEl.style.position = 'absolute';
+                textEl.style.whiteSpace = 'nowrap';
+                textEl.style.fontSize = fontSize + 'px';
+                textEl.style.color = color;
+                textEl.style.fontFamily = 'Arial';
+                textEl.textContent = text + "    " + text;
+
+                el.appendChild(textEl);
+                fixationElement = el;
+                canvas.appendChild(el);
+
+                let currentX = boxWidth;
+                const animate = () => {
+                    if (!state.isRunning) return;
+                    currentX -= speed;
+                    const textWidth = textEl.offsetWidth / 2;
+                    if (currentX < -textWidth) {
+                        currentX = boxWidth;
+                    }
+                    textEl.style.left = currentX + 'px';
+                    fixationAnimationId = requestAnimationFrame(animate);
+                };
+                fixationAnimationId = requestAnimationFrame(animate);
+            }
+        }
+
+        function hideFixation() {
+            if (fixationElement) {
+                // Use display none for immediate removal from render tree
+                fixationElement.style.display = 'none';
+            }
+        }
+
+        function stopFixation() {
+            if (fixationInterval) clearInterval(fixationInterval);
+            if (fixationAnimationId) cancelAnimationFrame(fixationAnimationId);
+            if (fixationElement) fixationElement.remove();
+            fixationElement = null;
+            fixationInterval = null;
+            fixationAnimationId = null;
+        }
+
+        function presentNextStimulus() {
+            // --- FIX: USE SAVED SEQUENCE ---
+            const allStimuli = state.currentExperimentSequence;
+
+            if (state.experimentType === 'stimuli-based' && state.currentStimulusIndex >= allStimuli.length) {
+                endExperiment();
+                return;
+            }
+
+            if (state.currentStimulusIndex >= allStimuli.length) {
+                // Loop for time-based: Reset index, but DO NOT reshuffle
+                state.currentStimulusIndex = 0;
+            }
+
+            const s = allStimuli[state.currentStimulusIndex];
+            currentStimulus = s;
+            currentTrialPreAnswerMs = 0;
+
+            // Update counter
+            document.getElementById('currentStimulusNum').textContent = state.currentStimulusIndex + 1;
+
+            // Apply delay
+            const delay = s.delayType === 'interval'
+                ? Math.floor(Math.random() * (s.delayMax - s.delayMin + 1)) + s.delayMin
+                : s.delay;
+
+            // --- ADD THIS LOGIC ---
+            // If there is a gap (delay > 0), show fixation now.
+            // If delay is 0, we are transitioning immediately, so keep fixation hidden (or let next stimulus handle it).
+            if (delay > 0 && state.fixationEnabled) {
+                showFixation();
+            }
+            // ----------------------
+
+            // Pre-answer tracking: if there's a delay and stimulus requires key press
+            if (delay > 0 && s.duration === -1) {
+                waitingForStimulus = true;
+                preAnswerDelayStart = Date.now();
+            } else {
+                waitingForStimulus = false;
+            }
+
+            currentTimeout = setTimeout(() => {
+                showStimulus(s);
+            }, delay);
+        }
+
+        function showStimulus(s) {
+            waitingForStimulus = false;
+            const canvas = document.getElementById('experimentCanvas');
+            canvas.style.background = s.backgroundColor;
+
+            if (s.position === 'center' && state.fixationEnabled) {
+                hideFixation();
+                void canvas.offsetHeight;
+            }
+
+            const positions = getStimulusPosition(s);
+            const posArray = Array.isArray(positions) ? positions : [positions];
+            currentStimulusPos = posArray[0];
+
+            posArray.forEach((pos, pi) => {
+                const el = document.createElement('div');
+                el.className = 'stimulus-element';
+                el.id = posArray.length > 1 ? `currentStimulusEl_${pi}` : 'currentStimulusEl';
+                el.style.left = pos.x + '%';
+                el.style.top = pos.y + '%';
+
+                if (s.type === 'text') {
+                    el.innerHTML = `<div style="font-size: ${formatSize(s.fontSize)}; color: ${s.fontColor}; font-family: ${s.fontFamily}; text-align: center; white-space: pre-wrap; line-height: ${s.lineSpacing};">${s.text}</div>`;
+                } else if (s.type === 'shape') {
+                    let w = s.shapeWidth, h = s.shapeHeight;
+                    if (s.shapeSize === 'small') { w = 40; h = 40; }
+                    else if (s.shapeSize === 'medium') { w = 80; h = 80; }
+                    else if (s.shapeSize === 'large') { w = 120; h = 120; }
+                    if (s.shape === 'circle') {
+                        el.style.width = formatSize(w); el.style.height = formatSize(h);
+                        el.style.borderRadius = '50%';
+                        el.style[s.shapeStyle === 'fill' ? 'background' : 'border'] = s.shapeColor;
+                        if (s.shapeStyle === 'stroke') el.style.borderWidth = s.shapeStrokeWidth + 'px';
+                    } else if (s.shape === 'rectangle') {
+                        el.style.width = formatSize(w); el.style.height = formatSize(h);
+                        el.style[s.shapeStyle === 'fill' ? 'background' : 'border'] = s.shapeColor;
+                        if (s.shapeStyle === 'stroke') el.style.borderWidth = s.shapeStrokeWidth + 'px';
+                    } else if (s.shape === 'triangle') {
+                        el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polygon points="${w / 2},0 ${w},${h} 0,${h}" fill="${s.shapeStyle === 'fill' ? s.shapeColor : 'none'}" stroke="${s.shapeStyle === 'stroke' ? s.shapeColor : 'none'}" stroke-width="${s.shapeStrokeWidth}"/></svg>`;
+                    }
+                } else if (s.type === 'image') {
+                    const img = new Image();
+                    img.style.width = formatSize(s.imageWidth);
+                    img.style.height = formatSize(s.imageHeight);
+                    img.style.maxWidth = 'none';
+                    img.style.objectFit = 'fill';
+                    img.src = s.imageUrl;
+                    el.appendChild(img);
+                } else if (s.type === 'audio') {
+                    if (pi === 0) {
+                        if (audioElement) audioElement.pause();
+                        audioElement = state.loadedAudio[s.audioUrl] || new Audio(s.audioUrl);
+                        audioElement.volume = s.audioVolume / 100;
+                        audioElement.loop = s.audioRepeat > 1;
+                        audioElement.play();
+                    }
+                }
+
+                canvas.appendChild(el);
+            });
+
+            stimulusStartTime = Date.now();
+            pendingResponse = s.duration === -1;
+
+            if (s.duration > 0) {
+                currentTimeout = setTimeout(() => {
+                    hideCurrentStimulus();
+                    recordResult(s, null, null, null);
+                    state.currentStimulusIndex++;
+                    presentNextStimulus();
+                }, s.duration);
+            }
+        }
+
+        function getStimulusPosition(s) {
+            const positions = {
+                'center': { x: 50, y: 50 },
+                'top-left': { x: 25, y: 25 },
+                'top': { x: 50, y: 25 },
+                'top-right': { x: 75, y: 25 },
+                'left': { x: 25, y: 50 },
+                'right': { x: 75, y: 50 },
+                'bottom-left': { x: 25, y: 75 },
+                'bottom': { x: 50, y: 75 },
+                'bottom-right': { x: 75, y: 75 }
+            };
+
+            if (s.position === 'custom') {
+                const canvas = document.getElementById('experimentCanvas');
+                const viewW = canvas.clientWidth || window.innerWidth;
+                const viewH = canvas.clientHeight || window.innerHeight;
+                return {
+                    x: 50 + (s.customX / viewW * 100),
+                    y: 50 - (s.customY / viewH * 100)
+                };
+                /* return { x: s.customX, y: s.customY }; */
+            } else if (s.position === 'random-full') {
+                // NEW: True random anywhere on screen (0% to 100%)
+                return {
+                    x: Math.random() * 100,
+                    y: Math.random() * 100
+                };
+            } else if (s.position === 'random-sector' || s.position === 'random') {
+                // Existing: Sector based random
+                const sectors = s.randomSectors?.length > 0 ? s.randomSectors : Object.keys(positions).filter(k => k !== 'center');
+                const sector = sectors[Math.floor(Math.random() * sectors.length)];
+                return positions[sector] || positions['center'];
+            } else if (s.position === 'grid-select') {
+                const cells = s.gridPositions?.length > 0 ? s.gridPositions : [{ x: 50, y: 50 }];
+                return cells.map(p => ({ x: p.x, y: p.y }));
+            }
+
+            return positions[s.position] || positions['center'];
+        }
+
+        function hideCurrentStimulus() {
+            document.querySelectorAll('[id^="currentStimulusEl"]').forEach(el => el.remove());
+
+            if (audioElement) {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+            }
+        }
+
+        function handleExperimentKeydown(e) {
+            if (e.code === 'Escape') {
+                endExperiment();
+                return;
+            }
+
+            // Check if we are in simultaneous mode FIRST (before the sequential guard)
+            const hasSimultaneous = state.currentExperimentSequence.some(s => s._simultaneousMode);
+
+            if (hasSimultaneous) {
+                // --- SIMULTANEOUS KEY HANDLING ---
+                const pendingEntries = state.visibleTimelineEntries.filter(e => e.pendingResponse);
+
+                // Pre-answer: check if there are upcoming key-based stimuli not yet shown
+                if (pendingEntries.length === 0) {
+                    const upcomingKeyEntries = state.timeline.filter(e => !e.shown && e.hideAt === -1);
+                    if (upcomingKeyEntries.length > 0) {
+                        upcomingKeyEntries.forEach(entry => {
+                            const timeUntilShow = (state.timelineStartTime + entry.showAt) - Date.now();
+                            if (timeUntilShow > 0) {
+                                const preAnswerMs = timeUntilShow;
+                                if (state.preAnswerMode === 'skip') {
+                                    const pos = { x: 50, y: 50 };
+                                    entry.shown = true;
+                                    entry.recorded = true;
+                                    entry.pendingResponse = false;
+                                    recordResultWithPos(entry.stimulus, null, false, e.code, pos, preAnswerMs);
+                                    state.completedTimelineEvents++;
+                                } else {
+                                    // Continue mode: store pre-answer, don't skip
+                                    entry.preAnswerMs = preAnswerMs;
+                                }
+                            }
+                        });
+                        if (state.preAnswerMode === 'skip') checkExperimentCompletion();
+                        return;
+                    }
+                    return;
+                }
+
+                const rt = Date.now() - pendingEntries[0].stimulusStartTime;
+
+                pendingEntries.forEach(entry => {
+                    let correct = null;
+                    const s = entry.stimulus;
+                    const pos = entry.actualPos || { x: 50, y: 50 };
+
+                    if (state.reactionTimeEnabled && state.reactionMode) {
+                        if (state.reactionMode === 'vertical') {
+                            correct = pos.y < 50 ? e.code === 'ArrowUp' : e.code === 'ArrowDown';
+                        } else if (state.reactionMode === 'horizontal') {
+                            correct = pos.x > 50 ? e.code === 'ArrowRight' : e.code === 'ArrowLeft';
+                        } else if (state.reactionMode === 'combined') {
+                            if (pos.x < 50 && pos.y < 50) correct = e.code === 'ArrowLeft' || e.code === 'ArrowUp';
+                            else if (pos.x > 50 && pos.y < 50) correct = e.code === 'ArrowRight' || e.code === 'ArrowUp';
+                            else if (pos.x < 50 && pos.y > 50) correct = e.code === 'ArrowLeft' || e.code === 'ArrowDown';
+                            else correct = e.code === 'ArrowRight' || e.code === 'ArrowDown';
+                        } else {
+                            correct = e.code === s.responseKey;
+                        }
+                    } else {
+                        const isTargetKey = e.code === s.responseKey;
+                        const isAllowed = s.allowAnyKey || isTargetKey;
+                        if (!isAllowed) return;
+                        correct = isTargetKey;
+                    }
+                    // Hide this stimulus element(s)
+                    document.querySelectorAll(`[id^="stimulusEl_${entry.index}"]`).forEach(el => el.remove());
+
+                    entry.pendingResponse = false;
+                    if (!entry.recorded) {
+                        entry.recorded = true;
+                        recordResultWithPos(s, rt, correct, e.code, pos, entry.preAnswerMs || 0);
+                    }
+                    state.completedTimelineEvents++;
+                });
+
+                // Remove all dismissed from visible list
+                state.visibleTimelineEntries = state.visibleTimelineEntries.filter(e => !e.pendingResponse || e.shown);
+
+                // Show fixation if no center stimulus visible
+                if (state.fixationEnabled && !state.visibleTimelineEntries.some(e => e.stimulus.position === 'center')) {
+                    showFixation();
+                }
+
+                pendingResponse = false;
+                checkExperimentCompletion();
+
+            } else {
+                // --- SEQUENTIAL KEY HANDLING ---
+                // Pre-answer: key pressed during delay before stimulus appeared
+                if (waitingForStimulus && currentStimulus) {
+                    const preAnswerMs = Date.now() - preAnswerDelayStart;
+                    if (state.preAnswerMode === 'skip') {
+                        waitingForStimulus = false;
+                        clearTimeout(currentTimeout);
+                        const pos = getStimulusPosition(currentStimulus);
+                        currentStimulusPos = Array.isArray(pos) ? pos[0] : pos;
+                        recordResult(currentStimulus, null, false, e.code, preAnswerMs);
+                        state.currentStimulusIndex++;
+                        presentNextStimulus();
+                        return;
+                    } else {
+                        // Continue mode: store pre-answer info, don't skip
+                        currentTrialPreAnswerMs = preAnswerMs;
+                        waitingForStimulus = false;
+                        return;
+                    }
+                }
+
+                if (!pendingResponse || !currentStimulus) return;
+                const rt = Date.now() - stimulusStartTime;
+                let correct = null;
+
+                if (state.reactionTimeEnabled) {
+                    if (state.reactionMode === 'vertical') {
+                        const pos = getStimulusPosition(currentStimulus);
+                        const expectedUp = pos.y < 50;
+                        correct = expectedUp ? e.code === 'ArrowUp' : e.code === 'ArrowDown';
+                    } else if (state.reactionMode === 'horizontal') {
+                        const pos = getStimulusPosition(currentStimulus);
+                        const expectedRight = pos.x > 50;
+                        correct = expectedRight ? e.code === 'ArrowRight' : e.code === 'ArrowLeft';
+                    } else if (state.reactionMode === 'combined') {
+                        const pos = getStimulusPosition(currentStimulus);
+                        if (pos.x < 50 && pos.y < 50) correct = e.code === 'ArrowLeft' || e.code === 'ArrowUp';
+                        else if (pos.x > 50 && pos.y < 50) correct = e.code === 'ArrowRight' || e.code === 'ArrowUp';
+                        else if (pos.x < 50 && pos.y > 50) correct = e.code === 'ArrowLeft' || e.code === 'ArrowDown';
+                        else correct = e.code === 'ArrowRight' || e.code === 'ArrowDown';
+                    } else if (state.reactionMode === 'button-only') {
+                        correct = e.code === currentStimulus.responseKey;
+                    }
+                } else {
+                    const isTargetKey = e.code === currentStimulus.responseKey;
+                    const isAllowed = currentStimulus.allowAnyKey || isTargetKey;
+                    if (!isAllowed) return;
+                    correct = isTargetKey;
+                }
+
+                hideCurrentStimulus();
+                recordResult(currentStimulus, rt, correct, e.code);
+                pendingResponse = false;
+                state.currentStimulusIndex++;
+                clearTimeout(currentTimeout);
+                presentNextStimulus();
+            }
+        }
+
+        function recordResult(s, rt, correct, pressedKey, preAnswerMs) {
+            if (preAnswerMs === undefined) preAnswerMs = currentTrialPreAnswerMs;
+            state.experimentResults.push({
+                // Runtime Data
+                trialIndex: state.currentStimulusIndex + 1,
+                timestamp: Date.now() - state.experimentStartTime,
+                reactionTime: rt,
+                correct: correct,
+                pressedKey: pressedKey || '',
+                preAnswerMs: preAnswerMs,
+
+                // Calculated Position
+                actualX: currentStimulusPos.x,
+                actualY: currentStimulusPos.y,
+
+                // Stimulus Identity
+                name: s.name,
+                type: s.type,
+                listName: s.listName || '',
+
+                // Text Properties
+                textContent: s.text || '',
+                fontSize: s.fontSize || '',
+                fontColor: s.fontColor || '',
+                fontFamily: s.fontFamily || '',
+
+                // Shape Properties
+                shapeType: s.shape || '',
+                shapeSize: s.shapeSize || '',
+                shapeWidth: s.shapeWidth || '',
+                shapeHeight: s.shapeHeight || '',
+                shapeColor: s.shapeColor || '',
+                shapeStyle: s.shapeStyle || '',
+                shapeStrokeWidth: s.shapeStrokeWidth || '',
+
+                // Image Properties
+                imageUrl: s.imageUrl || '',
+                imageWidth: s.imageWidth || '',
+                imageHeight: s.imageHeight || '',
+
+                // Audio Properties
+                audioUrl: s.audioUrl || '',
+                audioVolume: s.audioVolume || '',
+                audioRepeat: s.audioRepeat || '',
+
+                // Position & Appearance Settings
+                positionMode: s.position,
+                customX: s.customX || '',
+                customY: s.customY || '',
+                backgroundColor: s.backgroundColor,
+
+                // Timing Settings
+                delaySetting: s.delay,
+                delayType: s.delayType || '',
+                durationSetting: s.duration,
+                responseKeySetting: s.responseKey,
+                allowAnyKeySetting: s.allowAnyKey || false
+            });
+        }
+
+        function endExperiment() {
+            state.isRunning = false;
+            clearInterval(experimentInterval);
+            clearTimeout(currentTimeout);
+            // Clear all timeline timeouts
+            if (state.timelineScheduledTimeouts) {
+                state.timelineScheduledTimeouts.forEach(t => clearTimeout(t));
+                state.timelineScheduledTimeouts = [];
+            }
+            stopFixation(); // <--- ADD THIS LINE
+            document.removeEventListener('keydown', handleExperimentKeydown);
+
+            if (audioElement) {
+                audioElement.pause();
+                audioElement = null;
+            }
+
+            if (document.fullscreenElement) {
+                document.exitFullscreen?.();
+            }
+
+            document.getElementById('experimentScreen').classList.remove('active');
+            showResults();
+        }
+
+        function showResults() {
+            const screen = document.getElementById('resultsScreen');
+            screen.classList.add('active');
+
+            // Summary
+            const total = state.experimentResults.length;
+            const withRT = state.experimentResults.filter(r => r.reactionTime !== null);
+            const avgRT = withRT.length > 0
+                ? Math.round(withRT.reduce((a, b) => a + b.reactionTime, 0) / withRT.length)
+                : 0;
+            const correctCount = state.experimentResults.filter(r => r.correct === true).length;
+            const totalAccuracy = state.experimentResults.filter(r => r.correct !== null).length;
+            const accuracy = totalAccuracy > 0 ? Math.round((correctCount / totalAccuracy) * 100) : 0;
+
+            document.getElementById('resultsSummary').innerHTML = `
+                <h3 class="text-lg font-semibold mb-4">Summary</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                        <div class="text-2xl font-bold" style="color: var(--accent-primary);">${total}</div>
+                        <div class="text-sm" style="color: var(--text-muted);">Total Stimuli</div>
+                    </div>
+                    <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                        <div class="text-2xl font-bold" style="color: var(--accent-primary);">${avgRT}ms</div>
+                        <div class="text-sm" style="color: var(--text-muted);">Avg Reaction Time</div>
+                    </div>
+                    <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                        <div class="text-2xl font-bold" style="color: var(--accent-primary);">${accuracy}%</div>
+                        <div class="text-sm" style="color: var(--text-muted);">Accuracy</div>
+                    </div>
+                    <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                        <div class="text-2xl font-bold" style="color: var(--accent-primary);">${document.getElementById('elapsedTime').textContent}ms</div>
+                        <div class="text-sm" style="color: var(--text-muted);">Total Duration</div>
+                    </div>
+                </div>
+            `;
+
+            // Table
+            // Gather all the same values as CSV for the preview table
+            const tSubjectId = document.getElementById('subjectId').value || '';
+            const tGender = document.getElementById('subjectGender').value || '';
+            const tAge = document.getElementById('subjectAge').value || '';
+            const tCHeaders = [];
+            const tCValues = [];
+            document.querySelectorAll('#customFieldsContainer > div').forEach(div => {
+                const inputs = div.querySelectorAll('input');
+                if (inputs.length >= 2) {
+                    tCHeaders.push(inputs[0].value || 'Custom Field');
+                    tCValues.push(inputs[1].value || '');
+                }
+            });
+            const tExpType = state.experimentType;
+            const tExpDur = document.getElementById('experimentDuration')?.value || '';
+            const tRtEn = state.reactionTimeEnabled ? 'true' : 'false';
+            const tRtMo = state.reactionMode || '';
+            const tShowProg = document.getElementById('showProgressToggle').classList.contains('active') ? 'true' : 'false';
+            const tFsMode = document.getElementById('fullscreenToggle').classList.contains('active') ? 'true' : 'false';
+            const tFixEn = state.fixationEnabled ? 'true' : 'false';
+            const tFixType = document.getElementById('fixationType')?.value || '';
+            const tFixStType = document.getElementById('fixationStaticType')?.value || '';
+            const tFixSh = document.getElementById('fixationShape')?.value || '';
+            const tFixShSz = document.getElementById('fixationShapeSize')?.value || '';
+            const tFixShCol = document.getElementById('fixationShapeColor')?.value || '';
+            const tFixShSt = document.getElementById('fixationShapeStyle')?.value || '';
+            const tFixShSW = document.getElementById('fixationShapeStrokeWidth')?.value || '';
+            const tFixShW = document.getElementById('fixationShapeWidth')?.value || '';
+            const tFixShH = document.getElementById('fixationShapeHeight')?.value || '';
+            const tFixSTxt = document.getElementById('fixationStaticText')?.value || '';
+            const tFixSFS = document.getElementById('fixationStaticFontSize')?.value || '';
+            const tFixSTC = document.getElementById('fixationStaticTextColor')?.value || '';
+            const tFixIUrl = document.getElementById('fixationImageUrl')?.value || '';
+            const tFixIW = document.getElementById('fixationImageWidth')?.value || '';
+            const tFixIH = document.getElementById('fixationImageHeight')?.value || '';
+            const tFixTxt = document.getElementById('fixationText')?.value || '';
+            const tFixTFS = document.getElementById('fixationTextFontSize')?.value || '';
+            const tFixTC = document.getElementById('fixationTextColor')?.value || '';
+            const tFixWD = document.getElementById('fixationWordDuration')?.value || '';
+            const tFixWDl = document.getElementById('fixationWordDelay')?.value || '';
+            const tFixScTxt = document.getElementById('fixationScrollText')?.value || '';
+            const tFixScFS = document.getElementById('fixationScrollFontSize')?.value || '';
+            const tFixScC = document.getElementById('fixationScrollColor')?.value || '';
+            const tFixScSp = document.getElementById('fixationScrollSpeedValue')?.value || '';
+            const tFixScW = document.getElementById('fixationScrollWidth')?.value || '';
+
+            const tStaticParts = [
+                tSubjectId, tGender, tAge,
+                ...tCValues,
+                tExpType, tExpDur, tRtEn, tRtMo, state.preAnswerMode || 'skip',
+                tShowProg, tFsMode, tFixEn, tFixType,
+                tFixStType, tFixSh, tFixShSz, tFixShCol,
+                tFixShSt, tFixShSW, tFixShW, tFixShH,
+                tFixSTxt, tFixSFS, tFixSTC,
+                tFixIUrl, tFixIW, tFixIH,
+                tFixTxt, tFixTFS, tFixTC,
+                tFixWD, tFixWDl,
+                tFixScTxt, tFixScFS, tFixScC,
+                tFixScSp, tFixScW
+            ];
+
+            const tableHeaders = [
+                'Subject ID', 'Gender', 'Age',
+                ...tCHeaders,
+                'Exp Type', 'Exp Dur', 'RT Enabled', 'RT Mode', 'Pre-answer Mode',
+                'Progress', 'Fullscreen', 'Fixation', 'Fix Type',
+                'Fix Static Type', 'Fix Shape', 'Fix Shape Sz', 'Fix Shape Col',
+                'Fix Shape Style', 'Fix Shape SW', 'Fix Shape W', 'Fix Shape H',
+                'Fix Static Txt', 'Fix Static FS', 'Fix Static Col',
+                'Fix Img URL', 'Fix Img W', 'Fix Img H',
+                'Fix Txt', 'Fix Txt FS', 'Fix Txt Col',
+                'Fix Word Dur', 'Fix Word Delay',
+                'Fix Scroll Txt', 'Fix Scroll FS', 'Fix Scroll Col',
+                'Fix Scroll Spd', 'Fix Scroll W',
+                'Stim Name', 'Type', 'Pos (x;y)',
+                'Delay Type', 'Delay (ms)', 'Duration (ms)',
+                'Width', 'Height', 'Shape Type',
+                'Font Size', 'Color',
+                'RT (ms)', 'Pre-answer (ms)', 'Accuracy', 'Resp Key'
+            ];
+
+            // 1. Determine Active Columns (Reuse logic from CSV)
+            const activeCols = [];
+            CSV_COLUMN_DEFINITIONS.forEach(def => {
+                if (state.selectedColumns.includes(def.key)) activeCols.push(def);
+            });
+
+            // Handle Custom Fields for Preview
+            const customFieldValues = {};
+            document.querySelectorAll('#customFieldsContainer > div').forEach(div => {
+                const inputs = div.querySelectorAll('input');
+                if (inputs.length >= 2) {
+                    const name = inputs[0].value || 'Custom';
+                    const val = inputs[1].value;
+                    customFieldValues[name] = val;
+                    if (state.selectedColumns.includes('custom_' + name)) {
+                        activeCols.push({
+                            key: 'custom_' + name,
+                            label: name,
+                            type: 'static-custom',
+                            accessor: () => val
+                        });
+                    }
+                }
+            });
+
+            // 2. Render Header
+            document.getElementById('resultsTableHead').innerHTML = `<tr>${activeCols.map(c => `<th>${c.label}</th>`).join('')}</tr>`;
+
+            // 3. Render Body
+            document.getElementById('resultsTableBody').innerHTML = state.experimentResults.map(r => {
+                const cells = activeCols.map(col => {
+                    let val = '';
+                    if (col.type === 'trial') val = col.accessor(r);
+                    else val = col.accessor();
+                    if (val === null || val === undefined) val = '';
+                    return `<td>${val}</td>`;
+                }).join('');
+                return `<tr>${cells}</tr>`;
+            }).join('');
+        }
+
+        function closeResults() {
+            document.getElementById('resultsScreen').classList.remove('active');
+            const canvas = document.getElementById('experimentCanvas');
+            canvas.innerHTML = '';
+            canvas.style.background = '#000';
+        }
+
+        // Helper to convert Hex to Color Name (basic)
+        function hexToColorName(hex) {
+            if (!hex) return '';
+            const colors = {
+                '#ffffff': 'White', '#000000': 'Black', '#ff0000': 'Red',
+                '#00ff00': 'Lime', '#0000ff': 'Blue', '#ffff00': 'Yellow',
+                '#00ffff': 'Cyan', '#ff00ff': 'Magenta', '#808080': 'Gray',
+                '#c0c0c0': 'Silver', '#800000': 'Maroon', '#808000': 'Olive',
+                '#008000': 'Green', '#800080': 'Purple', '#008080': 'Teal',
+                '#000080': 'Navy'
+            };
+            return colors[hex.toLowerCase()] || hex;
+        }
+
+        function selectTableContent() {
+            const table = document.getElementById('resultsTable');
+            const range = document.createRange();
+            range.selectNode(table);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+
+        function downloadCSV() {
+            // 1. Gather active columns
+            const activeCols = [];
+
+            // Add Standard Columns
+            CSV_COLUMN_DEFINITIONS.forEach(def => {
+                if (state.selectedColumns.includes(def.key)) {
+                    activeCols.push(def);
+                }
+            });
+
+            // Add Custom Columns
+            const customFieldValues = {};
+            document.querySelectorAll('#customFieldsContainer > div').forEach(div => {
+                const inputs = div.querySelectorAll('input');
+                if (inputs.length >= 2) {
+                    const name = inputs[0].value || 'Custom';
+                    const val = inputs[1].value;
+                    customFieldValues[name] = val;
+                    // Add to active columns if selected
+                    if (state.selectedColumns.includes('custom_' + name)) {
+                        activeCols.push({
+                            key: 'custom_' + name,
+                            label: name,
+                            type: 'static-custom',
+                            accessor: () => val
+                        });
+                    }
+                }
+            });
+
+            // 2. Build Headers
+            // We wrap headers in quotes just like values to be safe
+            const headers = activeCols.map(c => `"${c.label.replace(/"/g, '""')}"`);
+            let csv = headers.join(',') + '\n';
+
+            // 3. Build Rows
+            state.experimentResults.forEach(r => {
+                const row = activeCols.map(col => {
+                    let val = '';
+                    try {
+                        if (col.type === 'trial') val = col.accessor(r);
+                        else val = col.accessor();
+                    } catch (e) {
+                        val = '';
+                    }
+
+                    // Handle null/undefined
+                    if (val === null || val === undefined) val = '';
+
+                    // Convert to string and escape quotes
+                    return `"${String(val).replace(/"/g, '""')}"`;
+                });
+                csv += row.join(',') + '\n';
+            });
+
+            // 4. Download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'experiment_results_' + Date.now() + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+    </script>
+
+    <script src="js_default/dfv_name.js"></script>
+    <script src="js_default/dfv_draw.js"></script>
+    <script src="js_default/dfv_name_345mm_1366px(124_4pxc).js"></script>
+    <script src="js_default/dfv_draw_345mm_1366px(124_4pxc).js"></script>
+</body>
+
+</html>

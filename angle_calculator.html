@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Angle Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1a2234;
+            --bg-card: #0d1321;
+            --bg-hover: #162032;
+            --text-primary: #e8ecf4;
+            --text-secondary: #8b98b0;
+            --text-muted: #5a6578;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #0099cc;
+            --accent-tertiary: #006688;
+            --accent-glow: rgba(0, 212, 255, 0.3);
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --error: #ff4466;
+            --border-primary: #1e2a3a;
+            --border-secondary: #2a3a4a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .field label .req {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--error);
+            background: rgba(255, 68, 102, 0.15);
+            padding: 1px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field label .opt {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 1px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .field input,
+        .field select {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .field input::placeholder {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .field .unit {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border-primary);
+            margin: 24px 0;
+        }
+
+        /* Result boxes */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 500px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .result-box {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+
+        .result-box.has-value {
+            border-color: var(--accent-tertiary);
+        }
+
+        .result-box .result-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .result-box .result-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-primary);
+            line-height: 1;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-box .result-value.empty {
+            color: var(--text-muted);
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .result-box .result-unit {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        .result-box .result-note {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-muted);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .copy-btn.copied {
+            color: var(--success);
+            border-color: var(--success);
+        }
+
+        /* Preset buttons */
+        .presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .preset-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-primary);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: var(--bg-hover);
+        }
+
+        .preset-btn.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(0, 212, 255, 0.08);
+        }
+
+        /* Quick reference table */
+        .ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .ref-table th {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: left;
+            padding: 10px 14px;
+            border-bottom: 2px solid var(--border-primary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ref-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-primary);
+            color: var(--text-primary);
+        }
+
+        .ref-table tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        .ref-table .mono {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-primary);
+        }
+
+        /* Direction diagram */
+        .diagram {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .diagram svg text {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Stimulus size calculator */
+        .size-results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent-primary);
+        }
+
+        .info-callout {
+            background: rgba(0, 212, 255, 0.06);
+            border: 1px solid var(--accent-tertiary);
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .info-callout strong {
+            color: var(--accent-primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <a href="#" class="back-link" onclick="history.back(); return false;">
+            ← Back to Experiment Lab
+        </a>
+
+        <div class="page-header">
+            <h1>Visual Angle ↔ Pixel Calculator</h1>
+            <p>Convert degrees of visual angle to pixel offset from fixation point</p>
+        </div>
+
+        <!-- SCREEN & DISTANCE SETUP -->
+        <div class="card">
+            <div class="card-title"><span class="dot"></span> Screen & Distance</div>
+            <p class="card-desc">Physical screen dimensions and participant viewing distance. These values determine
+                pixel density (PPM).</p>
+
+            <div class="presets" id="presets">
+                <span style="font-size:12px;color:var(--text-muted);line-height:30px;margin-right:4px;">Common
+                    monitors:</span>
+                <button class="preset-btn" onclick="applyPreset(527,299,1920)">24" 1080p</button>
+                <button class="preset-btn" onclick="applyPreset(598,336,1920)">27" 1080p</button>
+                <button class="preset-btn" onclick="applyPreset(598,336,2560)">27" 1440p</button>
+                <button class="preset-btn" onclick="applyPreset(698,392,2560)">32" 1440p</button>
+                <button class="preset-btn" onclick="applyPreset(698,392,3840)">32" 4K</button>
+                <button class="preset-btn" onclick="applyPreset(344,194,1920)">15.6" Laptop</button>
+                <button class="preset-btn" onclick="applyPreset(293,165,2560)">13.3" Laptop</button>
+            </div>
+
+            <div class="input-group">
+                <div class="field">
+                    <label>Screen Width (mm) <span class="req">Required</span></label>
+                    <input type="number" id="screenWidthMm" placeholder="e.g. 527" min="1" oninput="calculate()">
+                    <span class="unit">Measure your screen edge-to-edge horizontally</span>
+                </div>
+                <div class="field">
+                    <label>Resolution Width (px) <span class="req">Required</span></label>
+                    <input type="number" id="screenWidthPx" placeholder="e.g. 1920" min="1" oninput="calculate()">
+                    <span class="unit">Horizontal resolution in pixels</span>
+                </div>
+                <div class="field">
+                    <label>Viewing Distance (cm) <span class="req">Required</span></label>
+                    <input type="number" id="viewDistCm" placeholder="e.g. 60" min="1" step="0.5" oninput="calculate()">
+                    <span class="unit">Participant's eyes to screen surface</span>
+                </div>
+            </div>
+
+            <div class="info-callout">
+                <strong>How to find screen width in mm:</strong> Search your monitor model number online, or measure
+                physically with a ruler. Do NOT use diagonal inches — you need the horizontal width in millimeters.
+            </div>
+        </div>
+
+        <!-- POSITION OFFSET CALCULATOR -->
+        <div class="card">
+            <div class="card-title"><span class="dot"></span> Position Offset from Fixation</div>
+            <p class="card-desc">How far (in pixels) to place a stimulus from the fixation point, based on visual angle.
+            </p>
+
+            <!-- Direction diagram -->
+            <div class="diagram">
+                <svg width="260" height="180" viewBox="0 0 260 180">
+                    <!-- Crosshair -->
+                    <line x1="130" y1="20" x2="130" y2="160" stroke="#2a3a4a" stroke-width="1" stroke-dasharray="4,4" />
+                    <line x1="20" y1="90" x2="240" y2="90" stroke="#2a3a4a" stroke-width="1" stroke-dasharray="4,4" />
+                    <!-- Center dot -->
+                    <circle cx="130" cy="90" r="4" fill="#00d4ff" />
+                    <text x="130" y="115" text-anchor="middle" fill="#5a6578" font-size="11">Fixation</text>
+                    <!-- Horizontal arrow -->
+                    <line x1="145" y1="50" x2="210" y2="50" stroke="#00d4ff" stroke-width="1.5"
+                        marker-end="url(#arrow)" />
+                    <text x="178" y="44" text-anchor="middle" fill="#00d4ff" font-size="11">+X (Right)</text>
+                    <!-- Vertical arrow -->
+                    <line x1="60" y1="75" x2="60" y2="30" stroke="#00d4ff" stroke-width="1.5"
+                        marker-end="url(#arrow)" />
+                    <text x="60" y="24" text-anchor="middle" fill="#00d4ff" font-size="11">-Y (Up)</text>
+                    <!-- Axis labels -->
+                    <text x="228" y="94" fill="#5a6578" font-size="10">-X (Left)</text>
+                    <text x="130" y="172" text-anchor="middle" fill="#5a6578" font-size="10">+Y (Down)</text>
+                    <defs>
+                        <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#00d4ff" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+
+            <div class="input-group" style="grid-template-columns: 1fr 1fr;">
+                <div class="field">
+                    <label>Horizontal Degrees <span class="req">Required</span></label>
+                    <input type="number" id="horizDeg" placeholder="e.g. 3" min="0" max="90" step="0.1"
+                        oninput="calculate()">
+                    <span class="unit">Positive = right from fixation, negative = left</span>
+                </div>
+                <div class="field">
+                    <label>Vertical Degrees <span class="opt">Optional</span></label>
+                    <input type="number" id="vertDeg" placeholder="e.g. 2" step="0.1" oninput="calculate()">
+                    <span class="unit">Positive = below fixation, negative = above</span>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="results-grid">
+                <div class="result-box" id="horizResultBox">
+                    <button class="copy-btn" onclick="copyValue('horizPx')">Copy</button>
+                    <div class="result-label">Horizontal Offset (X)</div>
+                    <div class="result-value empty" id="horizPx">—</div>
+                    <div class="result-unit">pixels from center</div>
+                    <div class="result-note" id="horizNote"></div>
+                </div>
+                <div class="result-box" id="vertResultBox">
+                    <button class="copy-btn" onclick="copyValue('vertPx')">Copy</button>
+                    <div class="result-label">Vertical Offset (Y)</div>
+                    <div class="result-value empty" id="vertPx">—</div>
+                    <div class="result-unit">pixels from center</div>
+                    <div class="result-note" id="vertNote"></div>
+                </div>
+            </div>
+
+            <div class="info-callout" style="margin-top:16px; margin-bottom:0;">
+                <strong>How to use in Experiment Lab:</strong><br>
+                Set stimulus position to <strong>"Custom Coordinates"</strong>. For 3° right: set X = <span
+                    id="exampleX" style="color:var(--accent-primary);font-family:'JetBrains Mono',monospace;">—</span>.
+                For 3° left: set X = <span id="exampleXneg"
+                    style="color:var(--accent-primary);font-family:'JetBrains Mono',monospace;">—</span>. Center is
+                always 50%.
+            </div>
+        </div>
+
+        <!-- STIMULUS SIZE CALCULATOR (bonus) -->
+        <div class="card">
+            <div class="card-title"><span class="dot"></span> Stimulus Size → Visual Angle</div>
+            <p class="card-desc">Bonus: given a stimulus size in pixels, calculate its visual angle. Useful for
+                reporting in papers.</p>
+
+            <div class="input-group" style="grid-template-columns: 1fr 1fr;">
+                <div class="field">
+                    <label>Stimulus Width (px) <span class="req">Required</span></label>
+                    <input type="number" id="stimWidthPx" placeholder="e.g. 200" min="1" oninput="calculateSize()">
+                    <span class="unit">Width of your image or shape</span>
+                </div>
+                <div class="field">
+                    <label>Stimulus Height (px) <span class="opt">Optional</span></label>
+                    <input type="number" id="stimHeightPx" placeholder="e.g. 200" min="1" oninput="calculateSize()">
+                    <span class="unit">Height of your image or shape</span>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="size-results-grid">
+                <div class="result-box" id="stimWResultBox">
+                    <div class="result-label">Width Visual Angle</div>
+                    <div class="result-value empty" id="stimWidthDeg">—</div>
+                    <div class="result-unit">degrees</div>
+                </div>
+                <div class="result-box" id="stimHResultBox">
+                    <div class="result-label">Height Visual Angle</div>
+                    <div class="result-value empty" id="stimHeightDeg">—</div>
+                    <div class="result-unit">degrees</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFERENCE TABLE -->
+        <div class="card">
+            <div class="card-title"><span class="dot"></span> Quick Reference Table</div>
+            <p class="card-desc">Pre-calculated pixel offsets for common angles at 60cm viewing distance (27" 1080p
+                monitor). Your actual values depend on your screen and distance above.</p>
+            <div style="overflow-x:auto;">
+                <table class="ref-table" id="refTable">
+                    <thead>
+                        <tr>
+                            <th>Degrees</th>
+                            <th>1°</th>
+                            <th>2°</th>
+                            <th>3°</th>
+                            <th>4°</th>
+                            <th>5°</th>
+                            <th>7°</th>
+                            <th>10°</th>
+                            <th>15°</th>
+                            <th>20°</th>
+                        </tr>
+                    </thead>
+                    <tbody id="refTableBody">
+                        <tr>
+                            <td style="color:var(--text-muted);font-size:12px;">Fill screen info above to see values
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // PRESETS (screen width mm, screen height mm, resolution width px)
+        // ==========================================
+        function applyPreset(widthMm, heightMm, resWidthPx) {
+            document.getElementById('screenWidthMm').value = widthMm;
+            document.getElementById('screenWidthPx').value = resWidthPx;
+            // Set default distance if empty
+            if (!document.getElementById('viewDistCm').value) {
+                document.getElementById('viewDistCm').value = 60;
+            }
+            // Highlight active preset
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            calculate();
+        }
+
+        // ==========================================
+        // CORE CALCULATION
+        // ==========================================
+        function getPPM() {
+            // Pixels Per Millimeter
+            const mm = parseFloat(document.getElementById('screenWidthMm').value);
+            const px = parseFloat(document.getElementById('screenWidthPx').value);
+            if (!mm || !px || mm <= 0 || px <= 0) return null;
+            return px / mm;
+        }
+
+        function getViewDistMm() {
+            const cm = parseFloat(document.getElementById('viewDistCm').value);
+            if (!cm || cm <= 0) return null;
+            return cm * 10;
+        }
+
+        function degToPixels(degrees, ppm, distMm) {
+            // Physical size on screen (mm) = 2 * distance * tan(angle/2)
+            const radians = Math.abs(degrees) * (Math.PI / 180);
+            const sizeMm = 2 * distMm * Math.tan(radians / 2);
+            return sizeMm * ppm;
+        }
+
+        // ==========================================
+        // POSITION OFFSET CALCULATION
+        // ==========================================
+        function calculate() {
+            const ppm = getPPM();
+            const distMm = getViewDistMm();
+            const horizDeg = parseFloat(document.getElementById('horizDeg').value);
+            const vertDeg = parseFloat(document.getElementById('vertDeg').value);
+
+            const horizBox = document.getElementById('horizResultBox');
+            const vertBox = document.getElementById('vertResultBox');
+            const horizEl = document.getElementById('horizPx');
+            const vertEl = document.getElementById('vertPx');
+            const horizNote = document.getElementById('horizNote');
+            const vertNote = document.getElementById('vertNote');
+
+            if (!ppm || !distMm) {
+                horizEl.textContent = '—';
+                horizEl.className = 'result-value empty';
+                horizBox.classList.remove('has-value');
+                horizNote.textContent = '';
+                vertEl.textContent = '—';
+                vertEl.className = 'result-value empty';
+                vertBox.classList.remove('has-value');
+                vertNote.textContent = '';
+                document.getElementById('exampleX').textContent = '—';
+                document.getElementById('exampleXneg').textContent = '—';
+                updateRefTable(null, null);
+                return;
+            }
+
+            // Horizontal
+            if (!isNaN(horizDeg) && horizDeg !== 0) {
+                const px = degToPixels(horizDeg, ppm, distMm);
+                const rounded = Math.round(px * 10) / 10;
+                horizEl.textContent = rounded;
+                horizEl.className = 'result-value';
+                horizBox.classList.add('has-value');
+                if (horizDeg > 0) {
+                    horizNote.textContent = `Place ${rounded}px RIGHT of center (50% + offset)`;
+                } else {
+                    horizNote.textContent = `Place ${rounded}px LEFT of center (50% - offset)`;
+                }
+            } else {
+                horizEl.textContent = '0';
+                horizEl.className = 'result-value';
+                horizBox.classList.remove('has-value');
+                horizNote.textContent = '';
+            }
+
+            // Vertical
+            if (!isNaN(vertDeg) && vertDeg !== 0) {
+                const px = degToPixels(vertDeg, ppm, distMm);
+                const rounded = Math.round(px * 10) / 10;
+                vertEl.textContent = rounded;
+                vertEl.className = 'result-value';
+                vertBox.classList.add('has-value');
+                if (vertDeg > 0) {
+                    vertNote.textContent = `Place ${rounded}px BELOW center (50% + offset)`;
+                } else {
+                    vertNote.textContent = `Place ${rounded}px ABOVE center (50% - offset)`;
+                }
+            } else {
+                vertEl.textContent = '0';
+                vertEl.className = 'result-value';
+                vertBox.classList.remove('has-value');
+                vertNote.textContent = '';
+            }
+
+            // Update example text
+            const examplePx = degToPixels(3, ppm, distMm);
+            const exRounded = Math.round(examplePx * 10) / 10;
+            document.getElementById('exampleX').textContent = (50 + exRounded).toFixed(1);
+            document.getElementById('exampleXneg').textContent = (50 - exRounded).toFixed(1);
+
+            updateRefTable(ppm, distMm);
+        }
+
+        // ==========================================
+        // STIMULUS SIZE CALCULATION
+        // ==========================================
+        function calculateSize() {
+            const ppm = getPPM();
+            const distMm = getViewDistMm();
+            const wPx = parseFloat(document.getElementById('stimWidthPx').value);
+            const hPx = parseFloat(document.getElementById('stimHeightPx').value);
+
+            const wBox = document.getElementById('stimWResultBox');
+            const hBox = document.getElementById('stimHResultBox');
+            const wEl = document.getElementById('stimWidthDeg');
+            const hEl = document.getElementById('stimHeightDeg');
+
+            if (!ppm || !distMm) {
+                wEl.textContent = '—'; wEl.className = 'result-value empty'; wBox.classList.remove('has-value');
+                hEl.textContent = '—'; hEl.className = 'result-value empty'; hBox.classList.remove('has-value');
+                return;
+            }
+
+            if (!isNaN(wPx) && wPx > 0) {
+                const sizeMm = wPx / ppm;
+                const angle = 2 * Math.atan(sizeMm / (2 * distMm)) * (180 / Math.PI);
+                wEl.textContent = angle.toFixed(2);
+                wEl.className = 'result-value';
+                wBox.classList.add('has-value');
+            } else {
+                wEl.textContent = '—'; wEl.className = 'result-value empty'; wBox.classList.remove('has-value');
+            }
+
+            if (!isNaN(hPx) && hPx > 0) {
+                const sizeMm = hPx / ppm;
+                const angle = 2 * Math.atan(sizeMm / (2 * distMm)) * (180 / Math.PI);
+                hEl.textContent = angle.toFixed(2);
+                hEl.className = 'result-value';
+                hBox.classList.add('has-value');
+            } else {
+                hEl.textContent = '—'; hEl.className = 'result-value empty'; hBox.classList.remove('has-value');
+            }
+        }
+
+        // ==========================================
+        // REFERENCE TABLE
+        // ==========================================
+        function updateRefTable(ppm, distMm) {
+            const tbody = document.getElementById('refTableBody');
+            if (!ppm || !distMm) {
+                tbody.innerHTML = '<tr><td style="color:var(--text-muted);font-size:12px;">Fill screen info above to see values</td></tr>';
+                return;
+            }
+
+            const angles = [1, 2, 3, 4, 5, 7, 10, 15, 20];
+            const dist = parseFloat(document.getElementById('viewDistCm').value);
+            const screenMm = parseFloat(document.getElementById('screenWidthMm').value);
+            const screenPx = parseFloat(document.getElementById('screenWidthPx').value);
+
+            let row = `<td style="color:var(--text-secondary);"><span class="mono">${dist}cm</span> / <span class="mono">${screenMm}mm</span></td>`;
+            angles.forEach(deg => {
+                const px = Math.round(degToPixels(deg, ppm, distMm) * 10) / 10;
+                row += `<td><span class="mono">${px}</span></td>`;
+            });
+            tbody.innerHTML = `<tr>${row}</tr>`;
+        }
+
+        // ==========================================
+        // COPY
+        // ==========================================
+        function copyValue(id) {
+            const el = document.getElementById(id);
+            const text = el.textContent;
+            if (text === '—' || text === '0') return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = el.closest('.result-box').querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+
+</html>

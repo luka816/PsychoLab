@@ -1,0 +1,89 @@
+I wonder if it is possible to add such functionality to my experiment page, to stimuli and to the list of stimuli (all stimuli):
+
+a) As a single option for selecting a position, a functionality for marking on the screen, i.e. when I select this function, a screen appears (divided into small sections (the smaller the better, because there will be many options), from these sections I will select one or more and, whichever sections I select, the stimulus position will be these sections. I understand, it will be visually easier for me to select the stimulus positions this way. (Is it possible to add such functionality?
+
+b) Also, regarding stimuli, I want to add a functionality that will allow me to display two or more stimuli on the screen at the same time. In other words, a kind of list where the created stimuli will appear on the screen at the same time (but they will have their own duration, frequency, position, etc., so what now? Stimuli also have properties. I mean, if I create two stimuli in this list that have different durations or durations, they should appear according to these data, for example: stimulus 1 has a duration of 20 ms, stimulus 2 has 50, stimulus 1 will appear first, then stimulus 2, (if both have a duration of -1, it turns out that they will be on the screen at the same time, and the same principle applies to duration. The main point is that several stimuli can be on the screen together. Such a thing is possible. I want to create this list both normally and in the currently existing normal and group lists, do you understand? (i.e. everywhere)
+
+You don't want to rewrite the entire file, just tell me the location of the code, the function, how to change it, I will find it and change it.
+
+
+
+you already know my experiment lab code, as you know have vfixation stimli sometmes in experiment. so stimuli ison right or left or top/dow. sometimes i need not px but degree to know of stmuli from fixation. for example I need stimuli 3 degrees left / right from fixation stimuli. can you write separate html for that "calculator" where i write :
+
+screen width
+screen height
+distance from screen (participant how to sit)
+font size of stimuli (if stimuli word) maybe its necessary
+image/shape width (if stimulus image/shape)
+image/shape height (if stimulus image/shape)
+degree i need from fixation stimuli (left/right)
+degree i need from fixation stimuli (top/bottom)
+
+I do not know, maybe some of that information is necessary. some of that maybe not. you tell me and write on inputs that alos, so necessary and unnecessary inputs (required/notrequred) input maybe. you know better.
+
+and that calculator automatically calculates px that i need to write for stimuli from fixation stimulus do you get what i mean. it will be px calculator.
+
+I need a separate html page for that and a button somewhere in my experiment lab for a link and open that page. do you get that?
+
+=============================================================
+1. The fixation stimulus information does not work in JS and JSON export/import. What is the bug and how can I fix it?
+2. When I resize the image stimulus so that its height/width becomes the entire screen (full screen), the image height becomes maximum and is fine, but the image width does not become the entire screen, i.e. it reaches a certain level and stops. What is the bug and how can I fix it?
+3. When I create stimuli in a list and in this order: 1. Word stimulus (Delay 5000-10000 ms) (Position Center) (Duration 150 ms), 2. Picture stimulus (Delay 0 ms) (Duration 1000 ms), and then 3. Figure stimulus. I want the picture stimulus to appear immediately after the word stimulus (because the picture stimulus delay is 0 ms), but instead, after the word stimulus, the fixation stimulus appears for a moment and then the picture, do you understand? There is a bug. Probably because I have set the delay to 0 on the picture, but before it appears after the word stimulus, the fixation stimulus appears first. What is the bug and how can I fix it?
+
+I noticed the above problems in my experiment lab. Can you tell me how I can fix it. 
+You don't want to rewrite the entire file, just tell me the location of the code, the function, how to change it, I will find it and change it.
+
+
+
+
+==========================================================
+ამ ვებ პაგის ჰტმლ გაანალიზე და მინდა შევიტანოთ გარკვეული ცვლილებელი(გავაუმჯობესოთ) რამდენიმე რამ:
+
+ზოგიეთი პარამეტრი არ ემთხვევა ერთმანეთ, ასე რომ ვთქვათ წინააღმდეგობაში მოდის ერთმანეთთან (ძირითადი და კონკრეტული სტიმულის პარამეტრები. კონრეტული და ლსტის პარამეტრები  და ა.შ
+
+მთავარი არის ის, რომ ზოგად სეთინგებს უნდა ექვემდებარებოდეს კონკრეტული სტიმულის სეთინგები, შესაბამისად თანმიმდევრობაც რომ შევცვალოთ სექციების, ანუ ჯერ ცდის პირის ინფორმაცია, ზოგადი სეთინგების სექციები და შემდეგ სტიმულების სექციები. 
+
+ესეიგი გავაკეთოთ ასე: 1. პირველი და მაღლა მდოგმი იქნება ექსპერიმენტის ტიპი  (ცდის პირის ინფოს სექციის შემდეგ), გვექნება ზოგადად ორი ტიპის ექსპერიმენტი : რეაქცის დროზე დამყარებული და უბრალოდ პასუხზე დამყარებული. თუ ავირჩევ  რეაქციის დროზე დამყარებულ ტიპს აქტიური გახდება შემდეგი ასარჩევი ფუქნციები, (ამავე სექციაში) (უბრალოდ რეაქციის დროზე დამყარებული, ვერტიკალურ პოზიციაზე დამყარებული, ჰორიზონტალურზე თუ ორივე ერთად).
+ხოლო თუ ავირჩევ უბრალოდ პასუხზე დამყარებულს, ეს იმას ნიშნავს რომ რეაქციის დროს აღარ ვითვლი. ანუ ამ ტიპის ექსპერიმენტი შეყდება მაშინ, როდესაც ჩემს მიერ შექმნილი ყველა სტიმული მიეწოდება ცდის პირს (კლასიკური ექსპერიმენტივით).
+
+მეორე სექციად გადმოვიტანოთ სტოპ კონდიციები (stop conditions),
+ოღონდ დავამატოთ ფუქნცია: გაჩერება მაშინ, როდესაც სტიმულები ამოიწურება (ეს ფუნქცია მაშინ გახდება აქტიური თი ექსპერიმენტის ტიპში მოვნიშნავ კლასიკური ექსპერიმენტის ტიპს), ანუ როდესა ყველა სტიმული წარედგინება ცდის პირს (კლასიკური ექსპერიმენტივით. ანუ გვექნება სამი ფუქნცია, დროზე დამოკიდებული, შეცდომებზე დამოკიდებული და სტიმულთა რაოდენობაზე დამოკიდებული.
+
+მესამე სექციად დავამატოთ ზოგადი პარამეტრების სექცია.
+
+ა)სტიმულების გამოჩენას შორის გასული დრო (ზოგადად) (ანუ სულ მთლიანობაში სტიმულის დილეი იქნება კონკრეტულ სტიმულის დილეის დამატებული ეს ზოგადი (ყველასთვის) დილეი, მიხვდი?) დეფაულტად იყოს (0 მილიწამი) ეს ფუნცია მხოლოდ ამ ზოგად ზექციაში და ლისტის სექციაში იქნება ხელმისაწვდომი, ცალკეულ სტიმულს არ ჭირდება ალბათ. მინდა ამასთან ერთად ეს დილეი შემეძლოს ფიქსირებულად დავაყენო. ანუ ორი ტიპის (ფიქსირებული და ინტერვალური (რანდომული). 
+
+ბ) აქ გადმოვიტანოთ ბექგრაუდის ფერის ფუნქციაც, ყველა სტიმულისთვის იქნება აქ მონიშნული (თუმცა ეს უნდა შემეძლოს რომ შევცვალო თითოეულ სტიმულში (სტიმულისთვის).
+
+ამ ზოგად პარამეტრების სექცის შემდეგ გადმოვიტანოთ ფიქსაციის სტიმულის სექცია, სადაც ვირჩევ ფიქსაციის სტიმულთან დაკავშირებულ სეთინგებს. ახალ ჯვრის და ტექსტების ფუნქციები უკვე მაქვს, მინდა დავამატო მესამე ფუნქცია სადაც შემეძლება ჩავწერო კონკრეტული სიტყვა/ფრაზა ან სურათის ლინკი და შესაბამისად რომელსაც შევიყვან ის იქნება მთელი ექსპერიმენტის ფიქსაციის სტიმული (თითოეულ სტიმულში უნდა დავამატოთ ფუნქცია, რომლითაც გავთიშავ ამ სექციაში არჩეულ ფიქსაციის სტიმულს).
+თუ ამ სექციაში არ მოვნიშნავ არცერთ ოფციას, ექსპრიმენტს არ ექნება ფიქსაციის სტიმული. (თუმცა თითოეულ სტიმულში უნდა შემეძლოს ცალკეულად ჩავრთო და ავირჩიო სტიმულის სეთინგები) (არ დაგავიწყდეს ცალკეულ სტიმულში უნდა შემეძლოს რომ გავთიშო აქ არჩეული ფიქსაცია.
+ფიქსაციის სტიმულებს (სიტყვა/სურათს) უნდა ქონდეს შესაბამისი პარამეტრები, რაც აქვს ჩვეულებრივ სტიმულებს, დეფაულტად უნდა იყოს ცენტრში გასწორბული.
+ახლა რაც მაქვს ორი ფუნქცია (სულ ჩანდეს ფიქსაცია თუ სტიმულების გამოჩენისას გაჩნდეს, ქონდეს ყველა ტიპის ფისაციას)
+
+(display setting) სექცია გადმოვიტანოთ ამ ფიქსაციის სტიმულის სექციის შემდეგ. 
+
+შემდეგ იქნება სტიმულთა სექცია: 
+
+ბოლოს იქნება იქნება save/load configuration და შემდეგ კი სტიმულების სექცია.
+
+ყველა სტიმულს უნდა ქონდებს
+ა)სტიმულთა დურაციის დრო. (ეს პარამეტრი ცალკეულ სტიმულში უნდა შემეძლოს რომ შევცვალო (-1 დურაცია ღილაკზე დამყარებული იქნება შესაბამისად როდესაც სტიმულის დურაციის მდელოში ჩავწერ -1, აქტიური ინდა გახდეს ორი ვარიანტი სფაცე და მარჯვენა ისარის ოფცია, ან უნდა გააქტიურდეს ფუნქცია (მდელო), სადაც ავირჩევს ღილაკს, არჩეული ოფცია (ღილაკის) დაწოლის შემთხვევაში გადავა შემდეგ სტიმულზე.
+
+ბ)ცალკეულად აღებული სტიმულის დაყოვნება (delay). ანუ რამდენ ხანში გამოჩნდეს ეს კონკრეტული სტიმული. (არ დაგავიწყდეს ეს დაკავშირებული ზოგად ექსპერიმენტის ინერვალურ მაჩვენებელთან (ჯამი). აქდეფაულტად იყოს (0 მილიწამი). მინდა ამასთან ერთად ეს დილეი შემეძლოს ფიქსირებულად დავაყენო. ანუ ორი ტიპის (ფიქსირებული ან  ინტერვალური (რანდომული). (როგორც ზოგადი დილეყს შემთხვევაში)
+
+გ) მინდა რომ თითოეულ სტიმულს, ლისტს და ლისტში სტიმულებს ქონდეს კოპირების ფუნქცია. (ანუ უკვე შექმნილი სტიმულის არჩეული პარამეტრებიც გადავა კოპირებულში (რათა ხელმეორედ არ მომიწიოს იგივეს კეთება (მინიმალური ცვლილებებიღა დამჭირდება.
+
+-- ასევე სიტყვა/ფრაზის სტიმულში მჭირდება ცალკე სახელის ფუნქცია (ანუ მთლიანი ფრაზა არ მინდა ჩანდეს სახელში.  (ცსვ ში გადავა როგორც ფრაზა, ასევე სახელიც, სხვადასხვა სვეტებად.
+ასევე სურათებსაც და ფიგურებსაც და ზოგადად ყველაფერ მინდა შემეძლოს მივანიჭო სახელი.
+
+დ)სექციების ჩვენების (გახსნის) ღილაკი პირველი დაწოლაზე არ მოქმედებს. - გამოვასწოროთ ეს ბაგი. (აუცილებელი რომ ფეიჯის გახსნისას ყველა სექცია დახურული იყოს)
+
+ლისტის ზოგადი პარამეტრები რაც ახლა მაქვს: 1. ლისტის სტიმულები რანდომ ან თანმიმდევრობით, 2. ლისტის გამეორების რადოენობა, 2. მეორედ (ან ზოგადად) გამეორების დაწყებამდე დილეი და 3. სახელის  ფუნქცია კარგია, ასევე მაქვს სტიმულებს შორის წარდგენის დრო (რომელიც ინტერვალური და რანდომ ირჩევს დროს), მინდა ამასთან ერთად ეს დილეი შემეძლოს ფიქსირებულად დავაყენო. ანუ ორი ტიპის (ფიქსირებული და ინტერვალური (რანდომული)
+
+ლისტში როდესაც ვნიშნავ სტიმულების რანდომ თანმიმდევრობის წარდგენის ფუნქციას, მინდა შემეძლოს ავირჩიო, ამ რანდომ თანმიმდევრობის წარდგენის დროს თითოეული სტიმული მხოლოდ ერთხელ გამოჩნდეს თუ რანდომ რამდენჯერაც მოუწევს იყოს (ანუ ლისტიდან რამდენჯერმე მოსვლის შესაძლებლობა თუ მხოლოდ ერთხელ ასევე თუ შესაძლებელია დავამატოთ მესაამე ფუნქცია, სადაც შემეძლება მივუთითო მაქსიმუმ რამდენჯერ შეიძლება მოვიდეს კონკრეტული სტიმული ლისტში რანდომ წარდგენის დროს. მეოთხე ფუნქცია, ასევე თუ შესაძლებელია რო მივუთითო ასევე მინიმუმი წარგენის რაოდენობა. (თუ შესაძლებელია). ეს ფუნქციები ლისტის სტიმულებში აქტიური უნდა გახდეს, თუ ლისტის პარამეტრებში ავირჩევს რანდომ თანმიმდევრობის წარდგენის ფუნქციას.
+
+ასევე გააუჯობესე ცსვ ფაილის სვეტები, რათა უფრო სრულყოფილი და სრული ინფორმაცია ჩამოვტვითო საბოლოოდ, რათა რაიმე ინფორმაცია არ დამაკლდეს.
+
+ზოგადად კი გაითვალისწინე, რიმ რაც შეიძლება ბევრი ლოგიკური კავშირები გამოიყენე, ანუ როდესაც მოვნიშნავ რაიმე ოფციას მაშინ გახდეს აქტიური სხვა შესაძლო ოფციები, ანუ ერთმანეთზე დამოკიდებული ოფციები და პარამეტრები გააკეთე რათა არ მოხდეს ერთმანეთისვის არალოგიკურ, არაშეთავსებული პარამეტრების მინიჭება, მიხვდი? ქლეას ინსტრუქციები არ დაგავიწყდეს. 
+
+Remember, it is important that if you set the duration to -1, the options for selecting an opener are activated, which will move the subject to the next stimulus in the experiment.
